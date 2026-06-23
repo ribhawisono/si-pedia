@@ -33,7 +33,7 @@ Ensiklopedia digital untuk Program Studi Sistem Informasi, Universitas Indrapras
 
 ```bash
 # Clone repo
-git clone https://github.com/ronggothelast/si-pedia.git
+git clone https://github.com/ribhawisono/si-pedia.git
 cd si-pedia
 
 # Install dependencies
