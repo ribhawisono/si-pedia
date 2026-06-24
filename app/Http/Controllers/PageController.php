@@ -58,9 +58,9 @@ class PageController extends Controller
         $articles = Article::latest()->take(4)->get();
 
         // Monthly article count for chart
-        $monthlyArticles = Article::selectRaw("strftime('%m', created_at) as month, COUNT(*) as count")
+        $monthlyArticles = Article::selectRaw("MONTH(created_at) as month, COUNT(*) as count")
             ->whereYear('created_at', now()->year)
-            ->groupByRaw("strftime('%m', created_at)")
+            ->groupByRaw("MONTH(created_at)")
             ->orderBy('month')
             ->get();
 
