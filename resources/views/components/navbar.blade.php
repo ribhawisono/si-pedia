@@ -7,7 +7,7 @@
         'Review'   => route('review.index'),
     ];
 @endphp
-<header class="bg-ink-900">
+<header class="bg-ink-900 relative z-50">
     <nav class="mx-auto flex h-[80px] max-w-[1440px] items-center justify-between px-8">
         <a href="{{ route('home') }}" class="flex items-center gap-3 text-white">
             <x-cap class="h-8 w-8" />
