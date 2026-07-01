@@ -236,3 +236,209 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// ═══════════════════════════════════════════════════════════
+// PHASE 4 — FORMS: validation, preview, counters, autosave
+// ═══════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+    initImagePreview();
+    initCharCounters();
+    initRealtimeValidation();
+    initAutoFocusError();
+    initAutosave();
+    initSlugPreview();
+    initSEOCounter();
+});
+
+// ─── Image Preview ───────────────────────────────────────
+function initImagePreview() {
+    document.querySelectorAll('input[type=file][accept*=image]').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                // Look for existing preview img
+                const wrap = input.closest('[data-preview-wrap]') || input.closest('label') || input.parentElement;
+                let preview = wrap.closest('div')?.querySelector('img[data-preview], img.preview-img');
+                if (!preview) {
+                    // Create new preview
+                    preview = document.createElement('img');
+                    preview.dataset.preview = '1';
+                    preview.className = 'preview-img mt-3 h-28 w-40 rounded-xl object-cover shadow-sm border border-gray-200';
+                    preview.alt = 'Preview gambar';
+                    wrap.after(preview);
+                }
+                preview.src = ev.target.result;
+                preview.classList.remove('hidden');
+
+                // Show file size
+                const size = (file.size / 1024).toFixed(0);
+                let sizeEl = wrap.closest('div')?.querySelector('.file-size-label');
+                if (!sizeEl) {
+                    sizeEl = document.createElement('p');
+                    sizeEl.className = 'file-size-label mt-1 text-xs text-gray-400';
+                    preview.after(sizeEl);
+                }
+                sizeEl.textContent = `${file.name} (${size} KB)`;
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+}
+
+// ─── Character Counters ──────────────────────────────────
+function initCharCounters() {
+    document.querySelectorAll('textarea[data-counter], input[data-counter]').forEach(el => {
+        const max = el.getAttribute('maxlength') || el.dataset.counter;
+        if (!max) return;
+        let counter = el.parentElement.querySelector('.char-counter');
+        if (!counter) {
+            counter = document.createElement('span');
+            counter.className = 'char-counter text-xs text-gray-400 float-right mt-0.5';
+            el.after(counter);
+        }
+        const update = () => {
+            const len = el.value.length;
+            counter.textContent = `${len} / ${max}`;
+            counter.className = `char-counter text-xs float-right mt-0.5 ${len > max * 0.9 ? 'text-red-500 font-semibold' : len > max * 0.7 ? 'text-yellow-500' : 'text-gray-400'}`;
+        };
+        el.addEventListener('input', update);
+        update();
+    });
+}
+
+// ─── Realtime Validation ─────────────────────────────────
+function initRealtimeValidation() {
+    document.querySelectorAll('form[data-validate]').forEach(form => {
+        form.querySelectorAll('input[required], textarea[required], select[required]').forEach(field => {
+            field.addEventListener('blur', () => { field._touched = true; validateField(field); });
+            field.addEventListener('input', () => { if (field._touched) validateField(field); });
+        });
+        form.addEventListener('submit', (e) => {
+            let firstInvalid = null;
+            form.querySelectorAll('input[required], textarea[required], select[required]').forEach(field => {
+                field._touched = true;
+                validateField(field);
+                if (!field.checkValidity() && !firstInvalid) firstInvalid = field;
+            });
+            if (firstInvalid) {
+                e.preventDefault();
+                firstInvalid.focus();
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    });
+}
+
+function validateField(field) {
+    let err = field.parentElement.querySelector('.inline-error');
+    if (field.checkValidity()) {
+        field.classList.remove('border-red-500'); field.classList.add('border-green-500');
+        err?.remove();
+    } else {
+        field.classList.add('border-red-500'); field.classList.remove('border-green-500');
+        if (!err) {
+            err = document.createElement('p');
+            err.className = 'inline-error text-xs text-red-500 mt-1';
+            field.after(err);
+        }
+        err.textContent = getErrMsg(field);
+        err.setAttribute('role', 'alert');
+        field.setAttribute('aria-invalid', 'true');
+        field.setAttribute('aria-describedby', (err.id = 'err-' + field.name));
+    }
+}
+
+function getErrMsg(f) {
+    if (f.validity.valueMissing)    return 'Wajib diisi.';
+    if (f.validity.typeMismatch)    return `Format ${f.type === 'email' ? 'email' : f.type} tidak valid.`;
+    if (f.validity.tooShort)        return `Minimal ${f.minLength} karakter.`;
+    if (f.validity.tooLong)         return `Maksimal ${f.maxLength} karakter.`;
+    if (f.validity.patternMismatch) return f.title || 'Format tidak valid.';
+    return 'Nilai tidak valid.';
+}
+
+// ─── Auto-focus first error ──────────────────────────────
+function initAutoFocusError() {
+    const errEl = document.querySelector('[aria-invalid=true], .border-red-500');
+    if (errEl) {
+        errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => errEl.focus?.(), 300);
+    }
+}
+
+// ─── Autosave (Phase 6) ──────────────────────────────────
+function initAutosave() {
+    const form = document.querySelector('form[data-autosave]');
+    if (!form) return;
+    const key = form.dataset.autosave;
+    const indicator = document.getElementById('autosave-indicator');
+
+    // Restore saved data (only if value is empty to avoid overwriting server data)
+    try {
+        const saved = JSON.parse(localStorage.getItem(key) || 'null');
+        if (saved) {
+            Object.entries(saved).forEach(([name, value]) => {
+                const el = form.querySelector(`[name="${name}"]`);
+                if (el && !el.value && el.type !== 'file' && el.type !== 'hidden') el.value = value;
+            });
+            if (indicator) { indicator.textContent = 'Draft tersimpan'; indicator.classList.remove('hidden'); }
+        }
+    } catch {}
+
+    // Save every 30s
+    const save = () => {
+        const data = {};
+        form.querySelectorAll('input:not([type=file]):not([type=hidden]):not([type=submit]), textarea, select').forEach(el => {
+            if (el.name) data[el.name] = el.value;
+        });
+        localStorage.setItem(key, JSON.stringify(data));
+        if (indicator) {
+            indicator.textContent = '✓ Draft disimpan otomatis ' + new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+            indicator.classList.remove('hidden');
+        }
+    };
+
+    setInterval(save, 30000);
+    form.querySelectorAll('textarea, input:not([type=file])').forEach(el => {
+        el.addEventListener('input', () => clearTimeout(el._saveTimer) || (el._saveTimer = setTimeout(save, 5000)));
+    });
+    form.addEventListener('submit', () => localStorage.removeItem(key));
+}
+
+// ─── Slug Preview (Phase 6) ──────────────────────────────
+function initSlugPreview() {
+    const titleInput = document.getElementById('article-title-input');
+    const slugPreview = document.getElementById('slug-preview');
+    if (!titleInput || !slugPreview) return;
+
+    titleInput.addEventListener('input', () => {
+        const slug = titleInput.value.toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .trim().replace(/\s+/g, '-')
+            .substring(0, 80);
+        slugPreview.textContent = slug || 'judul-artikel-kamu';
+    });
+}
+
+// ─── SEO counters ────────────────────────────────────────
+function initSEOCounter() {
+    [
+        { id: 'meta_title', max: 60 },
+        { id: 'meta_description', max: 160 },
+        { id: 'meta_keywords', max: 200 },
+    ].forEach(({ id, max }) => {
+        const el = document.getElementById(id);
+        const cnt = document.getElementById(id + '_count');
+        if (!el || !cnt) return;
+        const update = () => {
+            const len = el.value.length;
+            cnt.textContent = len + ' / ' + max;
+            cnt.className = `text-xs ${len > max ? 'text-red-500' : len > max * 0.85 ? 'text-yellow-500' : 'text-gray-400'}`;
+        };
+        el.addEventListener('input', update);
+        update();
+    });
+}

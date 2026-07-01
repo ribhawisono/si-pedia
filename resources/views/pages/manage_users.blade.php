@@ -1,4 +1,4 @@
-<x-layouts.app title="Manage Users — SI-Pedia">
+<x-layouts.admin title="Manage Users — SI-Pedia" section="users">
 <main class="mx-auto max-w-[1200px] px-8 py-8">
   <div class="flex items-center justify-between">
     <div>
@@ -89,4 +89,4 @@
   </div>
   <div class="mt-5">{{ $users->links() }}</div>
 </main>
-</x-layouts.app>
+</x-layouts.admin>

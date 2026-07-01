@@ -1,4 +1,4 @@
-<x-layouts.app :title="$mode === 'create' ? 'Tambah User — SI-Pedia' : 'Edit User — SI-Pedia'">
+<x-layouts.admin title="Form User — SI-Pedia" section="users">
 <main class="mx-auto max-w-[680px] px-8 py-10">
   <div class="flex items-center gap-3 mb-6">
     <a href="{{ route('admin.users.index') }}" class="text-gray-400 hover:text-gray-700 transition text-xl">←</a>
@@ -92,4 +92,4 @@ document.querySelector('select[name=role]').addEventListener('change', function(
     document.getElementById('dosen-fields').classList.toggle('hidden', this.value !== 'dosen');
 });
 </script>
-</x-layouts.app>
+</x-layouts.admin>

@@ -17,6 +17,7 @@ class Article extends Model
     protected $fillable = [
         'user_id', 'title', 'slug', 'category_id', 'writer',
         'status', 'content', 'image', 'views', 'scheduled_at',
+        'meta_title', 'meta_description', 'meta_keywords', 'canonical_url',
     ];
 
     // ─── Accessors ────────────────────────────────────────────────────────────
@@ -44,6 +45,7 @@ class Article extends Model
     public function tags(): BelongsToMany    { return $this->belongsToMany(Tag::class); }
     public function bookmarks(): HasMany     { return $this->hasMany(Bookmark::class); }
     public function readingHistories(): HasMany { return $this->hasMany(ReadingHistory::class); }
+    public function revisions(): HasMany      { return $this->hasMany(\App\Models\ArticleRevision::class)->latest(); }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 

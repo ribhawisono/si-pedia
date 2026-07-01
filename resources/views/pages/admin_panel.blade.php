@@ -1,139 +1,168 @@
-<x-layouts.app title="Admin Panel — SI-Pedia">
-<main class="mx-auto max-w-[1440px] px-8 py-7">
-  <div class="flex items-start justify-between">
-    <div><h1 class="text-5xl font-black tracking-tight">Admin Panel</h1>
-      <p class="mt-1 text-gray-700">Welcome Admin. Manage the system easily.</p></div>
-    <span class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold">{{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</span>
-  </div>
+<x-layouts.admin title="Dashboard — SI-Pedia" section="dashboard">
 
-  {{-- Stats Cards --}}
-  <div class="mt-7 grid grid-cols-4 gap-6">
-    <div class="rounded-2xl border border-gray-200 bg-white px-6 py-7 text-center shadow-sm">
-      <p class="text-xl font-bold text-gray-900">Total Articles</p>
-      <p class="mt-1 text-6xl font-black text-gray-900">{{ $stats['articles'] }}</p>
-    </div>
-    <div class="rounded-2xl border border-gray-200 bg-white px-6 py-7 text-center shadow-sm">
-      <p class="text-xl font-bold text-gray-900">Total Lecturers</p>
-      <p class="mt-1 text-6xl font-black text-gray-900">{{ $stats['lecturers'] }}</p>
-    </div>
-    <div class="rounded-2xl border border-gray-200 bg-white px-6 py-7 text-center shadow-sm">
-      <p class="text-xl font-bold text-gray-900">Total Review</p>
-      <p class="mt-1 text-6xl font-black text-gray-900">{{ $stats['reviews'] }}</p>
-    </div>
-    <div class="rounded-2xl border border-gray-200 bg-white px-6 py-7 text-center shadow-sm">
-      <p class="text-xl font-bold text-gray-900">Total User</p>
-      <p class="mt-1 text-6xl font-black text-gray-900">{{ $stats['users'] }}</p>
-    </div>
-  </div>
+{{-- Stats row --}}
+@php
+  $topArticles = \App\Models\Article::with('category:id,name')->where('status','active')->orderByDesc('views')->limit(5)->get();
+  $topUsers    = \App\Models\User::withCount('articles')->orderByDesc('articles_count')->limit(5)->get();
+@endphp
 
-  {{-- Articles Chart (CSS bar chart) --}}
-  @if(isset($monthlyArticles) && $monthlyArticles->count())
-  <div class="mt-8 rounded-2xl border border-gray-200 p-5 shadow-sm">
-    <h2 class="mb-4 text-xl font-bold">Articles per Bulan</h2>
-    <div class="flex items-end gap-2 h-40">
-      @php $maxCount = $monthlyArticles->max('count') ?: 1; @endphp
-      @foreach($monthlyArticles as $month)
-        <div class="flex-1 flex flex-col items-center gap-1">
-          <span class="text-xs font-bold text-gray-600">{{ $month->count }}</span>
-          <div class="w-full rounded-t-lg bg-[#336cbc] transition-all" style="height: {{ ($month->count / $maxCount) * 100 }}%"></div>
-          <span class="text-[10px] text-gray-500">{{ \Carbon\Carbon::create()->month((int)$month->month)->format('M') }}</span>
-        </div>
-      @endforeach
+<div class="mb-6 grid gap-4 grid-cols-2 sm:grid-cols-4">
+  @foreach([
+    ['label'=>'Total Artikel','value'=>$stats['articles'],'icon'=>'📄','color'=>'bg-blue-50 text-blue-700','border'=>'border-blue-200'],
+    ['label'=>'Dosen','value'=>$stats['lecturers'],'icon'=>'🎓','color'=>'bg-green-50 text-green-700','border'=>'border-green-200'],
+    ['label'=>'Pengguna','value'=>$stats['users'],'icon'=>'👥','color'=>'bg-purple-50 text-purple-700','border'=>'border-purple-200'],
+    ['label'=>'Pending','value'=>$stats['pending'],'icon'=>'⏳','color'=>'bg-yellow-50 text-yellow-700','border'=>'border-yellow-200','alert'=>true],
+  ] as $stat)
+  <div class="rounded-xl border {{ $stat['border'] }} bg-white p-4 shadow-sm">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xl" aria-hidden="true">{{ $stat['icon'] }}</span>
+      @if(($stat['alert'] ?? false) && $stat['value'] > 0)
+      <span class="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-black text-white">!</span>
+      @endif
     </div>
+    <p class="text-2xl font-black text-gray-900">{{ number_format($stat['value']) }}</p>
+    <p class="text-xs font-semibold text-gray-500 mt-0.5">{{ $stat['label'] }}</p>
   </div>
-  @endif
+  @endforeach
+</div>
 
-  <div class="mt-8 grid grid-cols-[1.7fr_1fr] gap-6">
-    {{-- New Articles Table --}}
-    <div class="rounded-2xl border border-gray-200 p-5 shadow-sm">
-      <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-bold">New Articles</h2><a href="{{ route('admin.articles.index') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-700">See All</a></div>
-      <div class="grid grid-cols-[1fr_110px_90px_130px_90px] gap-2 border-b bg-tablehead/60 px-3 py-2 text-xs font-bold text-gray-700"><div>Article Title</div><div>Category</div><div>Writer</div><div>Created Date</div><div>Status</div></div>
-      <div class="mt-3 space-y-3">
-        @foreach($articles as $article)
-        <div class="grid grid-cols-[1fr_110px_90px_130px_90px] items-center gap-2 rounded-xl bg-white px-3 py-3 shadow-sm">
-          <div class="flex items-center gap-3">
-            @if($article->image)
-              <img src="{{ $article->image_url }}" class="h-12 w-12 rounded object-cover" alt="{{ $article->title }}">
-            @else
-              <div class="h-12 w-12 rounded bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">No Img</div>
-            @endif
-            <span class="text-xs font-bold leading-tight">{{ $article->title }}</span>
-          </div>
-          <div><span class="rounded-full bg-badge-cat px-4 py-1 text-xs font-semibold text-white">{{ $article->category->name ?? 'Uncategorized' }}</span></div>
-          <div class="text-xs font-bold">{{ $article->writer }}</div>
-          <div class="text-xs font-bold">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('j F Y') }}</div>
-          <div><span class="rounded-md {{ $article->status === 'active' ? 'bg-status-active' : 'bg-red-500' }} px-3 py-1 text-xs font-semibold text-white">{{ ucfirst($article->status) }}</span></div>
+<div class="grid gap-6 lg:grid-cols-[1fr_320px]">
+
+  {{-- Left column --}}
+  <div class="space-y-6">
+
+    {{-- Monthly chart --}}
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <h2 class="mb-4 text-sm font-extrabold text-gray-800">📈 Artikel per Bulan ({{ now()->year }})</h2>
+      @php
+        $monthData = array_fill(1,12,0);
+        foreach($monthlyArticles as $m) $monthData[$m->month] = $m->count;
+        $maxVal = max(array_values($monthData)) ?: 1;
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+      @endphp
+      <div class="flex items-end gap-1.5 h-32" role="img" aria-label="Bar chart artikel per bulan">
+        @foreach($monthData as $month => $count)
+        <div class="flex-1 flex flex-col items-center gap-1 group">
+          <span class="text-[9px] font-bold text-gray-400 opacity-0 group-hover:opacity-100 transition">{{ $count }}</span>
+          <div class="w-full rounded-t-sm bg-brand-600/80 hover:bg-brand-600 transition-all cursor-default"
+               style="height: {{ max(4, ($count / $maxVal) * 112) }}px"
+               title="{{ $months[$month-1] }}: {{ $count }} artikel"
+               role="presentation"></div>
+          <span class="text-[9px] font-semibold text-gray-400">{{ $months[$month-1] }}</span>
         </div>
         @endforeach
       </div>
     </div>
 
-    {{-- Fast Action --}}
-    <div class="rounded-2xl border border-gray-200 p-5 shadow-sm">
-      <h2 class="mb-4 text-xl font-bold">Fast Action</h2>
-      <div class="space-y-3">
-        <a href="{{ route('admin.articles.create') }}" class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm hover:bg-gray-50 transition-colors">
-          <div><p class="font-bold text-gray-900">Add Article</p><p class="text-xs text-gray-500">Create a New Article</p></div>
-          <span class="text-gray-400">›</span>
-        </a>
-        <a href="{{ route('admin.categories.index') }}" class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm hover:bg-gray-50 transition-colors">
-          <div><p class="font-bold text-gray-900">Manage Category</p><p class="text-xs text-gray-500">Add or Edit Category</p></div>
-          <span class="text-gray-400">›</span>
-        </a>
-        <a href="{{ route('admin.dosen.index') }}" class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm hover:bg-gray-50 transition-colors">
-          <div><p class="font-bold text-gray-900">Manage Lecturers</p><p class="text-xs text-gray-500">View and Manage Lecturer Data</p></div>
-          <span class="text-gray-400">›</span>
-        </a>
-        <a href="{{ route('admin.users.index') }}" class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm hover:bg-gray-50 transition-colors">
-          <div><p class="font-bold text-gray-900">Manage Users</p><p class="text-xs text-gray-500">View and Manage Users</p></div>
-          <span class="text-gray-400">›</span>
-        </a>
-        <a href="{{ route('admin.report') }}" class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm hover:bg-gray-50 transition-colors">
-          <div><p class="font-bold text-gray-900">Report Posts</p><p class="text-xs text-gray-500">View Post Report</p></div>
-          <span class="text-gray-400">›</span>
-        </a>
-        <a href="{{ route('admin.account-reports.index') }}" class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm hover:bg-gray-50 transition-colors">
-          <div><p class="font-bold text-gray-900">Report Akun</p><p class="text-xs text-gray-500">Tinjau laporan pengguna</p></div>
-          @php $rCount = \App\Models\AccountReport::where('status','pending')->count(); @endphp
-          @if($rCount > 0)
-            <span class="rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{{ $rCount }}</span>
-          @else
-            <span class="text-gray-400">›</span>
+    {{-- Top articles --}}
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div class="border-b border-gray-100 bg-gray-50 px-4 py-3 flex items-center justify-between">
+        <h2 class="text-sm font-extrabold text-gray-800">🔥 Artikel Terpopuler</h2>
+        <a href="{{ route('admin.articles.index') }}" class="text-xs font-semibold text-brand-600 hover:text-brand-700">Lihat semua →</a>
+      </div>
+      <div class="divide-y divide-gray-50">
+        @foreach($topArticles as $i => $art)
+        <div class="flex items-center gap-3 px-4 py-3">
+          <span class="flex-shrink-0 w-6 text-sm font-black {{ $i===0?'text-yellow-500':($i===1?'text-gray-400':($i===2?'text-amber-600':'text-gray-300')) }}">
+            {{ $i+1 }}
+          </span>
+          @if($art->image_url)
+          <img src="{{ $art->image_url }}" alt="{{ $art->title }}" class="h-10 w-14 flex-shrink-0 rounded-lg object-cover">
           @endif
-        </a>
-        <a href="{{ route('admin.articles.pending') }}" class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm hover:bg-gray-50 transition-colors">
-          <div><p class="font-bold text-gray-900">Artikel Pending</p><p class="text-xs text-gray-500">Approve / reject artikel masuk</p></div>
-          @if(isset($stats['pending']) && $stats['pending'] > 0)
-            <span class="rounded-full bg-yellow-400 px-2 py-0.5 text-xs font-bold text-white">{{ $stats['pending'] }}</span>
-          @else
-            <span class="text-gray-400">›</span>
-          @endif
-        </a>
+          <div class="flex-1 min-w-0">
+            <a href="{{ route('articles.show', $art->slug) }}" target="_blank"
+               class="text-sm font-semibold text-gray-900 hover:text-brand-700 transition line-clamp-1">{{ $art->title }}</a>
+            <p class="text-xs text-gray-400">{{ $art->category->name ?? '-' }}</p>
+          </div>
+          <span class="flex-shrink-0 text-xs font-bold text-gray-500">{{ number_format($art->views) }}×</span>
+        </div>
+        @endforeach
       </div>
     </div>
+
+    {{-- Recent activity --}}
+    @if($recentActivities->isNotEmpty())
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
+        <h2 class="text-sm font-extrabold text-gray-800">⚡ Aktivitas Terbaru</h2>
+      </div>
+      <div class="divide-y divide-gray-50">
+        @foreach($recentActivities->take(8) as $act)
+        <div class="flex items-start gap-3 px-4 py-3">
+          <img src="{{ $act->user->avatar_url ?? 'https://ui-avatars.com/api/?name=S&background=336cbc&color=fff&size=40' }}"
+               alt="" class="h-8 w-8 flex-shrink-0 rounded-full object-cover" aria-hidden="true">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm text-gray-700 line-clamp-1">
+              <span class="font-semibold">{{ $act->user->name ?? 'System' }}</span>
+              <span class="text-gray-400">·</span>
+              {{ $act->description ?? $act->action }}
+            </p>
+            <time class="text-xs text-gray-400" datetime="{{ $act->created_at?->toISOString() }}">
+              {{ $act->created_at?->diffForHumans() }}
+            </time>
+          </div>
+        </div>
+        @endforeach
+      </div>
+    </div>
+    @endif
   </div>
 
-  {{-- Activity Log --}}
-  @if(isset($recentActivities) && $recentActivities->count())
-  <div class="mt-8 rounded-2xl border border-gray-200 p-5 shadow-sm">
-    <h2 class="mb-4 text-xl font-bold">Recent Activity</h2>
-    <div class="space-y-2">
-      @foreach($recentActivities as $log)
-      <div class="flex items-center gap-3 rounded-lg bg-gray-50 px-4 py-2.5">
-        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[#336cbc] text-white flex items-center justify-center text-xs font-bold">
-          {{ strtoupper(substr($log->user->name ?? 'S', 0, 1)) }}
-        </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm text-gray-800">
-            <span class="font-semibold">{{ $log->user->name ?? 'System' }}</span>
-            {{ $log->description }}
-          </p>
-          <p class="text-xs text-gray-400">{{ $log->created_at->diffForHumans() }} · {{ $log->ip_address }}</p>
-        </div>
+  {{-- Right column --}}
+  <div class="space-y-5">
+
+    {{-- Quick actions --}}
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
+        <h2 class="text-sm font-extrabold text-gray-800">⚡ Aksi Cepat</h2>
       </div>
-      @endforeach
+      <div class="divide-y divide-gray-50">
+        @foreach([
+          ['Tambah Artikel',   route('admin.articles.create'),          '✏️'],
+          ['Pending Artikel',  route('admin.articles.pending'),         '⏳', $stats['pending']],
+          ['Moderasi Komentar',route('admin.comments.index'),           '💬', \App\Models\Comment::where('status','pending')->count()],
+          ['Report Akun',      route('admin.account-reports.index'),    '🚩', \App\Models\AccountReport::where('status','pending')->count()],
+          ['Manage Users',     route('admin.users.index'),              '👥'],
+          ['Tambah Dosen',     route('admin.dosen.create'),             '🎓'],
+          ['Laporan Artikel',  route('admin.report'),                   '📊'],
+        ] as [$label, $url, $icon, $badge])
+        <a href="{{ $url }}" class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition group">
+          <div class="flex items-center gap-2.5">
+            <span class="text-base" aria-hidden="true">{{ $icon }}</span>
+            <span class="text-sm font-semibold text-gray-700 group-hover:text-brand-700">{{ $label }}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            @if(!empty($badge) && $badge > 0)
+            <span class="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-black text-white" aria-label="{{ $badge }} item menunggu">{{ $badge }}</span>
+            @endif
+            <svg class="h-3.5 w-3.5 text-gray-300 group-hover:text-brand-600 transition" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+            </svg>
+          </div>
+        </a>
+        @endforeach
+      </div>
+    </div>
+
+    {{-- Top users --}}
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
+        <h2 class="text-sm font-extrabold text-gray-800">✍️ Penulis Teraktif</h2>
+      </div>
+      <div class="divide-y divide-gray-50">
+        @foreach($topUsers as $u)
+        <div class="flex items-center gap-3 px-4 py-3">
+          <img src="{{ $u->avatar_url }}" alt="Foto {{ $u->name }}" class="h-8 w-8 flex-shrink-0 rounded-full object-cover">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-900 truncate">{{ $u->name }}</p>
+            <p class="text-xs text-gray-400">{{ ucfirst($u->role) }}</p>
+          </div>
+          <span class="text-xs font-bold text-gray-500">{{ $u->articles_count }} artikel</span>
+        </div>
+        @endforeach
+      </div>
     </div>
   </div>
-  @endif
-</main>
-</x-layouts.app>
+</div>
+
+</x-layouts.admin>

@@ -1,4 +1,4 @@
-<x-layouts.app title="Detail Dosen — SI-Pedia">
+<x-layouts.admin title="Detail Dosen — SI-Pedia" section="dosen">
 <main class="mx-auto max-w-[1100px] px-8 py-8">
   <div class="flex items-center gap-3 mb-1">
     <a href="{{ route('admin.dosen.index') }}" class="text-gray-400 hover:text-gray-700 transition text-2xl">←</a>
@@ -146,4 +146,4 @@
     </div>
   </div>
 </main>
-</x-layouts.app>
+</x-layouts.admin>
