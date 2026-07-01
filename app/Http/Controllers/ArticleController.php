@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use App\Models\ArticleRevision;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Services\ArticleService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
+    public function __construct(private ArticleService $articleService) {}
+
     // ─── Admin: list ──────────────────────────────────────────────────────────
     public function index(Request $request)
     {
@@ -24,7 +25,6 @@ class ArticleController extends Controller
         return view('pages.article_index', compact('articles', 'pendingCount', 'pendingDeleteCount'));
     }
 
-    // ─── Admin: pending ────────────────────────────────────────────────────────
     public function pendingIndex()
     {
         $pending       = Article::with(['category:id,name', 'user:id,name'])->where('status', 'pending')->latest()->paginate(10);
@@ -32,27 +32,28 @@ class ArticleController extends Controller
         return view('pages.article_pending', compact('pending', 'pendingDelete'));
     }
 
-    // ─── Admin actions ─────────────────────────────────────────────────────────
     public function approve(Article $article)
     {
         $article->update(['status' => 'active']);
-        $this->logActivity('approve', "Approved article: {$article->title}", $article);
-        return back()->with('success', "Artikel \"{$article->title}\" dipublikasikan.");
+        $this->logActivity('approve', "Approved: {$article->title}", $article);
+        $this->articleService->clearCache();
+        return back()->with('success', "\"{$article->title}\" dipublikasikan.");
     }
 
     public function reject(Article $article)
     {
         $article->update(['status' => 'draft']);
-        $this->logActivity('reject', "Rejected article: {$article->title}", $article);
-        return back()->with('success', "Artikel \"{$article->title}\" dikembalikan ke draft.");
+        $this->logActivity('reject', "Rejected: {$article->title}", $article);
+        return back()->with('success', "\"{$article->title}\" dikembalikan ke draft.");
     }
 
     public function approveDelete(Article $article)
     {
         $title = $article->title;
         $article->delete();
-        $this->logActivity('delete', "Approved delete: {$title}");
-        return back()->with('success', "Artikel \"{$title}\" dihapus.");
+        $this->logActivity('delete', "Deleted: {$title}");
+        $this->articleService->clearCache();
+        return back()->with('success', "\"{$title}\" dihapus.");
     }
 
     public function rejectDelete(Article $article)
@@ -62,77 +63,29 @@ class ArticleController extends Controller
         return back()->with('success', "Permintaan hapus \"{$article->title}\" ditolak.");
     }
 
-    // ─── Create ────────────────────────────────────────────────────────────────
+    // ─── Create ───────────────────────────────────────────────────────────────
     public function create()
     {
-        $categories = Category::all();
-        $allTags    = Tag::orderBy('name')->get();
-        $isAdmin    = auth()->user()->role === 'admin';
         return view('pages.edit_article', [
             'article'    => new Article(),
-            'categories' => $categories,
-            'allTags'    => $allTags,
+            'categories' => Category::all(),
+            'allTags'    => Tag::orderBy('name')->get(),
             'mode'       => 'create',
-            'isAdmin'    => $isAdmin,
+            'isAdmin'    => auth()->user()->role === 'admin',
         ]);
     }
 
     public function store(Request $request)
     {
         $isAdmin = auth()->user()->role === 'admin';
-        $rules   = [
-            'title'       => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'content'     => 'required|string',
-            'image'       => 'nullable|image|max:10240',
-            'tags'             => 'nullable|string',
-            'meta_title'       => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:300',
-            'meta_keywords'    => 'nullable|string|max:300',
-        ];
-        if ($isAdmin) {
-            $rules['writer']     = 'required|string';
-            $rules['status']     = 'required|in:active,draft,archived';
-            $rules['created_at'] = 'required|date';
-        }
-
-        $data = $request->validate($rules);
-
-        $data['slug']    = $this->uniqueSlug($data['title']);
-        $data['user_id'] = auth()->id();
-        $data['writer']  = $isAdmin ? $request->writer : auth()->user()->name;
-        $data['views']   = 0;
-        $data['status']  = $isAdmin
-            ? ($request->status ?? 'draft')
-            : ($request->has('submit') ? 'pending' : 'draft');
-
-        if (!$isAdmin) $data['created_at'] = now();
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('articles', 'public');
-        }
-
-        $article = Article::create($data);
-        $this->syncTags($article, $request->input('tags', ''));
-        // Save initial revision
-        ArticleRevision::create([
-            'article_id'    => $article->id,
-            'user_id'       => auth()->id(),
-            'title'         => $article->title,
-            'content'       => $article->content,
-            'status'        => $article->status,
-            'revision_note' => 'Versi awal',
-        ]);
-        $this->logActivity('create', "Created article: {$article->title}", $article);
-        \Illuminate\Support\Facades\Cache::forget('homepage_articles');
-        \Illuminate\Support\Facades\Cache::forget('admin_stats');
+        $article = $this->articleService->store($request, $isAdmin);
+        $this->logActivity('create', "Created: {$article->title}", $article);
 
         if ($isAdmin) return redirect()->route('admin.articles.index')->with('success', 'Artikel ditambahkan.');
 
-        $msg = $data['status'] === 'pending'
-            ? 'Artikel disubmit dan menunggu persetujuan admin.'
-            : 'Draft disimpan.';
-        return redirect()->route('articles.my')->with('success', $msg);
+        return redirect()->route('articles.my')->with('success',
+            $article->status === 'pending' ? 'Artikel disubmit ke admin.' : 'Draft disimpan.'
+        );
     }
 
     // ─── Edit ─────────────────────────────────────────────────────────────────
@@ -147,77 +100,36 @@ class ArticleController extends Controller
         }
 
         $article->load('tags:id,name');
-        $categories = Category::all();
-        $allTags    = Tag::orderBy('name')->get();
-
-        return view('pages.edit_article', compact('article', 'categories', 'allTags', 'isAdmin') + ['mode' => 'edit']);
+        return view('pages.edit_article', [
+            'article'    => $article,
+            'categories' => Category::all(),
+            'allTags'    => Tag::orderBy('name')->get(),
+            'mode'       => 'edit',
+            'isAdmin'    => $isAdmin,
+        ]);
     }
 
     public function update(Request $request, Article $article)
     {
         $user    = auth()->user();
         $isAdmin = $user->role === 'admin';
-
         if (!$isAdmin && $article->user_id !== $user->id) abort(403);
 
-        $rules = [
-            'title'       => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'content'     => 'required|string',
-            'image'       => 'nullable|image|max:10240',
-            'tags'        => 'nullable|string',
-        ];
-        if ($isAdmin) {
-            $rules['writer']     = 'required|string';
-            $rules['status']     = 'required|in:active,draft,pending,pending_delete';
-            $rules['created_at'] = 'required|date';
-        }
-
-        $data = $request->validate($rules);
-
-        if (!$isAdmin) {
-            $data['status'] = $request->has('submit') ? 'pending' : 'draft';
-            unset($data['created_at']);
-        }
-
-        if ($data['title'] !== $article->title) {
-            $data['slug'] = $this->uniqueSlug($data['title'], $article->id);
-        }
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('articles', 'public');
-        }
-
-        $article->update($data);
-        $this->syncTags($article, $request->input('tags', ''));
-        // Save revision on update
-        ArticleRevision::create([
-            'article_id'    => $article->id,
-            'user_id'       => auth()->id(),
-            'title'         => $article->title,
-            'content'       => $article->content,
-            'status'        => $article->status,
-            'revision_note' => $request->input('revision_note', 'Pembaruan'),
-        ]);
-        $this->logActivity('update', "Updated article: {$article->title}", $article);
-        \Illuminate\Support\Facades\Cache::forget('homepage_articles');
-        \Illuminate\Support\Facades\Cache::forget('admin_stats');
+        $article = $this->articleService->update($request, $article, $isAdmin);
+        $this->logActivity('update', "Updated: {$article->title}", $article);
 
         if ($isAdmin) return redirect()->route('admin.articles.index')->with('success', 'Artikel diperbarui.');
 
-        $msg = ($data['status'] ?? '') === 'pending'
-            ? 'Artikel disubmit ke admin.'
-            : 'Draft disimpan.';
-        return redirect()->route('articles.my')->with('success', $msg);
+        return redirect()->route('articles.my')->with('success',
+            $article->status === 'pending' ? 'Artikel disubmit ke admin.' : 'Draft disimpan.'
+        );
     }
 
-    // ─── Destroy ──────────────────────────────────────────────────────────────
     public function destroy(Article $article)
     {
-        $this->logActivity('delete', "Deleted article: {$article->title}", $article);
+        $this->logActivity('delete', "Deleted: {$article->title}", $article);
         $article->delete();
-        \Illuminate\Support\Facades\Cache::forget('homepage_articles');
-        \Illuminate\Support\Facades\Cache::forget('admin_stats');
+        $this->articleService->clearCache();
         return redirect()->route('admin.articles.index')->with('success', 'Artikel dihapus.');
     }
 
@@ -229,7 +141,6 @@ class ArticleController extends Controller
         return redirect()->route('articles.my')->with('success', 'Permintaan hapus dikirim ke admin.');
     }
 
-    // ─── User: my articles ────────────────────────────────────────────────────
     public function myArticles()
     {
         $articles = Article::with(['category:id,name', 'tags:id,name,slug'])
@@ -239,27 +150,19 @@ class ArticleController extends Controller
         return view('pages.my_articles', compact('articles'));
     }
 
-    // ─── Bulk ────────────────────────────────────────────────────────────────
     public function bulkAction(Request $request)
     {
-        $request->validate([
-            'ids'    => 'required|array',
-            'ids.*'  => 'exists:articles,id',
-            'action' => 'required|in:publish,draft,delete',
-        ]);
-
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:articles,id', 'action' => 'required|in:publish,draft,delete']);
         $q = Article::whereIn('id', $request->ids);
-
         match ($request->action) {
             'publish' => $q->update(['status' => 'active']),
             'draft'   => $q->update(['status' => 'draft']),
             'delete'  => Article::whereIn('id', $request->ids)->delete(),
         };
-
+        $this->articleService->clearCache();
         return redirect()->route('admin.articles.index')->with('success', 'Bulk action selesai.');
     }
 
-    // ─── Preview ────────────────────────────────────────────────────────────────
     public function preview(Article $article)
     {
         $user = auth()->user();
@@ -268,44 +171,11 @@ class ArticleController extends Controller
         return view('pages.article_preview', compact('article'));
     }
 
-    // ─── Revisions ───────────────────────────────────────────────────────────────
     public function revisions(Article $article)
     {
         $user = auth()->user();
         if ($user->role !== 'admin' && $article->user_id !== $user->id) abort(403);
         $revisions = $article->revisions()->with('user:id,name')->get();
         return view('pages.article_revisions', compact('article', 'revisions'));
-    }
-
-    // ─── Private helpers ──────────────────────────────────────────────────────
-    private function uniqueSlug(string $title, ?int $excludeId = null): string
-    {
-        $slug = Str::slug($title);
-        $orig = $slug;
-        $i    = 1;
-        while (Article::where('slug', $slug)->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))->exists()) {
-            $slug = $orig . '-' . $i++;
-        }
-        return $slug;
-    }
-
-    private function syncTags(Article $article, string $tagsInput): void
-    {
-        if (empty(trim($tagsInput))) {
-            $article->tags()->detach();
-            return;
-        }
-
-        $names  = array_unique(array_filter(array_map('trim', explode(',', $tagsInput))));
-        $tagIds = [];
-
-        foreach ($names as $name) {
-            $slug  = Str::slug($name);
-            if (!$slug) continue;
-            $tag   = Tag::firstOrCreate(['slug' => $slug], ['name' => $name]);
-            $tagIds[] = $tag->id;
-        }
-
-        $article->tags()->sync($tagIds);
     }
 }

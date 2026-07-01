@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Providers;
+
+use App\Models\Article;
+use App\Models\Bookmark;
+use App\Models\Comment;
+use App\Policies\ArticlePolicy;
+use App\Policies\BookmarkPolicy;
+use App\Policies\CommentPolicy;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    protected $policies = [
+        Article::class  => ArticlePolicy::class,
+        Comment::class  => CommentPolicy::class,
+        Bookmark::class => BookmarkPolicy::class,
+    ];
+
+    public function boot(): void
+    {
+        Gate::before(fn ($user) => $user->isAdmin() ? true : null);
+        Gate::define('manage-articles',    fn ($user) => $user->isAdmin());
+        Gate::define('moderate-comments',  fn ($user) => $user->isAdmin());
+        Gate::define('manage-users',       fn ($user) => $user->isAdmin());
+    }
+}
