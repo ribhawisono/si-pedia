@@ -1,6 +1,7 @@
-<x-layouts.app :title="$article->title . ' — SI-Pedia'" footer="full"
-               :meta_description="Str::limit(strip_tags($article->content), 160)"
-               :og_image="$article->image_url">
+<x-layouts.app :title="$article->meta_title ?: $article->title . ' — SI-Pedia'" footer="full"
+               :meta_description="$article->meta_description ?: Str::limit(strip_tags($article->content), 160)"
+               :og_image="$article->image_url"
+               :canonical_url="$article->canonical_url ?: url()->current()">
 
 {{-- Reading Progress Bar --}}
 <div id="reading-progress-bar" class="fixed top-[68px] left-0 z-40 h-0.5 bg-brand-600 transition-all duration-100 will-change-transform" style="width:0%" aria-hidden="true" role="presentation"></div>

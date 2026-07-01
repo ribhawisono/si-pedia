@@ -1,10 +1,6 @@
 <x-layouts.admin title="Dashboard — SI-Pedia" section="dashboard">
 
 {{-- Stats row --}}
-@php
-  $topArticles = \App\Models\Article::with('category:id,name')->where('status','active')->orderByDesc('views')->limit(5)->get();
-  $topUsers    = \App\Models\User::withCount('articles')->orderByDesc('articles_count')->limit(5)->get();
-@endphp
 
 <div class="mb-6 grid gap-4 grid-cols-2 sm:grid-cols-4">
   @foreach([

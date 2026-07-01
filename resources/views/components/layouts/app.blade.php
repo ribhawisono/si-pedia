@@ -4,8 +4,10 @@
     'footer'           => 'none',
     'meta_description' => 'Platform digital ensiklopedia Program Studi Sistem Informasi Universitas Indraprasta PGRI.',
     'og_image'         => null,
+    'canonical_url'    => null,
 ])
 <!DOCTYPE html>
+<script>if(localStorage.getItem("si-pedia-theme")==="dark"||(!localStorage.getItem("si-pedia-theme")&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}</script>
 <html lang="id" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
@@ -27,6 +29,9 @@
     <meta name="twitter:description" content="{{ $meta_description }}">
 
     <title>{{ $title }}</title>
+    @if($canonical_url)
+    <link rel="canonical" href="{{ $canonical_url }}">
+    @endif
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=poppins:300,400,500,600,700,800,900&display=swap" rel="stylesheet">

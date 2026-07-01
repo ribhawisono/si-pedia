@@ -442,3 +442,67 @@ function initSEOCounter() {
         update();
     });
 }
+
+// ═══════════════════════════════════════════════════════════
+// PHASE 7 — DARK MODE, TOOLTIPS, ANIMATIONS
+// PHASE 8 — MEDIA: lazy images, blur, fallback
+// ═══════════════════════════════════════════════════════════
+
+// ─── Dark Mode ──────────────────────────────────────────────────────────────
+(function initDarkMode() {
+    const saved = localStorage.getItem('si-pedia-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+    }
+})();
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Toggle button click
+    document.querySelectorAll('[data-dark-toggle]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('si-pedia-theme', isDark ? 'dark' : 'light');
+            // Update aria-label
+            btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+            btn.setAttribute('aria-pressed', String(isDark));
+        });
+        // Set initial aria state
+        const isDark = document.documentElement.classList.contains('dark');
+        btn.setAttribute('aria-pressed', String(isDark));
+        btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    });
+
+    // System preference change
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('si-pedia-theme')) {
+            document.documentElement.classList.toggle('dark', e.matches);
+        }
+    });
+});
+
+// ─── Phase 8: Image blur placeholder ────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('img[loading=lazy]').forEach(img => {
+        if (img.complete) return;
+        img.classList.add('img-blur-load');
+        img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+        img.addEventListener('error', () => {
+            // Fallback: replace broken image with placeholder
+            const w = img.getAttribute('width') || img.offsetWidth || 400;
+            const h = img.getAttribute('height') || img.offsetHeight || 250;
+            img.src = `https://placehold.co/${w}x${h}/f1f5f9/94a3b8?text=SI-Pedia`;
+            img.alt = img.alt || 'Gambar tidak tersedia';
+            img.classList.remove('img-blur-load');
+        });
+    });
+});
+
+// ─── Phase 7: Keyboard shortcut for dark mode (Ctrl+Shift+D) ─────────────────
+document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+        e.preventDefault();
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('si-pedia-theme', isDark ? 'dark' : 'light');
+    }
+});
