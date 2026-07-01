@@ -53,7 +53,7 @@
         <div class="grid grid-cols-[1fr_110px_90px_130px_90px] items-center gap-2 rounded-xl bg-white px-3 py-3 shadow-sm">
           <div class="flex items-center gap-3">
             @if($article->image)
-              <img src="{{ Storage::url($article->image) }}" class="h-12 w-12 rounded object-cover" alt="{{ $article->title }}">
+              <img src="{{ $article->image_url }}" class="h-12 w-12 rounded object-cover" alt="{{ $article->title }}">
             @else
               <div class="h-12 w-12 rounded bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">No Img</div>
             @endif

@@ -38,7 +38,7 @@
       {{-- Thumbnail --}}
       <div class="flex-shrink-0">
         @if($article->image)
-          <img src="{{ Storage::url($article->image) }}" class="h-20 w-24 rounded-lg object-cover">
+          <img src="{{ $article->image_url }}" class="h-20 w-24 rounded-lg object-cover">
         @else
           <div class="h-20 w-24 rounded-lg bg-gray-100 flex items-center justify-center text-2xl">📄</div>
         @endif

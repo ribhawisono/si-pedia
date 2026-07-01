@@ -6,7 +6,7 @@
         <div class="relative">
           <div class="grid h-32 w-32 place-items-center rounded-full bg-gradient-to-br from-fuchsia-500 to-purple-600 text-4xl font-bold text-white ring-4 ring-white shadow-lg overflow-hidden">
             @if($user->avatar)
-                <img src="{{ asset('storage/' . $user->avatar) }}" class="w-full h-full object-cover">
+                <img src="{{ $user->avatar_url }}" class="w-full h-full object-cover">
             @else
                 {{ substr($user->name, 0, 2) }}
             @endif
@@ -19,7 +19,7 @@
       <hr class="my-8 border-gray-100">
       <div class="mx-auto grid max-w-3xl grid-cols-2 gap-x-20 gap-y-8">
           <div><p class="text-lg font-bold text-gray-400">Full Name</p><p class="mt-1 text-lg text-ink-900">{{ $user->name }}</p></div>
-          <div><p class="text-lg font-bold text-gray-400">Username</p><p class="mt-1 text-lg text-ink-900">{{ '@' . $user->username }}</p></div>
+          <div><p class="text-lg font-bold text-gray-400">Email</p><p class="mt-1 text-lg text-ink-900">{{ $user->email }}</p></div>
           <div><p class="text-lg font-bold text-gray-400">Email</p><p class="mt-1 text-lg text-ink-900">{{ $user->email }}</p></div>
           <div><p class="text-lg font-bold text-gray-400">Join</p><p class="mt-1 text-lg text-ink-900">{{ $user->created_at->translatedFormat('F Y') }}</p></div>
           <div><p class="text-lg font-bold text-gray-400">Study Program</p><p class="mt-1 text-lg text-ink-900">{{ $user->study_program ?? '-' }}</p></div>

@@ -41,7 +41,7 @@
           <div class="text-sm font-bold">{{ $i + 1 }}</div>
           <div class="flex items-center gap-2">
             @if($article->image)
-              <img src="{{ Storage::url($article->image) }}" class="h-11 w-11 rounded object-cover" alt="{{ $article->title }}">
+              <img src="{{ $article->image_url }}" class="h-11 w-11 rounded object-cover" alt="{{ $article->title }}">
             @else
               <div class="h-11 w-11 rounded bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">No Img</div>
             @endif

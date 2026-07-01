@@ -112,7 +112,7 @@
                 {{-- Image --}}
                 <div class="relative h-48 overflow-hidden bg-gray-100">
                     @if($article->image)
-                        <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
                     @else
                         <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
                             <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">

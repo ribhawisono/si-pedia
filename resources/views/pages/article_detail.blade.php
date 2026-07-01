@@ -1,10 +1,10 @@
 <x-layouts.app title="{{ $article->title }} — SI-Pedia" footer="full"
     meta_description="{{ Str::limit(strip_tags($article->content), 160) }}"
-    og_image="{{ $article->image ? Storage::url($article->image) : null }}">
+    og_image="{{ $article->image ? $article->image_url : null }}">
     <main class="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             @if($article->image)
-                <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="w-full h-[400px] object-cover" loading="lazy">
+                <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="w-full h-[400px] object-cover" loading="lazy">
             @else
                 <div class="w-full h-[400px] bg-indigo-50 flex items-center justify-center">
                     <span class="text-indigo-200 text-6xl font-bold">No Image</span>

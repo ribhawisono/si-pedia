@@ -17,7 +17,7 @@
       <h2 class="text-3xl font-extrabold mb-5">Foto Profil</h2>
       <div class="flex items-end gap-8">
         @if(isset($lecturer) && $lecturer->photo)
-            <img src="{{ Storage::url($lecturer->photo) }}" class="h-40 w-40 rounded-full object-cover shadow-sm">
+            <img src="{{ $lecturer->photo ? (str_starts_with($lecturer->photo, "http") ? $lecturer->photo : Storage::url($lecturer->photo)) : null }}" class="h-40 w-40 rounded-full object-cover shadow-sm">
         @else
             <div class="grid h-40 w-40 place-items-center rounded-full bg-gray-200 text-5xl">📷</div>
         @endif

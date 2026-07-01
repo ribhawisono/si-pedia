@@ -1,0 +1,53 @@
+name: si-pedia
+
+services:
+  - name: web
+    type: web
+    git:
+      repository: github.com/ribhawisono/si-pedia
+      branch: master
+      build_command: |
+        composer install --no-dev --optimize-autoloader
+        npm install
+        npm run build
+      run_command: php artisan migrate --force && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=8000
+
+    instance_type: free
+    regions:
+      - was  # Washington D.C. — closest free region
+
+    ports:
+      - port: 8000
+        protocol: http
+
+    env:
+      - key: APP_NAME
+        value: "SI-Pedia"
+      - key: APP_ENV
+        value: "production"
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        value: "https://YOUR_APP_NAME.koyeb.app"  # ganti setelah deploy
+      - key: DB_CONNECTION
+        value: "mysql"
+      - key: DB_HOST
+        secret: DB_HOST
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        secret: DB_DATABASE
+      - key: DB_USERNAME
+        secret: DB_USERNAME
+      - key: DB_PASSWORD
+        secret: DB_PASSWORD
+      - key: APP_KEY
+        secret: APP_KEY
+      - key: SESSION_DRIVER
+        value: "file"
+      - key: CACHE_DRIVER
+        value: "file"
+      - key: QUEUE_CONNECTION
+        value: "sync"
+      - key: MAIL_MAILER
+        value: "log"
