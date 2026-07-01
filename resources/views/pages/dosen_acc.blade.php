@@ -13,7 +13,7 @@
 
       <div class="flex items-center gap-4">
         @if($lecturer->photo)
-          <img src="{{ Storage::url($lecturer->photo) }}" class="h-16 w-16 rounded-full object-cover shadow">
+          <img src="{{ $lecturer->photo ? (str_starts_with($lecturer->photo, "http") ? $lecturer->photo : Storage::url($lecturer->photo)) : null }}" class="h-16 w-16 rounded-full object-cover shadow">
         @else
           <div class="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold text-gray-500">
             {{ strtoupper(substr($lecturer->user->name ?? 'D', 0, 1)) }}

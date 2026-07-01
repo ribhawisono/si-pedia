@@ -42,7 +42,7 @@
       <div class="text-lg font-bold">{{ $i + 1 + ($articles->currentPage() - 1) * $articles->perPage() }}</div>
       <div>
         @if($article->image)
-          <img src="{{ Storage::url($article->image) }}" class="h-[80px] w-[100px] rounded object-cover">
+          <img src="{{ $article->image_url }}" class="h-[80px] w-[100px] rounded object-cover">
         @else
           <div class="h-[80px] w-[100px] rounded bg-gray-200 flex items-center justify-center text-xs text-gray-500">No Image</div>
         @endif

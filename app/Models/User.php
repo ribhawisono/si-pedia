@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -26,23 +27,19 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function lecturer()
+    public function lecturer()  { return $this->hasOne(Lecturer::class); }
+    public function mahasiswa() { return $this->hasOne(Mahasiswa::class); }
+    public function articles()  { return $this->hasMany(Article::class); }
+
+    public function getAvatarUrlAttribute(): string
     {
-        return $this->hasOne(Lecturer::class);
+        if ($this->avatar) {
+            if (str_starts_with($this->avatar, 'http')) return $this->avatar;
+            return asset('storage/' . $this->avatar);
+        }
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=336cbc&color=fff&size=128';
     }
 
-    public function mahasiswa()
-    {
-        return $this->hasOne(Mahasiswa::class);
-    }
-
-    public function isDosen(): bool
-    {
-        return $this->role === 'dosen';
-    }
-
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
+    public function isDosen(): bool { return $this->role === 'dosen'; }
+    public function isAdmin(): bool { return $this->role === 'admin'; }
 }

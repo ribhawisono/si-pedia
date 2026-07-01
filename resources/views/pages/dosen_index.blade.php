@@ -44,7 +44,7 @@
       </div>
       <div>
         @if($lecturer->photo)
-          <img src="{{ Storage::url($lecturer->photo) }}" class="h-10 w-10 rounded-full object-cover shadow-sm">
+          <img src="{{ $lecturer->photo ? (str_starts_with($lecturer->photo, "http") ? $lecturer->photo : Storage::url($lecturer->photo)) : null }}" class="h-10 w-10 rounded-full object-cover shadow-sm">
         @else
           <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500 font-bold">
             {{ strtoupper(substr($lecturer->user->name ?? 'D', 0, 1)) }}

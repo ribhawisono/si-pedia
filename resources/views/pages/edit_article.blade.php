@@ -99,7 +99,7 @@
         <label class="mb-1 block text-lg font-bold">Thumbnail</label>
         <div class="flex gap-4">
           @if($article->image)
-            <img src="{{ Storage::url($article->image) }}" class="h-[120px] w-[110px] rounded-lg object-cover">
+            <img src="{{ $article->image_url }}" class="h-[120px] w-[110px] rounded-lg object-cover">
           @else
             <div class="h-[120px] w-[110px] rounded-lg bg-gray-200 flex items-center justify-center text-xs text-gray-500">No Img</div>
           @endif

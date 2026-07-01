@@ -23,7 +23,7 @@
     <div class="rounded-2xl bg-[#e8e8e8] p-3 shadow-md hover:shadow-lg transition-shadow">
       <div class="relative">
         @if($review->image)
-          <img src="{{ Storage::url($review->image) }}" class="h-[150px] w-full rounded-xl object-cover" loading="lazy" alt="{{ $review->title }}">
+          <img src="{{ $review->image ? (str_starts_with($review->image, "http") ? $review->image : Storage::url($review->image)) : null }}" class="h-[150px] w-full rounded-xl object-cover" loading="lazy" alt="{{ $review->title }}">
         @else
           <div class="h-[150px] w-full rounded-xl bg-gray-300 flex items-center justify-center text-gray-500">No Image</div>
         @endif

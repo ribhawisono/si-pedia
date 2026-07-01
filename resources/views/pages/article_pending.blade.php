@@ -30,7 +30,7 @@
     @forelse($pending as $article)
     <div class="mb-4 rounded-2xl bg-white border border-yellow-200 shadow-sm px-6 py-5 flex items-center gap-5">
       @if($article->image)
-        <img src="{{ Storage::url($article->image) }}" class="h-20 w-24 rounded-lg object-cover flex-shrink-0">
+        <img src="{{ $article->image_url }}" class="h-20 w-24 rounded-lg object-cover flex-shrink-0">
       @else
         <div class="h-20 w-24 rounded-lg bg-gray-100 flex items-center justify-center text-2xl flex-shrink-0">📄</div>
       @endif
@@ -92,7 +92,7 @@
     @forelse($pendingDelete as $article)
     <div class="mb-4 rounded-2xl bg-white border border-red-200 shadow-sm px-6 py-5 flex items-center gap-5">
       @if($article->image)
-        <img src="{{ Storage::url($article->image) }}" class="h-20 w-24 rounded-lg object-cover flex-shrink-0">
+        <img src="{{ $article->image_url }}" class="h-20 w-24 rounded-lg object-cover flex-shrink-0">
       @else
         <div class="h-20 w-24 rounded-lg bg-gray-100 flex items-center justify-center text-2xl flex-shrink-0">📄</div>
       @endif

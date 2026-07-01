@@ -9,7 +9,7 @@
             @forelse($articles as $article)
             <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
                 @if($article->image)
-                    <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="w-full h-48 object-cover">
+                    <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="w-full h-48 object-cover">
                 @else
                     <div class="w-full h-48 bg-indigo-50 flex items-center justify-center">
                         <span class="text-indigo-200 text-2xl font-bold">No Image</span>

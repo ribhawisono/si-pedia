@@ -39,14 +39,14 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// ─── Email Verification ───────────────────────────────────────────────────────
-Route::get('/email/verify', fn () => view('auth.verify-email'))->middleware('auth')->name('verification.notice');
-Route::get('/email/verify/{id}/{hash}', fn () => redirect('/profile'))
-    ->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
-Route::post('/email/verification-notification', function () {
-    request()->user()->sendEmailVerificationNotification();
-    return back()->with('status', 'verification-link-sent');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+// ─── Email Verification (OTP) ──────────────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', [AuthController::class, 'showOtp'])->name('verification.notice');
+    Route::get('/email/verify/otp', [AuthController::class, 'showOtp'])->name('verification.otp');
+    Route::post('/email/verify/otp', [AuthController::class, 'verifyOtp'])->name('verification.otp.verify')->middleware('throttle:5,1');
+    Route::post('/email/verify/resend', [AuthController::class, 'resendOtp'])->name('verification.otp.resend')->middleware('throttle:3,1');
+    Route::post('/email/verification-notification', [AuthController::class, 'resendOtp'])->name('verification.send');
+});
 
 // ─── User terautentikasi ──────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -104,8 +104,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-    // Users
+    // Users — CRUD lengkap
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
 
     // Dosen
@@ -118,7 +123,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/dosen/{lecturer}/approve', [DosenController::class, 'approve'])->name('dosen.approve');
     Route::delete('/dosen/{lecturer}', [DosenController::class, 'destroy'])->name('dosen.destroy');
 
-    // Report Akun (admin)
+    // Report Akun
     Route::get('/account-reports', [AccountReportController::class, 'index'])->name('account-reports.index');
     Route::patch('/account-reports/{report}', [AccountReportController::class, 'update'])->name('account-reports.update');
 });
