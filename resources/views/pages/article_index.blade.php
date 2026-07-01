@@ -1,5 +1,5 @@
 <x-layouts.app title="Article Data — SI-Pedia">
-<main class="mx-auto max-w-[1440px] px-8 py-8">
+<main class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
   <div class="flex items-start justify-between">
     <div>
       <h1 class="text-5xl font-black tracking-tight">Article Data</h1>
@@ -32,13 +32,13 @@
     🔍 <span class="ml-3">Search Articles by title, category, or author...</span>
   </div>
 
-  <div class="mt-6 grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_180px] gap-2 rounded-xl bg-tablehead px-4 py-3 text-sm font-bold text-gray-800">
+  <div class="mt-6 hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_180px] gap-2 rounded-xl bg-tablehead px-4 py-3 text-sm font-bold text-gray-800">
     <div>No</div><div>Thumbnail</div><div>Judul Artikel</div><div>Kategori</div><div>Penulis</div><div>Tanggal</div><div>Status</div><div>Action</div>
   </div>
 
   <div class="mt-3 space-y-3">
     @forelse($articles as $i => $article)
-    <div class="grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_180px] items-center gap-2 rounded-2xl bg-white px-4 py-4 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
+    <div class="hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_180px] items-center gap-2 rounded-2xl bg-white px-4 py-4 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
       <div class="text-lg font-bold">{{ $i + 1 + ($articles->currentPage() - 1) * $articles->perPage() }}</div>
       <div>
         @if($article->image)
