@@ -112,6 +112,18 @@
       </div>
 
       <div>
+        <label class="mb-1 block text-sm font-bold text-gray-700" for="tags-input">
+          Tags
+          <span class="font-normal text-gray-400">(pisahkan dengan koma, contoh: AI, Machine Learning)</span>
+        </label>
+        <input id="tags-input" type="text" name="tags"
+               value="{{ old('tags', $article->tags->pluck('name')->implode(', ') ?? '') }}"
+               placeholder="Contoh: Akademik, AI, Machine Learning"
+               class="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm text-gray-800 focus:border-brand-600 focus:ring-0 transition">
+        <p class="mt-1 text-xs text-gray-400">Tag membantu pembaca menemukan artikel serupa.</p>
+      </div>
+
+      <div>
         <label class="mb-1 block text-lg font-bold">Isi Artikel</label>
         <textarea name="content" rows="12" required
                   class="w-full rounded-xl border-2 border-gray-200 p-4 text-sm font-semibold leading-relaxed text-gray-800 focus:border-brand-600 focus:ring-0">{{ old('content', $article->content) }}</textarea>

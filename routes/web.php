@@ -10,13 +10,18 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Search ───────────────────────────────────────────────────────────────────
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest')->middleware('throttle:30,1');
+
+// ─── Tags ─────────────────────────────────────────────────────────────────────
+Route::get('/tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show');
 
 // ─── Publik ───────────────────────────────────────────────────────────────────
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -69,6 +74,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
         Route::patch('/{article}/request-delete', [ArticleController::class, 'requestDelete'])->name('requestDelete');
     });
+
+    // Bookmarks
+    Route::post('/articles/{article}/bookmark', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
+    Route::get('/profile/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
 
     // Report akun
     Route::get('/users/{user}/report', [AccountReportController::class, 'create'])->name('users.report');
