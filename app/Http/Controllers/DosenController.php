@@ -3,16 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lecturer;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DosenController extends Controller
 {
     public function index(Request $request)
     {
-        $lecturers = Lecturer::when($request->q, fn ($query, $q) =>
-            $query->where('nidn', 'like', "%{$q}%")
-                  ->orWhere('username', 'like', "%{$q}%")
-                  ->orWhere('address', 'like', "%{$q}%"))
+        $lecturers = Lecturer::with('user')
+            ->when($request->q, fn ($query, $q) =>
+                $query->where('nidn', 'like', "%{$q}%")
+                      ->orWhere('address', 'like', "%{$q}%")
+                      ->orWhereHas('user', fn ($u) =>
+                          $u->where('name', 'like', "%{$q}%")
+                            ->orWhere('email', 'like', "%{$q}%")
+                      ))
             ->paginate(5);
 
         return view('pages.dosen_index', compact('lecturers'));
@@ -25,68 +32,112 @@ class DosenController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
             'nidn'     => 'required|string|max:50',
-            'username' => 'required|string|max:100',
             'address'  => 'required|string|max:255',
             'photo'    => 'nullable|image|max:10240',
         ]);
 
-        if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('lecturers', 'public');
-        }
+        DB::transaction(function () use ($request) {
+            // 1. Buat akun user dengan role dosen
+            $user = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+                'role'     => 'dosen',
+            ]);
 
-        $lecturer = Lecturer::create($data);
+            // 2. Buat data lecturer yang terhubung ke user tersebut
+            $photoPath = null;
+            if ($request->hasFile('photo')) {
+                $photoPath = $request->file('photo')->store('lecturers', 'public');
+            }
 
-        $this->logActivity('create', "Created lecturer: {$lecturer->username}", $lecturer);
+            $lecturer = Lecturer::create([
+                'user_id' => $user->id,
+                'nidn'    => $request->nidn,
+                'address' => $request->address,
+                'photo'   => $photoPath,
+                'status'  => 'waiting',
+            ]);
 
-        return redirect()->route('admin.dosen.index')->with('success', 'Lecturer added successfully.');
+            $this->logActivity('create', "Created lecturer: {$user->name}", $lecturer);
+        });
+
+        return redirect()->route('admin.dosen.index')->with('success', 'Dosen berhasil ditambahkan.');
     }
 
     public function edit(Lecturer $lecturer)
     {
+        $lecturer->load('user');
         return view('pages.dosen_create', compact('lecturer'));
     }
 
     public function update(Request $request, Lecturer $lecturer)
     {
-        $data = $request->validate([
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email,' . $lecturer->user_id,
             'nidn'     => 'required|string|max:50',
-            'username' => 'required|string|max:100',
             'address'  => 'required|string|max:255',
             'photo'    => 'nullable|image|max:10240',
         ]);
 
-        if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('lecturers', 'public');
-        }
+        DB::transaction(function () use ($request, $lecturer) {
+            // Update data user
+            $lecturer->user->update([
+                'name'  => $request->name,
+                'email' => $request->email,
+            ]);
 
-        $lecturer->update($data);
+            // Update data lecturer
+            $data = [
+                'nidn'    => $request->nidn,
+                'address' => $request->address,
+            ];
 
-        $this->logActivity('update', "Updated lecturer: {$lecturer->username}", $lecturer);
+            if ($request->hasFile('photo')) {
+                $data['photo'] = $request->file('photo')->store('lecturers', 'public');
+            }
 
-        return redirect()->route('admin.dosen.index')->with('success', 'Lecturer updated successfully.');
+            $lecturer->update($data);
+
+            $this->logActivity('update', "Updated lecturer: {$lecturer->user->name}", $lecturer);
+        });
+
+        return redirect()->route('admin.dosen.index')->with('success', 'Data dosen berhasil diperbarui.');
     }
 
     public function approve(Lecturer $lecturer)
     {
         $lecturer->update(['status' => 'active']);
-
-        $this->logActivity('approve', "Approved lecturer: {$lecturer->username}", $lecturer);
-
-        return back()->with('success', 'Lecturer approved successfully.');
+        $this->logActivity('approve', "Approved lecturer: {$lecturer->user->name}", $lecturer);
+        return back()->with('success', 'Dosen berhasil diaktifkan.');
     }
 
     public function acc(Lecturer $lecturer)
     {
+        $lecturer->load('user');
         return view('pages.dosen_acc', compact('lecturer'));
     }
 
     public function destroy(Lecturer $lecturer)
     {
-        $this->logActivity('delete', "Deleted lecturer: {$lecturer->username}", $lecturer);
+        $name = $lecturer->user->name ?? 'Unknown';
+        $this->logActivity('delete', "Deleted lecturer: {$name}", $lecturer);
 
-        $lecturer->delete();
-        return back()->with('status', 'Lecturer deleted.');
+        DB::transaction(function () use ($lecturer) {
+            $user = $lecturer->user;
+            $lecturer->delete();
+            // Hapus user juga sekalian supaya tidak ada akun dosen yang orphan
+            if ($user) {
+                $user->delete();
+            }
+        });
+
+        return back()->with('status', 'Data dosen berhasil dihapus.');
     }
 }

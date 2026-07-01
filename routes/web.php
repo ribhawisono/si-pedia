@@ -10,29 +10,22 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
-use Illuminate\Foundation\Auth\EmailVerificationPrompt;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes — SI-Pedia
-|--------------------------------------------------------------------------
-*/
-
-// ---------- Publik ----------
+// ─── Publik ───────────────────────────────────────────────────────────────────
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/catalog', [PageController::class, 'catalog'])->name('catalog');
 Route::get('/articles/{article:slug}', [PageController::class, 'showArticle'])->name('articles.show');
 Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
 
-// ---------- Comments (public read, auth to post) ----------
+// ─── Comments ─────────────────────────────────────────────────────────────────
 Route::get('/articles/{article:slug}/comments', [CommentController::class, 'index'])->name('comments.index');
 Route::post('/articles/{article}/comments', [CommentController::class, 'store'])
     ->middleware('auth', 'throttle:10,1')
     ->name('comments.store');
 
-// ---------- Auth ----------
+// ─── Auth (guest) ─────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
@@ -45,46 +38,56 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// ---------- Email Verification ----------
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
-
-Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Auth\Events\Verified $event) {
-    return redirect('/profile');
-})->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
-
+// ─── Email Verification ───────────────────────────────────────────────────────
+Route::get('/email/verify', fn () => view('auth.verify-email'))->middleware('auth')->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', fn () => redirect('/profile'))
+    ->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
 Route::post('/email/verification-notification', function () {
     request()->user()->sendEmailVerificationNotification();
     return back()->with('status', 'verification-link-sent');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-// ---------- Profil (login + verified) ----------
+// ─── Profil (login + verified) ────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
-// ---------- Admin ----------
+// ─── Artikel: semua user login bisa tulis ─────────────────────────────────────
+Route::middleware(['auth', 'verified'])->prefix('articles')->name('articles.')->group(function () {
+    Route::get('/my', [ArticleController::class, 'myArticles'])->name('my');
+    Route::get('/create', [ArticleController::class, 'create'])->name('create');
+    Route::post('/', [ArticleController::class, 'store'])->name('store');
+    Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit');
+    Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
+    Route::patch('/{article}/request-delete', [ArticleController::class, 'requestDelete'])->name('requestDelete');
+});
+
+// ─── Admin ────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [PageController::class, 'adminPanel'])->name('panel');
     Route::get('/report', [PageController::class, 'reportPosts'])->name('report');
 
     // Artikel
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+    Route::get('/articles/pending', [ArticleController::class, 'pendingIndex'])->name('articles.pending');
     Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
     Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
     Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
     Route::put('/articles/{article}', [ArticleController::class, 'update'])->name('articles.update');
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->name('articles.destroy');
     Route::patch('/articles/{article}/bulk', [ArticleController::class, 'bulkAction'])->name('articles.bulk');
+    Route::patch('/articles/{article}/approve', [ArticleController::class, 'approve'])->name('articles.approve');
+    Route::patch('/articles/{article}/reject', [ArticleController::class, 'reject'])->name('articles.reject');
+    Route::delete('/articles/{article}/approve-delete', [ArticleController::class, 'approveDelete'])->name('articles.approveDelete');
+    Route::patch('/articles/{article}/reject-delete', [ArticleController::class, 'rejectDelete'])->name('articles.rejectDelete');
 
-    // Review (accept / decline)
+    // Review
     Route::patch('/reviews/{review}/accept', [ReviewController::class, 'accept'])->name('reviews.accept');
     Route::patch('/reviews/{review}/decline', [ReviewController::class, 'decline'])->name('reviews.decline');
 
-    // Halaman website
+    // Homepage & Pages
     Route::get('/homepage/edit', [HomepageController::class, 'edit'])->name('homepage.edit');
     Route::put('/homepage', [HomepageController::class, 'update'])->name('homepage.update');
     Route::get('/pages/create', [HomepageController::class, 'createPage'])->name('pages.create');
