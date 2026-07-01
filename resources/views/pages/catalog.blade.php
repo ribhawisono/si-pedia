@@ -1,4 +1,4 @@
-<x-layouts.app title="Katalog Artikel - PWL Ensiklopedia" footer="full">
+<x-layouts.app title="Katalog Artikel - SI-Pedia" footer="full">
     <main class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div class="mb-12">
             <h1 class="text-4xl font-bold text-[#0a0b2f] mb-4">Katalog Artikel</h1>

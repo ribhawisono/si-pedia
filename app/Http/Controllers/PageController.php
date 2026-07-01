@@ -8,14 +8,13 @@ use App\Models\Lecturer;
 use App\Models\Page;
 use App\Models\Review;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class PageController extends Controller
 {
     public function home()
     {
         $articles = Article::with('category')->where('status', 'active')->latest()->take(6)->get();
-        $page = Page::where('name', 'home')->where('status', 'publish')->first();
+        $page     = Page::where('name', 'home')->where('status', 'publish')->first();
         return view('pages.homepage', compact('articles', 'page'));
     }
 
@@ -28,10 +27,7 @@ class PageController extends Controller
     {
         $articles = Article::with('category')
             ->where('status', 'active')
-            ->where(function ($query) {
-                $query->whereNull('scheduled_at')
-                      ->orWhere('scheduled_at', '<=', now());
-            })
+            ->where(fn ($q) => $q->whereNull('scheduled_at')->orWhere('scheduled_at', '<=', now()))
             ->latest()
             ->paginate(12);
 
@@ -40,35 +36,33 @@ class PageController extends Controller
 
     public function showArticle(Article $article)
     {
-        if ($article->status !== 'active') {
-            abort(404);
-        }
+        if ($article->status !== 'active') abort(404);
+        $article->increment('views');
         $article->load(['comments' => fn ($q) => $q->where('status', 'approved')->with('user')]);
         return view('pages.article_detail', compact('article'));
+    }
+
+    public function faq()
+    {
+        return view('pages.faq');
     }
 
     public function adminPanel()
     {
         $stats = [
-            'articles'  => Article::count(),
-            'lecturers' => Lecturer::count(),
-            'reviews'   => Review::count(),
-            'users'     => User::count(),
+            'articles'       => Article::count(),
+            'lecturers'      => Lecturer::count(),
+            'reviews'        => Review::count(),
+            'users'          => User::count(),
+            'pending'        => Article::whereIn('status', ['pending', 'pending_delete'])->count(),
         ];
-        $articles = Article::latest()->take(4)->get();
-
-        // Monthly article count for chart
-        $monthlyArticles = Article::selectRaw("MONTH(created_at) as month, COUNT(*) as count")
+        $articles          = Article::with('category')->latest()->take(4)->get();
+        $monthlyArticles   = Article::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
             ->whereYear('created_at', now()->year)
-            ->groupByRaw("MONTH(created_at)")
+            ->groupByRaw('MONTH(created_at)')
             ->orderBy('month')
             ->get();
-
-        // Recent activity log
-        $recentActivities = ActivityLog::with('user')
-            ->latest()
-            ->take(10)
-            ->get();
+        $recentActivities  = ActivityLog::with('user')->latest()->take(10)->get();
 
         return view('pages.admin_panel', compact('stats', 'articles', 'monthlyArticles', 'recentActivities'));
     }
@@ -79,16 +73,12 @@ class PageController extends Controller
             'total'     => Article::count(),
             'active'    => Article::where('status', 'active')->count(),
             'draft'     => Article::where('status', 'draft')->count(),
+            'pending'   => Article::where('status', 'pending')->count(),
             'deleted'   => Article::onlyTrashed()->count(),
             'scheduled' => Article::whereNotNull('scheduled_at')->where('scheduled_at', '>', now())->count(),
         ];
-        $articles = Article::latest()->take(4)->get();
-
-        // Recent activity log
-        $recentActivities = ActivityLog::with('user')
-            ->latest()
-            ->take(10)
-            ->get();
+        $articles         = Article::with(['category', 'user'])->latest()->take(6)->get();
+        $recentActivities = ActivityLog::with('user')->latest()->take(10)->get();
 
         return view('pages.report_posts', compact('stats', 'articles', 'recentActivities'));
     }

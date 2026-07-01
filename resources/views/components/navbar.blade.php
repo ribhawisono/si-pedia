@@ -5,6 +5,7 @@
         'Catalog'  => route('catalog'),
         'About us' => route('about'),
         'Review'   => route('review.index'),
+        'FAQ'     => route('faq'),
     ];
 @endphp
 <header class="bg-ink-900 relative z-50">

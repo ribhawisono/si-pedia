@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountReportController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
@@ -16,14 +17,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/catalog', [PageController::class, 'catalog'])->name('catalog');
+Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 Route::get('/articles/{article:slug}', [PageController::class, 'showArticle'])->name('articles.show');
 Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
 
 // ─── Comments ─────────────────────────────────────────────────────────────────
 Route::get('/articles/{article:slug}/comments', [CommentController::class, 'index'])->name('comments.index');
 Route::post('/articles/{article}/comments', [CommentController::class, 'store'])
-    ->middleware('auth', 'throttle:10,1')
-    ->name('comments.store');
+    ->middleware('auth', 'throttle:10,1')->name('comments.store');
 
 // ─── Auth (guest) ─────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
@@ -47,21 +48,26 @@ Route::post('/email/verification-notification', function () {
     return back()->with('status', 'verification-link-sent');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-// ─── Profil (login + verified) ────────────────────────────────────────────────
+// ─── User terautentikasi ──────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Profil
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-});
 
-// ─── Artikel: semua user login bisa tulis ─────────────────────────────────────
-Route::middleware(['auth', 'verified'])->prefix('articles')->name('articles.')->group(function () {
-    Route::get('/my', [ArticleController::class, 'myArticles'])->name('my');
-    Route::get('/create', [ArticleController::class, 'create'])->name('create');
-    Route::post('/', [ArticleController::class, 'store'])->name('store');
-    Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit');
-    Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
-    Route::patch('/{article}/request-delete', [ArticleController::class, 'requestDelete'])->name('requestDelete');
+    // Artikel milik sendiri
+    Route::prefix('articles')->name('articles.')->group(function () {
+        Route::get('/my', [ArticleController::class, 'myArticles'])->name('my');
+        Route::get('/create', [ArticleController::class, 'create'])->name('create');
+        Route::post('/', [ArticleController::class, 'store'])->name('store');
+        Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit');
+        Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
+        Route::patch('/{article}/request-delete', [ArticleController::class, 'requestDelete'])->name('requestDelete');
+    });
+
+    // Report akun
+    Route::get('/users/{user}/report', [AccountReportController::class, 'create'])->name('users.report');
+    Route::post('/users/{user}/report', [AccountReportController::class, 'store'])->name('users.report.store');
 });
 
 // ─── Admin ────────────────────────────────────────────────────────────────────
@@ -111,4 +117,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dosen/{lecturer}/acc', [DosenController::class, 'acc'])->name('dosen.acc');
     Route::patch('/dosen/{lecturer}/approve', [DosenController::class, 'approve'])->name('dosen.approve');
     Route::delete('/dosen/{lecturer}', [DosenController::class, 'destroy'])->name('dosen.destroy');
+
+    // Report Akun (admin)
+    Route::get('/account-reports', [AccountReportController::class, 'index'])->name('account-reports.index');
+    Route::patch('/account-reports/{report}', [AccountReportController::class, 'update'])->name('account-reports.update');
 });
