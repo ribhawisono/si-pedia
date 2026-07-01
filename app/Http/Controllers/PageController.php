@@ -18,13 +18,17 @@ class PageController extends Controller
 {
     public function home()
     {
-        $articles = Article::with(['category:id,name', 'tags:id,name,slug'])
-            ->where('status', 'active')
-            ->latest()
-            ->take(6)
-            ->get();
+        $articles = Cache::remember('homepage_articles', 300, fn () =>
+            Article::with(['category:id,name', 'tags:id,name,slug'])
+                ->where('status', 'active')
+                ->latest()
+                ->take(6)
+                ->get()
+        );
 
-        $page = Page::where('name', 'home')->where('status', 'publish')->first();
+        $page = Cache::remember('homepage_page', 600, fn () =>
+            Page::where('name', 'home')->where('status', 'publish')->first()
+        );
 
         return view('pages.homepage', compact('articles', 'page'));
     }
@@ -123,19 +127,29 @@ class PageController extends Controller
 
     public function adminPanel()
     {
-        $stats = [
+        $stats = Cache::remember('admin_stats', 60, fn () => [
             'articles'  => Article::count(),
             'lecturers' => Lecturer::count(),
             'reviews'   => Review::count(),
             'users'     => User::count(),
             'pending'   => Article::whereIn('status', ['pending', 'pending_delete'])->count(),
-        ];
-        $articles        = Article::with('category:id,name')->latest()->take(4)->get();
-        $monthlyArticles = Article::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
-            ->whereYear('created_at', now()->year)
-            ->groupByRaw('MONTH(created_at)')
-            ->orderBy('month')
-            ->get();
+        ]);
+
+        $monthlyArticles = Cache::remember('admin_monthly_' . now()->year, 300, fn () =>
+            Article::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+                ->whereYear('created_at', now()->year)
+                ->groupByRaw('MONTH(created_at)')
+                ->orderBy('month')
+                ->get()
+        );
+
+        $articles    = Article::with('category:id,name')->latest()->take(4)->get();
+        $topArticles = Cache::remember('admin_top_articles', 120, fn () =>
+            Article::with('category:id,name')->where('status','active')->orderByDesc('views')->limit(5)->get()
+        );
+        $topUsers = Cache::remember('admin_top_users', 120, fn () =>
+            User::withCount('articles')->orderByDesc('articles_count')->limit(5)->get()
+        );
         $recentActivities = ActivityLog::with('user:id,name')->latest()->take(10)->get();
 
         return view('pages.admin_panel', compact('stats', 'articles', 'monthlyArticles', 'recentActivities'));

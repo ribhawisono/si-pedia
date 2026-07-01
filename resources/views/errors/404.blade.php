@@ -1,27 +1,44 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>404 — Not Found</title>
+    <title>404 — SI-Pedia</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=poppins:400,600,700,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=poppins:400,600,700,800,900&display=swap" rel="stylesheet">
+    <script>if(localStorage.getItem('si-pedia-theme')==='dark'){document.documentElement.classList.add('dark')}</script>
     <style>
-        body { font-family: 'Poppins', sans-serif; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f8fafc; color: #0a0b2f; }
-        .container { text-align: center; padding: 2rem; }
-        .error-code { font-size: 8rem; font-weight: 800; line-height: 1; color: #336cbc; opacity: 0.3; }
-        h1 { font-size: 1.5rem; font-weight: 700; margin: 0.5rem 0; }
-        p { color: #64748b; margin-bottom: 2rem; }
-        a { display: inline-block; padding: 0.75rem 2rem; background: #336cbc; color: white; border-radius: 0.75rem; text-decoration: none; font-weight: 600; transition: background 0.2s; }
-        a:hover { background: #2563eb; }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Poppins',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8fafc;color:#0a0b2f;padding:2rem}
+        html.dark body{background:#0f1117;color:#e2e8f0}
+        .card{background:#fff;border-radius:1.5rem;padding:3rem 2.5rem;max-width:480px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.08)}
+        html.dark .card{background:#1a1d27;box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+        .code{font-size:6rem;font-weight:900;line-height:1;background:linear-gradient(135deg,#336cbc,#5b91d6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        h1{font-size:1.25rem;font-weight:700;margin:0.75rem 0 0.5rem}
+        p{color:#64748b;font-size:0.875rem;line-height:1.6;margin-bottom:2rem}
+        html.dark p{color:#94a3b8}
+        .links{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap}
+        a{display:inline-flex;align-items:center;gap:0.5rem;padding:0.625rem 1.5rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;text-decoration:none;transition:all 0.2s}
+        .btn-primary{background:#336cbc;color:#fff}
+        .btn-primary:hover{background:#2a589a;transform:translateY(-1px)}
+        .btn-secondary{border:1.5px solid #e2e8f0;color:#475569}
+        html.dark .btn-secondary{border-color:#374151;color:#94a3b8}
+        .btn-secondary:hover{background:#f8fafc}
+        html.dark .btn-secondary:hover{background:#252836}
+        .icon{font-size:3rem;margin-bottom:1rem}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="error-code">404</div>
+    <div class="card">
+        <div class="icon">🔍</div>
+        <div class="code">404</div>
         <h1>Halaman Tidak Ditemukan</h1>
-        <p>Halaman yang Anda cari tidak ada atau telah dipindahkan.</p>
-        <a href="/">← Kembali ke Beranda</a>
+        <p>Halaman yang kamu cari tidak ada, sudah dipindahkan, atau mungkin URL-nya salah.</p>
+        <div class="links">
+            <a href="/" class="btn-primary">← Beranda</a>
+            <a href="/catalog" class="btn-secondary">📄 Katalog</a>
+            <a href="/search" class="btn-secondary">🔍 Cari</a>
+        </div>
     </div>
 </body>
 </html>

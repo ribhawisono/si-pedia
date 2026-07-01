@@ -124,6 +124,8 @@ class ArticleController extends Controller
             'revision_note' => 'Versi awal',
         ]);
         $this->logActivity('create', "Created article: {$article->title}", $article);
+        \Illuminate\Support\Facades\Cache::forget('homepage_articles');
+        \Illuminate\Support\Facades\Cache::forget('admin_stats');
 
         if ($isAdmin) return redirect()->route('admin.articles.index')->with('success', 'Artikel ditambahkan.');
 
@@ -198,6 +200,8 @@ class ArticleController extends Controller
             'revision_note' => $request->input('revision_note', 'Pembaruan'),
         ]);
         $this->logActivity('update', "Updated article: {$article->title}", $article);
+        \Illuminate\Support\Facades\Cache::forget('homepage_articles');
+        \Illuminate\Support\Facades\Cache::forget('admin_stats');
 
         if ($isAdmin) return redirect()->route('admin.articles.index')->with('success', 'Artikel diperbarui.');
 
@@ -212,6 +216,8 @@ class ArticleController extends Controller
     {
         $this->logActivity('delete', "Deleted article: {$article->title}", $article);
         $article->delete();
+        \Illuminate\Support\Facades\Cache::forget('homepage_articles');
+        \Illuminate\Support\Facades\Cache::forget('admin_stats');
         return redirect()->route('admin.articles.index')->with('success', 'Artikel dihapus.');
     }
 
