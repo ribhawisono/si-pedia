@@ -1,45 +1,149 @@
-<x-layouts.app title="Create Dosen ACC — SI-Pedia">
-<main class="mx-auto max-w-[1440px] px-8 py-7">
-  <div class="flex items-center gap-4 mb-2">
-    <a href="{{ route('admin.dosen.index') }}" class="text-4xl hover:text-brand-600 transition-colors">←</a>
-    <h1 class="text-5xl font-black tracking-tight">Create Dosen ACC</h1>
+<x-layouts.app title="Detail Dosen — SI-Pedia">
+<main class="mx-auto max-w-[1100px] px-8 py-8">
+  <div class="flex items-center gap-3 mb-1">
+    <a href="{{ route('admin.dosen.index') }}" class="text-gray-400 hover:text-gray-700 transition text-2xl">←</a>
+    <h1 class="text-3xl font-extrabold text-gray-900">Detail Dosen</h1>
   </div>
-  <p class="ml-14 text-gray-700">Verify and Approve New Lecturer Registration.</p>
-  <div class="mt-6 grid grid-cols-[1.8fr_1fr] gap-6 rounded-2xl border border-gray-200 p-6 shadow-sm">
-    <!-- LEFT -->
-    <div>
-      <h2 class="mb-4 text-lg font-bold">Lecturer Data</h2>
-      <div class="grid grid-cols-2 gap-5">
-        <div><label class="mb-1 block text-sm font-bold">Full name</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">{{ $lecturer->username }}</div></div><div><label class="mb-1 block text-sm font-bold">NIP/NIK</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">1976544789436001</div></div>
-        <div><label class="mb-1 block text-sm font-bold">NIDN</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">{{ $lecturer->nidn }}</div></div><div><label class="mb-1 block text-sm font-bold">Place of Birth</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">Jakarta</div></div>
-        <div><label class="mb-1 block text-sm font-bold">Email</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">-</div></div><div><label class="mb-1 block text-sm font-bold">Date of Birth</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">21/05/1985</div></div>
-        <div><label class="mb-1 block text-sm font-bold">No. Telephone</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">-</div></div><div><label class="mb-1 block text-sm font-bold">Gender</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">Laki -Laki<span class="ml-auto text-gray-400">⌄</span></div></div>
+  <p class="ml-9 text-sm text-gray-500 mb-6">Verifikasi dan kelola data dosen terdaftar.</p>
+
+  <div class="grid grid-cols-[1.8fr_1fr] gap-6">
+    {{-- Kiri: Data dosen --}}
+    <div class="rounded-2xl border border-gray-200 bg-white p-7 shadow-sm space-y-5">
+      <h2 class="text-lg font-bold text-gray-800 border-b border-gray-100 pb-3">Data Dosen</h2>
+
+      <div class="flex items-center gap-4">
+        @if($lecturer->photo)
+          <img src="{{ Storage::url($lecturer->photo) }}" class="h-16 w-16 rounded-full object-cover shadow">
+        @else
+          <div class="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold text-gray-500">
+            {{ strtoupper(substr($lecturer->user->name ?? 'D', 0, 1)) }}
+          </div>
+        @endif
+        <div>
+          <p class="font-bold text-gray-900 text-lg">{{ $lecturer->user->name ?? '—' }}</p>
+          <p class="text-sm text-gray-400">{{ $lecturer->user->email ?? '—' }}</p>
+        </div>
       </div>
-      <div class="mt-5"><div><label class="mb-1 block text-sm font-bold">Study program</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">Sistem Informasi<span class="ml-auto text-gray-400">⌄</span></div></div></div>
-      <div class="mt-5"><div><label class="mb-1 block text-sm font-bold">Address</label><div class="flex items-center rounded-xl border border-gray-300 px-4 py-3 text-sm">{{ $lecturer->address }}</div></div></div>
-      <div class="mt-5">
-        <label class="mb-1 block text-sm font-bold">Lecturer Photo</label>
-        <div class="flex gap-4">
-          <div class="grid h-[120px] w-[110px] place-items-center rounded-lg bg-gray-200 text-5xl text-gray-500">👤</div>
-          <div class="grid h-[120px] w-[150px] place-items-center rounded-lg border-2 border-gray-200 text-center text-[10px] text-gray-500">⊕<br>Click to change image<br>Format: JPG, PNG, WEBP.<br>Max 10 MB</div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-400 mb-1">NIDN</label>
+          <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-mono text-gray-700">
+            {{ $lecturer->nidn ?? '—' }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-400 mb-1">NIP</label>
+          <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-mono text-gray-700">
+            {{ $lecturer->nip ?? '—' }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-400 mb-1">Tempat Lahir</label>
+          <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700">
+            {{ $lecturer->place_of_birth ?? '—' }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-400 mb-1">Tanggal Lahir</label>
+          <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700">
+            {{ $lecturer->date_of_birth ? \Carbon\Carbon::parse($lecturer->date_of_birth)->translatedFormat('j F Y') : '—' }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-400 mb-1">No. Telepon</label>
+          <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700">
+            {{ $lecturer->phone ?? '—' }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-400 mb-1">Gender</label>
+          <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700">
+            {{ $lecturer->gender ?? '—' }}
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-gray-400 mb-1">Program Studi</label>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700">
+          {{ $lecturer->study_program ?? 'Sistem Informasi' }}
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-gray-400 mb-1">Alamat</label>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700">
+          {{ $lecturer->address ?? '—' }}
         </div>
       </div>
     </div>
-    <!-- RIGHT -->
-    <div class="rounded-xl border border-gray-200">
-      <div class="rounded-t-xl bg-tablehead px-5 py-3 text-lg font-bold">Verification Information</div>
-      <div class="space-y-4 p-5 text-sm">
-        <div><p class="text-gray-600">Submitted By</p><p class="text-base font-bold">Agung Rahardi</p><p class="text-gray-600">agungrahardi@gamil.com</p></div>
-        <div><p class="font-semibold">Registration Date</p><p>28 Mei 2026</p></div>
-        <div><p class="font-semibold">Current Status</p><p class="mt-1 inline-block bg-yellow-300 px-2 font-bold text-danger">Waiting for Verification</p></div>
-        <div><p class="font-semibold">Registrant Notes</p><div class="mt-1 rounded-lg bg-gray-200 p-4 text-center text-gray-700">"Please Verify My Data to Access the SI-Pedia System"</div></div>
-        <div><p class="font-semibold">Verification History</p><p class="mt-1 flex gap-2"><span class="text-blue-600">●</span> 28 Mei 2026<br>Registration Made By Lecturer</p></div>
+
+    {{-- Kanan: Verifikasi --}}
+    <div class="space-y-4">
+      <div class="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div class="bg-tablehead px-5 py-3 text-sm font-bold text-gray-800">Informasi Verifikasi</div>
+        <div class="p-5 space-y-4 text-sm">
+          <div>
+            <p class="text-xs font-bold text-gray-400 mb-1">Terdaftar Sejak</p>
+            <p class="font-semibold text-gray-800">
+              {{ $lecturer->created_at->translatedFormat('j F Y') }}
+            </p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-gray-400 mb-1">Status Saat Ini</p>
+            @php
+              $statusClass = match($lecturer->status) {
+                'active'   => 'bg-green-100 text-green-700',
+                'rejected' => 'bg-red-100 text-red-700',
+                default    => 'bg-yellow-100 text-yellow-700',
+              };
+              $statusLabel = match($lecturer->status) {
+                'active'   => '✅ Aktif',
+                'rejected' => '❌ Ditolak',
+                default    => '⏳ Menunggu Verifikasi',
+              };
+            @endphp
+            <span class="inline-block rounded-full px-3 py-1 text-xs font-bold {{ $statusClass }}">
+              {{ $statusLabel }}
+            </span>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-gray-400 mb-1">Akun Terhubung</p>
+            <p class="text-gray-800">{{ $lecturer->user->email ?? '—' }}</p>
+          </div>
+        </div>
       </div>
+
+      @if($lecturer->status === 'waiting')
+      <div class="rounded-2xl border border-yellow-200 bg-yellow-50 p-5 space-y-3">
+        <p class="text-sm font-bold text-yellow-800">Tindakan Verifikasi</p>
+        <p class="text-xs text-yellow-700">Setujui atau tolak pendaftaran dosen ini.</p>
+        <div class="flex gap-3">
+          <form action="{{ route('admin.dosen.destroy', $lecturer) }}" method="POST"
+                onsubmit="return confirm('Tolak dan hapus dosen ini?')" class="flex-1">
+            @csrf @method('DELETE')
+            <button type="submit"
+                    class="w-full rounded-xl border border-red-300 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 transition">
+              ❌ Tolak
+            </button>
+          </form>
+          <form action="{{ route('admin.dosen.approve', $lecturer) }}" method="POST" class="flex-1">
+            @csrf @method('PATCH')
+            <button type="submit"
+                    class="w-full rounded-xl bg-brand-600 py-2.5 text-sm font-bold text-white hover:bg-brand-700 transition">
+              ✅ Setujui
+            </button>
+          </form>
+        </div>
+      </div>
+      @endif
+
+      <a href="{{ route('admin.dosen.edit', $lecturer) }}"
+         class="block text-center rounded-2xl border border-gray-200 bg-white py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 transition shadow-sm">
+        ✎ Edit Data Dosen
+      </a>
     </div>
-  </div>
-  <div class="mt-5 flex justify-end gap-3">
-    <button class="rounded-lg border border-danger px-6 py-2 text-sm font-bold text-danger">Reject</button>
-    <button class="rounded-lg bg-brand-600 px-6 py-2 text-sm font-bold text-white">Agree & ACC</button>
   </div>
 </main>
 </x-layouts.app>

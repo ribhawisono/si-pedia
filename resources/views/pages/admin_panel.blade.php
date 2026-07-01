@@ -92,6 +92,23 @@
           <div><p class="font-bold text-gray-900">Report Posts</p><p class="text-xs text-gray-500">View Post Report</p></div>
           <span class="text-gray-400">›</span>
         </a>
+        <a href="{{ route('admin.account-reports.index') }}" class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm hover:bg-gray-50 transition-colors">
+          <div><p class="font-bold text-gray-900">Report Akun</p><p class="text-xs text-gray-500">Tinjau laporan pengguna</p></div>
+          @php $rCount = \App\Models\AccountReport::where('status','pending')->count(); @endphp
+          @if($rCount > 0)
+            <span class="rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{{ $rCount }}</span>
+          @else
+            <span class="text-gray-400">›</span>
+          @endif
+        </a>
+        <a href="{{ route('admin.articles.pending') }}" class="flex items-center justify-between rounded-xl bg-white px-5 py-4 shadow-sm hover:bg-gray-50 transition-colors">
+          <div><p class="font-bold text-gray-900">Artikel Pending</p><p class="text-xs text-gray-500">Approve / reject artikel masuk</p></div>
+          @if(isset($stats['pending']) && $stats['pending'] > 0)
+            <span class="rounded-full bg-yellow-400 px-2 py-0.5 text-xs font-bold text-white">{{ $stats['pending'] }}</span>
+          @else
+            <span class="text-gray-400">›</span>
+          @endif
+        </a>
       </div>
     </div>
   </div>
