@@ -45,3 +45,91 @@
     --color-profilebg:#f5e6f0;        /* bg halaman profil */
     --color-userbadge:#e3c8f6;        /* badge "User" */
 }
+
+/* ═══════════════════════════════════════════════════════
+   PHASE 1 — LOADING, SKELETON, ACCESSIBILITY, RESPONSIVE
+═══════════════════════════════════════════════════════ */
+
+/* Skeleton loading animation */
+@keyframes skeleton-shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease infinite;
+    border-radius: 0.5rem;
+}
+
+/* Spinner utility */
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1s linear infinite; }
+
+/* Focus ring — only for keyboard users */
+.no-focus-ring:focus { outline: none !important; box-shadow: none !important; }
+
+/* Smooth image load */
+img { transition: opacity 0.3s ease; }
+img.loading { opacity: 0; }
+img.loaded  { opacity: 1; }
+
+/* Prose images responsive */
+.prose img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+}
+
+/* Search suggestions */
+.search-suggestions { max-height: 380px; overflow-y: auto; }
+
+/* Responsive table wrapper */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Admin sidebar responsive */
+@media (max-width: 1024px) {
+    .admin-grid { grid-template-columns: 1fr; }
+}
+
+/* Focus visible improvements */
+:focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+}
+
+/* Card hover lift */
+.card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Loading overlay for full page */
+#page-loading {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+}
+
+/* Mobile nav transition */
+#mobile-menu { animation: slideDown 0.2s ease; }
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Accessible contrast improvements */
+.text-gray-400 { color: #6b7280; }
+.text-gray-500 { color: #6b7280; }
+
+/* Back to top button */
+#back-to-top { opacity: 0; transition: opacity 0.3s; }
+#back-to-top:not(.hidden) { opacity: 1; }

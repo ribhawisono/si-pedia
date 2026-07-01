@@ -6,7 +6,7 @@
   </div>
   <p class="ml-9 text-sm text-gray-500 mb-6">Verifikasi dan kelola data dosen terdaftar.</p>
 
-  <div class="grid grid-cols-[1.8fr_1fr] gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-[1.8fr_1fr] gap-6">
     {{-- Kiri: Data dosen --}}
     <div class="rounded-2xl border border-gray-200 bg-white p-7 shadow-sm space-y-5">
       <h2 class="text-lg font-bold text-gray-800 border-b border-gray-100 pb-3">Data Dosen</h2>

@@ -10,8 +10,13 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
+// ─── Search ───────────────────────────────────────────────────────────────────
+Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest')->middleware('throttle:30,1');
 
 // ─── Publik ───────────────────────────────────────────────────────────────────
 Route::get('/', [PageController::class, 'home'])->name('home');
