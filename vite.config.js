@@ -3,7 +3,6 @@ import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-    base: '/sipedia/build/',
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
@@ -11,4 +10,17 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: undefined, // single chunk for KP project simplicity
+            },
+        },
+        minify: 'esbuild',
+        cssMinify: true,
+        sourcemap: false,
+    },
+    server: {
+        hmr: { overlay: false },
+    },
 });
