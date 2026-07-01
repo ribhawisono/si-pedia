@@ -1,4 +1,4 @@
-<x-layouts.app title="Manage Category - PWL Ensiklopedia">
+<x-layouts.admin title="Manage Kategori — SI-Pedia" section="categories">
     <main class="mx-auto max-w-[1440px] px-8 py-8">
         <div class="flex items-start justify-between">
             <div>
@@ -12,7 +12,7 @@
             <!-- Add Form -->
             <div class="bg-white p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-gray-100">
                 <h2 class="text-xl font-bold mb-4">Add Category</h2>
-                <form action="{{ route('admin.categories.store') }}" method="POST">
+                <form action="{{ route('admin.categories.store') }}" method="POST" data-validate>
                     @csrf
                     <div class="mb-4">
                         <label class="block text-sm font-bold mb-2">Category Name</label>
@@ -41,4 +41,4 @@
             </div>
         </div>
     </main>
-</x-layouts.app>
+</x-layouts.admin>

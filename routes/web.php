@@ -137,6 +137,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/dosen/{lecturer}/approve', [DosenController::class, 'approve'])->name('dosen.approve');
     Route::delete('/dosen/{lecturer}', [DosenController::class, 'destroy'])->name('dosen.destroy');
 
+    // Comments moderation
+    Route::get('/comments', [\App\Http\Controllers\CommentController::class, 'index'])->name('comments.index');
+    Route::patch('/comments/{comment}/approve', [\App\Http\Controllers\CommentController::class, 'approve'])->name('comments.approve');
+    Route::patch('/comments/{comment}/reject', [\App\Http\Controllers\CommentController::class, 'reject'])->name('comments.reject');
+    Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments/bulk', [\App\Http\Controllers\CommentController::class, 'bulk'])->name('comments.bulk');
+
+    // Article preview
+    Route::get('/articles/{article}/preview', [\App\Http\Controllers\ArticleController::class, 'preview'])->name('articles.preview');
+    Route::get('/articles/{article}/revisions', [\App\Http\Controllers\ArticleController::class, 'revisions'])->name('articles.revisions');
+
     // Report Akun
     Route::get('/account-reports', [AccountReportController::class, 'index'])->name('account-reports.index');
     Route::patch('/account-reports/{report}', [AccountReportController::class, 'update'])->name('account-reports.update');

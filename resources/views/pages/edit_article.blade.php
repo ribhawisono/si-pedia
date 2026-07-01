@@ -1,192 +1,310 @@
 @php
-  $isAdmin   = $isAdmin ?? (auth()->user()->role === 'admin');
-  $backRoute  = $isAdmin ? route('admin.articles.index') : route('articles.my');
-  $storeRoute = $isAdmin
+  $isAdmin    = $isAdmin ?? (auth()->user()->role === 'admin');
+  $backRoute   = $isAdmin ? route('admin.articles.index') : route('articles.my');
+  $storeRoute  = $isAdmin
     ? ($mode === 'create' ? route('admin.articles.store') : route('admin.articles.update', $article))
     : ($mode === 'create' ? route('articles.store')       : route('articles.update', $article));
+  $autosaveKey = 'article_draft_' . ($article->id ?? 'new');
 @endphp
-<x-layouts.app :title="$mode === 'create' ? 'Tulis Artikel — SI-Pedia' : 'Edit Artikel — SI-Pedia'">
-<main class="mx-auto max-w-[1440px] px-8 py-7">
-  <div class="flex items-start justify-between">
-    <div>
-      <h1 class="text-5xl font-black tracking-tight">{{ $mode === 'create' ? 'Tulis Artikel' : 'Edit Artikel' }}</h1>
-      <p class="mt-1 text-gray-700">
-        @if($isAdmin)
-          {{ $mode === 'create' ? 'Tambah artikel baru ke sistem.' : 'Update informasi artikel.' }}
-        @else
-          Tulis artikel dan submit ke admin untuk dipublikasikan.
-        @endif
-      </p>
+@if($isAdmin)
+  <x-layouts.admin :title="$mode === 'create' ? 'Tambah Artikel' : 'Edit Artikel'" section="articles">
+@else
+  <x-layouts.app :title="$mode === 'create' ? 'Tulis Artikel — SI-Pedia' : 'Edit Artikel — SI-Pedia'">
+@endif
+
+<div class="{{ $isAdmin ? '' : 'mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6' }}">
+  <div class="mb-5 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <a href="{{ $backRoute }}" class="rounded-lg border border-gray-200 p-2 text-gray-500 hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-brand-600" aria-label="Kembali">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+      </a>
+      <div>
+        <h1 class="text-xl font-extrabold text-gray-900">{{ $mode === 'create' ? 'Tulis Artikel Baru' : 'Edit Artikel' }}</h1>
+        <p id="autosave-indicator" class="mt-0.5 hidden text-xs text-gray-400"></p>
+      </div>
     </div>
-    <a href="{{ $backRoute }}" class="rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-bold text-gray-700 shadow hover:bg-gray-200 transition">← Kembali</a>
+    @if($mode === 'edit' && isset($article->id))
+    <div class="flex gap-2">
+      <a href="{{ route('admin.articles.revisions', $article) }}" class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition">
+        📜 Revisi
+      </a>
+      <a href="{{ $isAdmin ? route('admin.articles.preview', $article) : '#' }}" target="_blank"
+         class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition">
+        👁 Preview
+      </a>
+    </div>
+    @endif
   </div>
 
   @if($errors->any())
-    <div class="mt-4 rounded-xl bg-red-50 border border-red-200 px-5 py-3">
-      <ul class="list-disc list-inside text-sm text-red-600 space-y-1">
-        @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
+    <div class="mb-5 rounded-xl bg-red-50 border border-red-200 px-4 py-3" role="alert">
+      <ul class="text-sm text-red-600 space-y-1">
+        @foreach($errors->all() as $e)<li>• {{ $e }}</li>@endforeach
       </ul>
     </div>
   @endif
 
-  <form action="{{ $storeRoute }}" method="POST" enctype="multipart/form-data">
+  <form action="{{ $storeRoute }}" method="POST" enctype="multipart/form-data"
+        data-validate data-autosave="{{ $autosaveKey }}">
   @csrf
   @if($mode === 'edit') @method('PUT') @endif
 
-  <div class="mt-6 grid grid-cols-[1.8fr_1fr] gap-6">
+  <div class="grid gap-6 lg:grid-cols-[1fr_300px]">
 
-    {{-- KONTEN UTAMA --}}
-    <div class="space-y-5 rounded-2xl border border-gray-200 p-6 shadow-sm bg-white">
+    {{-- ── Main Content Column ────────────────────────────────────────── --}}
+    <div class="space-y-5">
 
-      <div>
-        <label class="mb-1 block text-lg font-bold">Judul Artikel</label>
-        <input type="text" name="title" value="{{ old('title', $article->title) }}" required
-               class="w-full rounded-xl border-2 border-gray-200 px-5 py-3 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:ring-0">
-        @error('title') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+      {{-- Title --}}
+      <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <label for="article-title-input" class="mb-2 block text-sm font-bold text-gray-700">
+          Judul Artikel <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <input id="article-title-input" type="text" name="title"
+               value="{{ old('title', $article->title) }}" required
+               placeholder="Masukkan judul artikel..."
+               class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-base font-semibold text-gray-900 focus:border-brand-600 focus:outline-none focus:ring-0 transition"
+               aria-required="true">
+        <p class="mt-1.5 text-xs text-gray-400">
+          URL: <span class="font-mono text-brand-600">/articles/<span id="slug-preview">{{ $article->slug ?? 'judul-artikel' }}</span></span>
+        </p>
       </div>
 
-      <div class="grid grid-cols-2 gap-5">
+      {{-- Category + Writer --}}
+      <div class="grid gap-4 sm:grid-cols-2 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
         <div>
-          <label class="mb-1 block text-lg font-bold">Kategori</label>
-          <select name="category_id" required class="w-full rounded-xl border-2 border-gray-200 px-5 py-3 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:ring-0">
+          <label for="category_id" class="mb-2 block text-sm font-bold text-gray-700">Kategori <span class="text-red-500" aria-hidden="true">*</span></label>
+          <select id="category_id" name="category_id" required
+                  class="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-0">
             <option value="">-- Pilih Kategori --</option>
             @foreach($categories as $cat)
               <option value="{{ $cat->id }}" @selected(old('category_id', $article->category_id) == $cat->id)>{{ $cat->name }}</option>
             @endforeach
           </select>
-          @error('category_id') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
         </div>
-
-        {{-- Admin: bisa ubah nama penulis. Non-admin: nama diisi otomatis --}}
         @if($isAdmin)
         <div>
-          <label class="mb-1 block text-lg font-bold">Penulis</label>
-          <input type="text" name="writer" value="{{ old('writer', $article->writer ?? auth()->user()->name) }}" required
-                 class="w-full rounded-xl border-2 border-gray-200 px-5 py-3 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:ring-0">
-          @error('writer') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+          <label for="writer" class="mb-2 block text-sm font-bold text-gray-700">Penulis <span class="text-red-500" aria-hidden="true">*</span></label>
+          <input id="writer" type="text" name="writer"
+                 value="{{ old('writer', $article->writer ?? auth()->user()->name) }}" required
+                 class="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-0">
         </div>
         @else
         <div>
-          <label class="mb-1 block text-lg font-bold">Penulis</label>
-          <div class="w-full rounded-xl border-2 border-gray-100 bg-gray-50 px-5 py-3 text-sm font-semibold text-gray-500">
-            {{ auth()->user()->name }}
+          <p class="mb-2 text-sm font-bold text-gray-700">Penulis</p>
+          <div class="flex items-center gap-2 rounded-xl border-2 border-gray-100 bg-gray-50 px-4 py-2.5">
+            <img src="{{ auth()->user()->avatar_url }}" alt="" class="h-6 w-6 rounded-full object-cover" aria-hidden="true">
+            <span class="text-sm font-semibold text-gray-600">{{ auth()->user()->name }}</span>
           </div>
         </div>
         @endif
       </div>
 
-      {{-- Admin saja yang bisa atur tanggal & status --}}
-      @if($isAdmin)
-      <div class="grid grid-cols-2 gap-5">
-        <div>
-          <label class="mb-1 block text-lg font-bold">Tanggal Dibuat</label>
-          <input type="date" name="created_at"
-                 value="{{ old('created_at', $article->created_at ? \Carbon\Carbon::parse($article->created_at)->format('Y-m-d') : date('Y-m-d')) }}"
-                 required class="w-full rounded-xl border-2 border-gray-200 px-5 py-3 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:ring-0">
-        </div>
-        <div>
-          <label class="mb-1 block text-lg font-bold">Status</label>
-          <select name="status" class="w-full rounded-xl border-2 border-gray-200 px-5 py-3 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:ring-0">
-            <option value="active"  @selected(old('status', $article->status) === 'active')>Active</option>
-            <option value="draft"   @selected(old('status', $article->status) === 'draft')>Draft</option>
-            <option value="pending" @selected(old('status', $article->status) === 'pending')>Pending</option>
-          </select>
-        </div>
-      </div>
-      @endif
-
-      <div>
-        <label class="mb-1 block text-lg font-bold">Thumbnail</label>
-        <div class="flex gap-4">
-          @if($article->image)
-            <img src="{{ $article->image_url }}" class="h-[120px] w-[110px] rounded-lg object-cover">
-          @else
-            <div class="h-[120px] w-[110px] rounded-lg bg-gray-200 flex items-center justify-center text-xs text-gray-500">No Img</div>
-          @endif
-          <label class="cursor-pointer grid h-[120px] w-[150px] place-items-center rounded-lg border-2 border-gray-200 text-center text-[10px] text-gray-500 hover:bg-gray-50">
-            ⊕<br>Klik untuk upload<br>JPG, PNG, WEBP<br>Max 10 MB
-            <input type="file" name="image" accept="image/*" class="hidden">
-          </label>
-        </div>
-        @error('image') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
-      </div>
-
-      <div>
-        <label class="mb-1 block text-sm font-bold text-gray-700" for="tags-input">
+      {{-- Tags --}}
+      <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <label for="tags-input" class="mb-2 block text-sm font-bold text-gray-700">
           Tags
-          <span class="font-normal text-gray-400">(pisahkan dengan koma, contoh: AI, Machine Learning)</span>
+          <span class="font-normal text-gray-400">(pisahkan dengan koma)</span>
         </label>
         <input id="tags-input" type="text" name="tags"
-               value="{{ old('tags', $article->tags->pluck('name')->implode(', ') ?? '') }}"
-               placeholder="Contoh: Akademik, AI, Machine Learning"
-               class="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm text-gray-800 focus:border-brand-600 focus:ring-0 transition">
+               value="{{ old('tags', isset($article->tags) ? $article->tags->pluck('name')->implode(', ') : '') }}"
+               placeholder="Contoh: AI, Machine Learning, Akademik"
+               class="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-0 transition">
         <p class="mt-1 text-xs text-gray-400">Tag membantu pembaca menemukan artikel serupa.</p>
       </div>
 
-      <div>
-        <label class="mb-1 block text-lg font-bold">Isi Artikel</label>
-        <textarea name="content" rows="12" required
-                  class="w-full rounded-xl border-2 border-gray-200 p-4 text-sm font-semibold leading-relaxed text-gray-800 focus:border-brand-600 focus:ring-0">{{ old('content', $article->content) }}</textarea>
-        @error('content') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+      {{-- Thumbnail --}}
+      <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <label class="mb-3 block text-sm font-bold text-gray-700">Thumbnail Artikel</label>
+        <div class="flex flex-wrap items-start gap-4">
+          @if($article->image_url)
+          <img src="{{ $article->image_url }}" alt="Thumbnail saat ini" data-preview
+               class="h-28 w-40 rounded-xl object-cover shadow-sm border border-gray-200">
+          @endif
+          <label class="cursor-pointer">
+            <div class="flex h-28 w-40 items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 hover:border-brand-300 hover:bg-brand-50 transition text-center p-3">
+              <div>
+                <svg class="mx-auto h-8 w-8 text-gray-300 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                <p class="text-xs font-semibold text-gray-500">Upload gambar</p>
+                <p class="text-[10px] text-gray-400">JPG, PNG, WEBP, max 10MB</p>
+              </div>
+            </div>
+            <input type="file" name="image" accept="image/*" class="sr-only" aria-label="Upload thumbnail artikel">
+          </label>
+        </div>
+        @error('image') <p class="mt-2 text-xs text-red-500" role="alert">{{ $message }}</p> @enderror
+      </div>
+
+      {{-- Content --}}
+      <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div class="mb-2 flex items-center justify-between">
+          <label for="content-textarea" class="text-sm font-bold text-gray-700">
+            Isi Artikel <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <span class="text-xs text-gray-400" id="content-word-count">0 kata</span>
+        </div>
+        <textarea id="content-textarea" name="content" rows="16" required
+                  placeholder="Tulis konten artikel di sini..."
+                  class="w-full rounded-xl border-2 border-gray-200 p-4 text-sm leading-relaxed text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-0 transition resize-y">{{ old('content', $article->content) }}</textarea>
       </div>
     </div>
 
-    {{-- SIDEBAR --}}
+    {{-- ── Sidebar Column ──────────────────────────────────────────────── --}}
     <div class="space-y-5">
-      <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div class="bg-tablehead px-4 py-3 text-lg font-bold">Publikasi</div>
-        <div class="space-y-3 p-4 text-sm">
-          <div class="flex justify-between">
-            <span class="font-bold text-gray-500">Status</span>
-            <span class="font-bold text-gray-900">{{ ucfirst($article->status ?? 'Draft') }}</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="font-bold text-gray-500">Visibilitas</span>
-            <span class="font-bold text-gray-900">{{ $isAdmin ? 'Public' : 'Perlu Approval Admin' }}</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="font-bold text-gray-500">Views</span>
-            <span class="font-bold text-gray-900">{{ $article->views ?? 0 }}</span>
-          </div>
-        </div>
 
-        @if($isAdmin)
-        <div class="bg-gray-50 p-4 text-right">
-          <button type="submit" class="rounded-md bg-indigo-600 px-5 py-2 text-sm font-bold text-white shadow hover:bg-indigo-700">
-            Simpan Perubahan
-          </button>
+      {{-- Publish settings (admin) --}}
+      @if($isAdmin)
+      <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
+          <h2 class="text-sm font-bold text-gray-800">Publikasi</h2>
         </div>
-        @else
-        {{-- Non-admin: dua tombol — Simpan Draft atau Submit --}}
-        <div class="bg-gray-50 p-4 space-y-2">
-          <p class="text-xs text-gray-500 mb-3">
-            📌 Artikel yang di-submit akan masuk ke antrian review admin sebelum dipublikasikan.
-          </p>
+        <div class="space-y-4 p-4">
+          <div>
+            <label for="status-select" class="mb-1.5 block text-xs font-bold text-gray-600">Status</label>
+            <select id="status-select" name="status"
+                    class="w-full rounded-lg border-2 border-gray-200 px-3 py-2 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-0">
+              <option value="active"   @selected(old('status',$article->status)==='active')>✅ Active (Publik)</option>
+              <option value="draft"    @selected(old('status',$article->status)==='draft')>📝 Draft</option>
+              <option value="archived" @selected(old('status',$article->status)==='archived')>📦 Archived</option>
+            </select>
+          </div>
+          <div>
+            <label for="created_at" class="mb-1.5 block text-xs font-bold text-gray-600">Tanggal Publikasi</label>
+            <input id="created_at" type="date" name="created_at"
+                   value="{{ old('created_at', $article->created_at ? \Carbon\Carbon::parse($article->created_at)->format('Y-m-d') : date('Y-m-d')) }}"
+                   class="w-full rounded-lg border-2 border-gray-200 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-0">
+          </div>
+          <input type="hidden" name="revision_note" id="revision_note" value="Pembaruan">
+          <div class="pt-2 border-t border-gray-100">
+            <button type="submit" class="w-full rounded-xl bg-brand-600 py-2.5 text-sm font-bold text-white hover:bg-brand-700 transition focus:outline-none focus:ring-2 focus:ring-brand-400">
+              {{ $mode === 'create' ? '+ Publikasikan' : '💾 Simpan Perubahan' }}
+            </button>
+          </div>
+        </div>
+      </div>
+      @else
+      {{-- Non-admin publish panel --}}
+      <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
+          <h2 class="text-sm font-bold text-gray-800">Publikasi</h2>
+        </div>
+        <div class="p-4 space-y-3">
+          <div class="rounded-lg bg-blue-50 border border-blue-100 p-3 text-xs text-blue-700">
+            <p class="font-bold mb-1">ℹ️ Alur Publikasi:</p>
+            <ul class="space-y-0.5">
+              <li>💾 Draft → tersimpan, belum dikirim</li>
+              <li>🚀 Submit → dikirim untuk review admin</li>
+              <li>✅ Active → disetujui, tampil publik</li>
+            </ul>
+          </div>
           <button type="submit" name="save_draft" value="1"
-                  class="w-full rounded-md bg-gray-200 px-5 py-2 text-sm font-bold text-gray-700 hover:bg-gray-300 transition">
-            💾 Simpan sebagai Draft
+                  class="w-full rounded-xl border border-gray-300 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-gray-400">
+            💾 Simpan Draft
           </button>
           <button type="submit" name="submit" value="1"
-                  class="w-full rounded-md bg-brand-600 px-5 py-2 text-sm font-bold text-white shadow hover:bg-brand-700 transition">
+                  class="w-full rounded-xl bg-brand-600 py-2.5 text-sm font-bold text-white hover:bg-brand-700 transition focus:outline-none focus:ring-2 focus:ring-brand-400">
             🚀 Submit ke Admin
           </button>
         </div>
-        @endif
+      </div>
+      @endif
+
+      {{-- SEO Panel (Phase 6) --}}
+      <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <button type="button" id="seo-toggle"
+                class="flex w-full items-center justify-between border-b border-gray-100 bg-gray-50 px-4 py-3 text-left focus:outline-none"
+                aria-expanded="false" aria-controls="seo-panel">
+          <span class="text-sm font-bold text-gray-800">🔍 SEO & Meta</span>
+          <svg id="seo-chevron" class="h-4 w-4 text-gray-400 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div id="seo-panel" class="hidden p-4 space-y-4">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="meta_title" class="text-xs font-bold text-gray-600">Meta Title</label>
+              <span id="meta_title_count" class="text-xs text-gray-400">0 / 60</span>
+            </div>
+            <input id="meta_title" type="text" name="meta_title" maxlength="60"
+                   value="{{ old('meta_title', $article->meta_title ?? '') }}"
+                   placeholder="Judul untuk mesin pencari (opsional)"
+                   class="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-700 focus:border-brand-600 focus:outline-none focus:ring-0">
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="meta_description" class="text-xs font-bold text-gray-600">Meta Description</label>
+              <span id="meta_description_count" class="text-xs text-gray-400">0 / 160</span>
+            </div>
+            <textarea id="meta_description" name="meta_description" rows="3" maxlength="160"
+                      placeholder="Deskripsi singkat untuk Google (opsional)"
+                      class="w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-700 focus:border-brand-600 focus:outline-none focus:ring-0">{{ old('meta_description', $article->meta_description ?? '') }}</textarea>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="meta_keywords" class="text-xs font-bold text-gray-600">Meta Keywords</label>
+              <span id="meta_keywords_count" class="text-xs text-gray-400">0 / 200</span>
+            </div>
+            <input id="meta_keywords" type="text" name="meta_keywords" maxlength="200"
+                   value="{{ old('meta_keywords', $article->meta_keywords ?? '') }}"
+                   placeholder="keyword1, keyword2, keyword3"
+                   class="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-700 focus:border-brand-600 focus:outline-none focus:ring-0">
+          </div>
+          <div>
+            <label for="canonical_url" class="mb-1.5 block text-xs font-bold text-gray-600">Canonical URL</label>
+            <input id="canonical_url" type="url" name="canonical_url"
+                   value="{{ old('canonical_url', $article->canonical_url ?? '') }}"
+                   placeholder="https://example.com/artikel-asli"
+                   class="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-700 focus:border-brand-600 focus:outline-none focus:ring-0">
+          </div>
+        </div>
       </div>
 
-      @if(!$isAdmin)
-      <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-700">
-        <p class="font-bold mb-1">ℹ️ Cara kerja artikel:</p>
-        <ul class="space-y-1 list-disc list-inside text-xs">
-          <li><strong>Draft</strong> — tersimpan, hanya kamu yang bisa lihat</li>
-          <li><strong>Submit</strong> — dikirim ke admin untuk direview</li>
-          <li><strong>Active</strong> — disetujui admin, tampil publik</li>
-        </ul>
+      {{-- Article stats (edit mode) --}}
+      @if($mode === 'edit' && $article->id)
+      <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <h2 class="mb-3 text-sm font-bold text-gray-800">Statistik</h2>
+        <dl class="space-y-2 text-xs">
+          <div class="flex justify-between"><dt class="text-gray-500">Views</dt><dd class="font-semibold">{{ number_format($article->views) }}</dd></div>
+          <div class="flex justify-between"><dt class="text-gray-500">Komentar</dt><dd class="font-semibold">{{ $article->comments()->where('status','approved')->count() }}</dd></div>
+          <div class="flex justify-between"><dt class="text-gray-500">Bookmark</dt><dd class="font-semibold">{{ $article->bookmarks()->count() }}</dd></div>
+          <div class="flex justify-between"><dt class="text-gray-500">Waktu baca</dt><dd class="font-semibold">{{ $article->reading_time }} mnt</dd></div>
+        </dl>
       </div>
       @endif
     </div>
-
   </div>
   </form>
-</main>
-</x-layouts.app>
+</div>
+
+<script>
+// Content word counter
+(function(){
+    const ta = document.getElementById('content-textarea');
+    const cnt = document.getElementById('content-word-count');
+    if (!ta || !cnt) return;
+    const count = () => {
+        const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
+        cnt.textContent = words + ' kata';
+    };
+    ta.addEventListener('input', count);
+    count();
+})();
+
+// SEO panel toggle
+(function(){
+    const btn = document.getElementById('seo-toggle');
+    const panel = document.getElementById('seo-panel');
+    const chevron = document.getElementById('seo-chevron');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        const open = panel.classList.toggle('hidden');
+        btn.setAttribute('aria-expanded', String(!open));
+        chevron.classList.toggle('rotate-180');
+    });
+})();
+</script>
+
+@if($isAdmin)
+  </x-layouts.admin>
+@else
+  </x-layouts.app>
+@endif

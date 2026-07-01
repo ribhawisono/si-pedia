@@ -1,4 +1,4 @@
-<x-layouts.app title="Report Posts — SI-Pedia">
+<x-layouts.admin title="Laporan Artikel — SI-Pedia" section="analytics">
 <main class="mx-auto max-w-[1440px] px-8 py-7">
   <div class="flex items-start justify-between">
     <div><h1 class="text-5xl font-black tracking-tight">Report Posts</h1>
@@ -102,4 +102,4 @@
     </div>
   </div>
 </main>
-</x-layouts.app>
+</x-layouts.admin>

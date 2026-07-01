@@ -1,59 +1,81 @@
 <x-layouts.app title="Update Profil — SI-Pedia" footer="min">
-<main class="mx-auto max-w-[1000px] px-8 py-10">
-  <div class="flex items-center gap-4">
-    <a href="{{ route('profile.show') }}" class="text-3xl hover:text-brand-600 transition">←</a>
-    <h1 class="text-4xl font-extrabold">Update Profil</h1>
+<main class="mx-auto max-w-[640px] px-4 sm:px-6 py-10" id="main-content">
+  <div class="mb-6 flex items-center gap-3">
+    <a href="{{ route('profile.show') }}" class="rounded-lg border border-gray-200 p-2 text-gray-500 hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-brand-600" aria-label="Kembali ke profil">
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+    </a>
+    <div>
+      <h1 class="text-2xl font-extrabold text-gray-900">Update Profil</h1>
+      <p class="text-sm text-gray-500">Perbarui informasi akun kamu.</p>
+    </div>
   </div>
-  <p class="ml-12 mt-1 text-2xl text-gray-700">Update your profile information to keep your account secure and up to date.</p>
 
-  <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="mt-8 rounded-3xl border border-gray-200 p-10 shadow-sm bg-white">
-    @csrf
-    @method('PUT')
-    
-    <h2 class="text-2xl font-extrabold">Profile picture</h2>
-    <div class="mt-4 grid h-28 w-28 place-items-center rounded-full bg-gray-200 text-3xl overflow-hidden">
-      @if($user->avatar)
-        <img src="{{ asset('storage/' . $user->avatar) }}" class="w-full h-full object-cover">
-      @else
-        ⬛
-      @endif
-    </div>
-    <label class="mt-4 inline-block cursor-pointer rounded-lg bg-accent-600 px-7 py-3 text-lg font-bold text-white hover:bg-indigo-700 transition">
-        Select Photo
-        <input type="file" name="avatar" accept="image/*" class="hidden">
-    </label>
-    @error('avatar') <p class="text-red-500 mt-2 text-sm">{{ $message }}</p> @enderror
+  @if($errors->any())
+  <div class="mb-5 rounded-xl bg-red-50 border border-red-200 px-4 py-3" role="alert">
+    <ul class="text-sm text-red-600 space-y-1">
+      @foreach($errors->all() as $e)<li>• {{ $e }}</li>@endforeach
+    </ul>
+  </div>
+  @endif
 
-    <hr class="my-8 border-gray-200">
-    <div class="space-y-8">
-      <div>
-        <label class="mb-2 block text-2xl font-extrabold">Email</label>
-        <div class="flex items-center gap-4 rounded-xl border-2 border-gray-300 px-5 py-4 focus-within:border-brand-600">
-          <span class="text-2xl text-gray-400">✉</span>
-          <input type="email" name="email" value="{{ old('email', $user->email) }}" class="w-full border-none p-0 text-xl font-bold text-gray-800 focus:ring-0" placeholder="nama@gmail.com" required>
+  <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data"
+        class="space-y-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm" data-validate>
+    @csrf @method('PUT')
+
+    {{-- Avatar --}}
+    <div>
+      <label class="mb-3 block text-sm font-bold text-gray-700">Foto Profil</label>
+      <div class="flex items-end gap-4">
+        <div class="h-20 w-20 overflow-hidden rounded-full bg-gray-200 flex-shrink-0">
+          <img src="{{ $user->avatar_url }}" alt="Foto profil kamu" data-preview class="h-full w-full object-cover">
         </div>
-        @error('email') <p class="text-red-500 mt-2 text-sm">{{ $message }}</p> @enderror
+        <label class="cursor-pointer">
+          <div class="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+            Ganti Foto
+          </div>
+          <input type="file" name="avatar" accept="image/*" class="sr-only" aria-label="Upload foto profil baru">
+        </label>
       </div>
-      <div>
-        <label class="mb-2 block text-2xl font-extrabold">Username</label>
-        <div class="flex items-center gap-4 rounded-xl border-2 border-gray-300 px-5 py-4 focus-within:border-brand-600">
-          <span class="text-2xl text-gray-400">👤</span>
-          <input type="text" name="username" value="{{ old('username', $user->username) }}" class="w-full border-none p-0 text-xl font-bold text-gray-800 focus:ring-0" placeholder="Username">
-        </div>
-        @error('username') <p class="text-red-500 mt-2 text-sm">{{ $message }}</p> @enderror
-      </div>
-      <div>
-        <label class="mb-2 block text-2xl font-extrabold">Password</label>
-        <div class="flex items-center gap-4 rounded-xl border-2 border-gray-300 px-5 py-4 focus-within:border-brand-600">
-          <span class="text-2xl text-gray-400">🔒</span>
-          <input type="password" name="password" class="w-full border-none p-0 text-xl font-bold text-gray-800 focus:ring-0" placeholder="Kosongkan jika tidak ingin mengubah password">
-        </div>
-        @error('password') <p class="text-red-500 mt-2 text-sm">{{ $message }}</p> @enderror
-      </div>
+      @error('avatar')<p class="mt-2 text-xs text-red-500" role="alert">{{ $message }}</p>@enderror
     </div>
-    
-    <div class="mt-10 flex justify-end">
-        <button type="submit" class="rounded-xl bg-brand-600 px-8 py-4 text-xl font-bold text-white shadow hover:bg-brand-700 transition">Save Changes</button>
+
+    <hr class="border-gray-100">
+
+    {{-- Email --}}
+    <div>
+      <label for="email" class="mb-1.5 block text-sm font-bold text-gray-700">Email <span class="text-red-500" aria-hidden="true">*</span></label>
+      <input id="email" type="email" name="email" value="{{ old('email', $user->email) }}" required
+             class="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-0 transition"
+             aria-required="true">
+      @error('email')<p class="mt-1 text-xs text-red-500" role="alert">{{ $message }}</p>@enderror
+    </div>
+
+    {{-- Username --}}
+    <div>
+      <label for="username" class="mb-1.5 block text-sm font-bold text-gray-700">Username</label>
+      <input id="username" type="text" name="username" value="{{ old('username', $user->username) }}"
+             class="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-0 transition">
+      @error('username')<p class="mt-1 text-xs text-red-500" role="alert">{{ $message }}</p>@enderror
+    </div>
+
+    {{-- New password --}}
+    <div>
+      <label for="password" class="mb-1.5 block text-sm font-bold text-gray-700">Password Baru</label>
+      <input id="password" type="password" name="password"
+             placeholder="Kosongkan jika tidak ingin mengubah password"
+             minlength="6"
+             class="w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-0 transition">
+      @error('password')<p class="mt-1 text-xs text-red-500" role="alert">{{ $message }}</p>@enderror
+    </div>
+
+    <div class="flex gap-3 pt-2">
+      <a href="{{ route('profile.show') }}" class="flex-1 rounded-xl border border-gray-300 py-2.5 text-center text-sm font-bold text-gray-700 hover:bg-gray-50 transition">
+        Batal
+      </a>
+      <button type="submit" class="flex-1 rounded-xl bg-brand-600 py-2.5 text-sm font-bold text-white hover:bg-brand-700 transition focus:outline-none focus:ring-2 focus:ring-brand-400">
+        Simpan Perubahan
+      </button>
     </div>
   </form>
 </main>

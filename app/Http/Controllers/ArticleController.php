@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\ArticleRevision;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
@@ -84,11 +85,14 @@ class ArticleController extends Controller
             'category_id' => 'required|exists:categories,id',
             'content'     => 'required|string',
             'image'       => 'nullable|image|max:10240',
-            'tags'        => 'nullable|string',
+            'tags'             => 'nullable|string',
+            'meta_title'       => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:300',
+            'meta_keywords'    => 'nullable|string|max:300',
         ];
         if ($isAdmin) {
             $rules['writer']     = 'required|string';
-            $rules['status']     = 'required|in:active,draft';
+            $rules['status']     = 'required|in:active,draft,archived';
             $rules['created_at'] = 'required|date';
         }
 
@@ -110,6 +114,15 @@ class ArticleController extends Controller
 
         $article = Article::create($data);
         $this->syncTags($article, $request->input('tags', ''));
+        // Save initial revision
+        ArticleRevision::create([
+            'article_id'    => $article->id,
+            'user_id'       => auth()->id(),
+            'title'         => $article->title,
+            'content'       => $article->content,
+            'status'        => $article->status,
+            'revision_note' => 'Versi awal',
+        ]);
         $this->logActivity('create', "Created article: {$article->title}", $article);
 
         if ($isAdmin) return redirect()->route('admin.articles.index')->with('success', 'Artikel ditambahkan.');
@@ -175,6 +188,15 @@ class ArticleController extends Controller
 
         $article->update($data);
         $this->syncTags($article, $request->input('tags', ''));
+        // Save revision on update
+        ArticleRevision::create([
+            'article_id'    => $article->id,
+            'user_id'       => auth()->id(),
+            'title'         => $article->title,
+            'content'       => $article->content,
+            'status'        => $article->status,
+            'revision_note' => $request->input('revision_note', 'Pembaruan'),
+        ]);
         $this->logActivity('update', "Updated article: {$article->title}", $article);
 
         if ($isAdmin) return redirect()->route('admin.articles.index')->with('success', 'Artikel diperbarui.');
@@ -229,6 +251,24 @@ class ArticleController extends Controller
         };
 
         return redirect()->route('admin.articles.index')->with('success', 'Bulk action selesai.');
+    }
+
+    // ─── Preview ────────────────────────────────────────────────────────────────
+    public function preview(Article $article)
+    {
+        $user = auth()->user();
+        if ($user->role !== 'admin' && $article->user_id !== $user->id) abort(403);
+        $article->load(['category:id,name', 'tags:id,name,slug', 'user:id,name,role']);
+        return view('pages.article_preview', compact('article'));
+    }
+
+    // ─── Revisions ───────────────────────────────────────────────────────────────
+    public function revisions(Article $article)
+    {
+        $user = auth()->user();
+        if ($user->role !== 'admin' && $article->user_id !== $user->id) abort(403);
+        $revisions = $article->revisions()->with('user:id,name')->get();
+        return view('pages.article_revisions', compact('article', 'revisions'));
     }
 
     // ─── Private helpers ──────────────────────────────────────────────────────

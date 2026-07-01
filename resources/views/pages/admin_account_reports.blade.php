@@ -1,4 +1,4 @@
-<x-layouts.app title="Report Akun — SI-Pedia">
+<x-layouts.admin title="Report Akun — SI-Pedia" section="reports">
 <main class="mx-auto max-w-[1200px] px-8 py-10">
 
   <div class="flex items-center justify-between">
@@ -138,4 +138,4 @@
 
   <div class="mt-6">{{ $reports->links() }}</div>
 </main>
-</x-layouts.app>
+</x-layouts.admin>

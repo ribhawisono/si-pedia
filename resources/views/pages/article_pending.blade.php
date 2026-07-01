@@ -1,4 +1,4 @@
-<x-layouts.app title="Pending Artikel — SI-Pedia">
+<x-layouts.admin title="Artikel Pending — SI-Pedia" section="pending">
 <main class="mx-auto max-w-[1200px] px-8 py-10">
 
   <div class="flex items-center justify-between">
@@ -139,4 +139,4 @@
   </div>
 
 </main>
-</x-layouts.app>
+</x-layouts.admin>

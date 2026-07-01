@@ -1,4 +1,4 @@
-<x-layouts.app title="{{ isset($lecturer) ? 'Edit Dosen' : 'Create Dosen' }} — SI-Pedia" footer="min">
+<x-layouts.admin title="Form Dosen — SI-Pedia" section="dosen">
 <main class="mx-auto max-w-[1100px] px-8 py-10">
   <div class="flex items-center gap-4">
     <a href="{{ route('admin.dosen.index') }}" class="text-4xl hover:text-brand-600 transition-colors">←</a>
@@ -118,4 +118,4 @@
     </div>
   </form>
 </main>
-</x-layouts.app>
+</x-layouts.admin>

@@ -1,4 +1,4 @@
-<x-layouts.app title="Dosen — SI-Pedia" footer="min">
+<x-layouts.admin title="Data Dosen — SI-Pedia" section="dosen">
 <main class="mx-auto max-w-[1200px] px-8 py-8">
   <div class="flex items-center justify-between">
     <div>
@@ -84,4 +84,4 @@
     {{ $lecturers->links() }}
   </div>
 </main>
-</x-layouts.app>
+</x-layouts.admin>
