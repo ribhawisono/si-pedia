@@ -3,7 +3,7 @@
   <div class="flex items-center gap-3 mb-6">
     <a href="{{ route('admin.users.index') }}" class="text-gray-400 hover:text-gray-700 transition text-xl">←</a>
     <div>
-      <h1 class="text-3xl font-extrabold text-gray-900">{{ $mode === 'create' ? 'Tambah User Baru' : 'Edit User' }}</h1>
+      <h1 class="page-title">{{ $mode === 'create' ? 'Tambah User Baru' : 'Edit User' }}</h1>
       <p class="text-sm text-gray-500 mt-0.5">{{ $mode === 'create' ? 'Buat akun user baru di sistem.' : 'Perbarui informasi akun user.' }}</p>
     </div>
   </div>

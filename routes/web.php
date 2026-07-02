@@ -11,6 +11,8 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\DosenPublicController;
+use App\Http\Controllers\UserPublicController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
@@ -30,6 +32,15 @@ Route::get('/catalog', [PageController::class, 'catalog'])->name('catalog');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 Route::get('/articles/{article:slug}', [PageController::class, 'showArticle'])->name('articles.show');
 Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
+Route::get('/review/create', [ReviewController::class, 'create'])->name('review.create')->middleware('auth', 'verified');
+Route::post('/review', [ReviewController::class, 'store'])->name('review.store')->middleware('auth', 'verified', 'throttle:3,1');
+
+// ─── Public Dosen ─────────────────────────────────────────────────────────────
+Route::get('/dosen', [DosenPublicController::class, 'index'])->name('dosen.public.index');
+Route::get('/dosen/{lecturer}', [DosenPublicController::class, 'show'])->name('dosen.public.show');
+
+// ─── Public User Profile ──────────────────────────────────────────────────────
+Route::get('/u/{user}', [UserPublicController::class, 'show'])->name('users.public.show');
 
 // ─── Comments ─────────────────────────────────────────────────────────────────
 Route::get('/articles/{article:slug}/comments', [CommentController::class, 'index'])->name('comments.index');
@@ -138,6 +149,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/dosen/{lecturer}', [DosenController::class, 'destroy'])->name('dosen.destroy');
 
     // Comments moderation
+    // Comment moderation
     Route::get('/comments', [\App\Http\Controllers\CommentController::class, 'index'])->name('comments.index');
     Route::patch('/comments/{comment}/approve', [\App\Http\Controllers\CommentController::class, 'approve'])->name('comments.approve');
     Route::patch('/comments/{comment}/reject', [\App\Http\Controllers\CommentController::class, 'reject'])->name('comments.reject');

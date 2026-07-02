@@ -2,7 +2,7 @@
 <main class="mx-auto max-w-[1200px] px-8 py-8">
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">Data Dosen</h1>
+      <h1 class="page-title">Data Dosen</h1>
       <p class="mt-1 text-sm text-gray-500">Kelola data dosen yang terdaftar di sistem.</p>
     </div>
     <a href="{{ route('admin.dosen.create') }}"

@@ -6,7 +6,7 @@
   {{-- Search Header --}}
   <div class="bg-ink-900 py-10">
     <div class="mx-auto max-w-[860px] px-6">
-      <h1 class="mb-4 text-2xl font-extrabold text-white">
+      <h1 class="mb-4 text-xl font-bold text-white">
         @if($q) Hasil pencarian untuk "<span class="text-brand-300">{{ $q }}</span>"
         @else Cari Konten SI-Pedia
         @endif
@@ -73,7 +73,7 @@
     {{-- Articles --}}
     @if($articles->isNotEmpty())
     <section class="mb-10" aria-labelledby="articles-heading">
-      <h2 id="articles-heading" class="mb-4 flex items-center gap-2 text-lg font-extrabold text-gray-900">
+      <h2 id="articles-heading" class="mb-4 flex items-center gap-2 text-base font-bold text-gray-900">
         <span class="rounded-lg bg-brand-600/10 p-1.5 text-brand-600" aria-hidden="true">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
@@ -118,7 +118,7 @@
     {{-- Lecturers --}}
     @if($lecturers->isNotEmpty())
     <section class="mb-10" aria-labelledby="lecturers-heading">
-      <h2 id="lecturers-heading" class="mb-4 flex items-center gap-2 text-lg font-extrabold text-gray-900">
+      <h2 id="lecturers-heading" class="mb-4 flex items-center gap-2 text-base font-bold text-gray-900">
         <span class="rounded-lg bg-green-600/10 p-1.5 text-green-600" aria-hidden="true">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
@@ -147,7 +147,7 @@
     {{-- Categories --}}
     @if($categories->isNotEmpty())
     <section aria-labelledby="categories-heading">
-      <h2 id="categories-heading" class="mb-4 flex items-center gap-2 text-lg font-extrabold text-gray-900">
+      <h2 id="categories-heading" class="mb-4 flex items-center gap-2 text-base font-bold text-gray-900">
         <span class="rounded-lg bg-purple-600/10 p-1.5 text-purple-600" aria-hidden="true">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z"/>

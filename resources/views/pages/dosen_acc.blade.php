@@ -2,7 +2,7 @@
 <main class="mx-auto max-w-[1100px] px-8 py-8">
   <div class="flex items-center gap-3 mb-1">
     <a href="{{ route('admin.dosen.index') }}" class="text-gray-400 hover:text-gray-700 transition text-2xl">←</a>
-    <h1 class="text-3xl font-extrabold text-gray-900">Detail Dosen</h1>
+    <h1 class="page-title">Detail Dosen</h1>
   </div>
   <p class="ml-9 text-sm text-gray-500 mb-6">Verifikasi dan kelola data dosen terdaftar.</p>
 

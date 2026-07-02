@@ -154,7 +154,7 @@
                class="h-14 w-14 rounded-full object-cover flex-shrink-0" loading="lazy">
           <div>
             <p class="text-xs font-bold uppercase tracking-wide text-gray-400 mb-1">Ditulis oleh</p>
-            <p class="font-extrabold text-gray-900">{{ $article->user->name }}</p>
+            <a href="{{ route('users.public.show', $article->user) }}" class="font-extrabold text-gray-900 hover:text-brand-700 transition">{{ $article->user->name }}</a>
             <span class="inline-block rounded-full bg-brand-600/10 px-2.5 py-0.5 text-xs font-semibold text-brand-700 mt-1">
               {{ ucfirst($article->user->role) }}
             </span>

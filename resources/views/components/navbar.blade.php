@@ -3,8 +3,8 @@
     $links = [
         'Homepage' => route('home'),
         'Catalog'  => route('catalog'),
+        'Dosen'    => route('dosen.public.index'),
         'About us' => route('about'),
-        'Review'   => route('review.index'),
         'FAQ'      => route('faq'),
     ];
 @endphp

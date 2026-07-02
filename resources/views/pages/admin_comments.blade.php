@@ -2,8 +2,8 @@
 
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
   <div>
-    <h2 class="text-xl font-extrabold text-gray-900">Moderasi Komentar</h2>
-    <p class="text-sm text-gray-500">Tinjau dan kelola komentar dari pengguna.</p>
+    <h2 class="page-title">Moderasi Komentar</h2>
+    <p class="page-subtitle">Tinjau dan kelola komentar dari pengguna.</p>
   </div>
   {{-- Bulk action form --}}
   <div id="bulk-bar" class="hidden items-center gap-2">

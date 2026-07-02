@@ -2,7 +2,7 @@
 <main class="mx-auto max-w-[1200px] px-8 py-8">
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">Manage Users</h1>
+      <h1 class="page-title">Manage Users</h1>
       <p class="mt-1 text-sm text-gray-500">Kelola seluruh akun pengguna di sistem.</p>
     </div>
     <div class="flex gap-3">

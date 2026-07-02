@@ -3,7 +3,7 @@
 <section class="bg-ink-900 py-16">
   <div class="mx-auto max-w-[1100px] px-8 text-center">
     <span class="inline-block rounded-full bg-brand-600/15 px-4 py-1.5 text-sm font-semibold text-brand-400 mb-4">PUSAT BANTUAN</span>
-    <h1 class="text-4xl font-black text-white sm:text-5xl">Frequently Asked Questions</h1>
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Frequently Asked Questions</h1>
     <p class="mt-4 text-lg text-white/60 max-w-2xl mx-auto">
       Temukan jawaban atas pertanyaan yang sering ditanyakan seputar SI-Pedia.
     </p>
@@ -74,7 +74,7 @@
     <div class="mb-12">
       <div class="flex items-center gap-3 mb-6">
         <span class="text-2xl">{{ $section['icon'] }}</span>
-        <h2 class="text-2xl font-extrabold text-gray-900">{{ $section['category'] }}</h2>
+        <h2 class="text-base font-bold text-gray-900">{{ $section['category'] }}</h2>
       </div>
       <div class="space-y-3">
         @foreach($section['items'] as $index => $faq)

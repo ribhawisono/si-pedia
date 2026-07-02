@@ -3,7 +3,7 @@
 
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-5xl font-extrabold">Pending Artikel</h1>
+      <h1 class="page-title">Pending Artikel</h1>
       <p class="mt-2 text-gray-500">Artikel yang menunggu persetujuan dan permintaan hapus dari pengguna.</p>
     </div>
     <a href="{{ route('admin.articles.index') }}"
@@ -21,7 +21,7 @@
   {{-- ===== SECTION 1: PENDING APPROVAL ===== --}}
   <div class="mt-10">
     <div class="flex items-center gap-3 mb-5">
-      <h2 class="text-3xl font-extrabold">Menunggu Persetujuan</h2>
+      <h2 class="text-base font-bold text-gray-900">Menunggu Persetujuan</h2>
       <span class="rounded-full bg-yellow-400 px-3 py-1 text-sm font-bold text-white">
         {{ $pending->total() }} artikel
       </span>
@@ -72,7 +72,7 @@
     </div>
     @empty
     <div class="rounded-2xl bg-gray-50 border border-gray-100 p-10 text-center text-gray-400">
-      <p class="text-4xl mb-3">🎉</p>
+      <p class="text-3xl mb-2">🎉</p>
       <p class="font-semibold">Tidak ada artikel yang menunggu persetujuan.</p>
     </div>
     @endforelse
@@ -83,7 +83,7 @@
   {{-- ===== SECTION 2: REQUEST HAPUS ===== --}}
   <div class="mt-12">
     <div class="flex items-center gap-3 mb-5">
-      <h2 class="text-3xl font-extrabold">Permintaan Hapus</h2>
+      <h2 class="text-base font-bold text-gray-900">Permintaan Hapus</h2>
       <span class="rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white">
         {{ $pendingDelete->total() }} artikel
       </span>
@@ -130,7 +130,7 @@
     </div>
     @empty
     <div class="rounded-2xl bg-gray-50 border border-gray-100 p-10 text-center text-gray-400">
-      <p class="text-4xl mb-3">✨</p>
+      <p class="text-3xl mb-2">✨</p>
       <p class="font-semibold">Tidak ada permintaan hapus artikel.</p>
     </div>
     @endforelse
