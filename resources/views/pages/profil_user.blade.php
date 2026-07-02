@@ -32,3 +32,13 @@
   </main>
 </div>
 </x-layouts.app>
+
+@if($user->role === 'dosen' && $user->lecturer)
+<div class="mt-4 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm">
+  <p class="font-bold text-blue-800 mb-2">Data Dosen</p>
+  <dl class="grid grid-cols-2 gap-2 text-xs">
+    <div><dt class="text-gray-500">NIDN</dt><dd class="font-mono font-semibold">{{ $user->lecturer->nidn ?? '—' }}</dd></div>
+    <div><dt class="text-gray-500">Status</dt><dd class="font-semibold">{{ ucfirst($user->lecturer->status ?? '—') }}</dd></div>
+  </dl>
+</div>
+@endif

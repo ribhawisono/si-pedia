@@ -3,7 +3,7 @@
 
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-4xl font-extrabold text-gray-900">Laporan Akun</h1>
+      <h1 class="page-title">Laporan Akun</h1>
       <p class="mt-1 text-gray-500 text-sm">Tinjau dan kelola laporan akun dari pengguna.</p>
     </div>
     <a href="{{ route('admin.panel') }}" class="rounded-xl bg-gray-100 px-5 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-200 transition">
@@ -14,15 +14,15 @@
   {{-- Stats --}}
   <div class="mt-8 grid grid-cols-3 gap-4">
     <div class="rounded-2xl border border-yellow-200 bg-yellow-50 px-6 py-5 text-center">
-      <p class="text-3xl font-black text-yellow-600">{{ $counts['pending'] }}</p>
+      <p class="stat-card-num text-yellow-600">{{ $counts['pending'] }}</p>
       <p class="mt-1 text-sm font-bold text-yellow-700">Menunggu Tinjauan</p>
     </div>
     <div class="rounded-2xl border border-green-200 bg-green-50 px-6 py-5 text-center">
-      <p class="text-3xl font-black text-green-600">{{ $counts['reviewed'] }}</p>
+      <p class="stat-card-num text-green-600">{{ $counts['reviewed'] }}</p>
       <p class="mt-1 text-sm font-bold text-green-700">Sudah Ditinjau</p>
     </div>
     <div class="rounded-2xl border border-gray-200 bg-gray-50 px-6 py-5 text-center">
-      <p class="text-3xl font-black text-gray-500">{{ $counts['dismissed'] }}</p>
+      <p class="stat-card-num text-gray-500">{{ $counts['dismissed'] }}</p>
       <p class="mt-1 text-sm font-bold text-gray-500">Diabaikan</p>
     </div>
   </div>

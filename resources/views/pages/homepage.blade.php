@@ -40,19 +40,19 @@
             <div class="hidden lg:block">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-6 text-center">
-                        <div class="text-4xl font-extrabold text-white">{{ \App\Models\Article::where('status', 'active')->count() }}</div>
+                        <div class="text-4xl font-extrabold text-white">{{ \Illuminate\Support\Facades\Cache::remember('stat_articles', 300, fn() => \App\Models\Article::where('status','active')->count()) }}</div>
                         <div class="mt-2 text-sm font-medium text-white/60">Artikel</div>
                     </div>
                     <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-6 text-center">
-                        <div class="text-4xl font-extrabold text-white">{{ \App\Models\Lecturer::count() }}</div>
+                        <div class="text-4xl font-extrabold text-white">{{ \Illuminate\Support\Facades\Cache::remember('stat_lecturers', 300, fn() => \App\Models\Lecturer::count()) }}</div>
                         <div class="mt-2 text-sm font-medium text-white/60">Dosen</div>
                     </div>
                     <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-6 text-center">
-                        <div class="text-4xl font-extrabold text-white">{{ \App\Models\Category::count() }}</div>
+                        <div class="text-4xl font-extrabold text-white">{{ \Illuminate\Support\Facades\Cache::remember('stat_categories', 300, fn() => \App\Models\Category::count()) }}</div>
                         <div class="mt-2 text-sm font-medium text-white/60">Kategori</div>
                     </div>
                     <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-6 text-center">
-                        <div class="text-4xl font-extrabold text-white">{{ \App\Models\Lecturer::count() > 0 ? '2023' : '-' }}</div>
+                        <div class="text-4xl font-extrabold text-white">{{ \Illuminate\Support\Facades\Cache::remember('stat_lecturers', 300, fn() => \App\Models\Lecturer::count()) > 0 ? '2023' : '-' }}</div>
                         <div class="mt-2 text-sm font-medium text-white/60">Berdiri</div>
                     </div>
                 </div>
@@ -68,19 +68,19 @@
     <div class="mx-auto max-w-[1440px] px-8 pb-12">
         <div class="grid grid-cols-2 gap-4">
             <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-5 text-center">
-                <div class="text-3xl font-extrabold text-white">{{ \App\Models\Article::where('status', 'active')->count() }}</div>
+                <div class="text-3xl font-extrabold text-white">{{ \Illuminate\Support\Facades\Cache::remember('stat_articles', 300, fn() => \App\Models\Article::where('status','active')->count()) }}</div>
                 <div class="mt-1 text-xs font-medium text-white/60">Artikel</div>
             </div>
             <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-5 text-center">
-                <div class="text-3xl font-extrabold text-white">{{ \App\Models\Lecturer::count() }}</div>
+                <div class="text-3xl font-extrabold text-white">{{ \Illuminate\Support\Facades\Cache::remember('stat_lecturers', 300, fn() => \App\Models\Lecturer::count()) }}</div>
                 <div class="mt-1 text-xs font-medium text-white/60">Dosen</div>
             </div>
             <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-5 text-center">
-                <div class="text-3xl font-extrabold text-white">{{ \App\Models\Category::count() }}</div>
+                <div class="text-3xl font-extrabold text-white">{{ \Illuminate\Support\Facades\Cache::remember('stat_categories', 300, fn() => \App\Models\Category::count()) }}</div>
                 <div class="mt-1 text-xs font-medium text-white/60">Kategori</div>
             </div>
             <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-5 text-center">
-                <div class="text-3xl font-extrabold text-white">{{ \App\Models\Lecturer::count() > 0 ? '2023' : '-' }}</div>
+                <div class="text-3xl font-extrabold text-white">{{ \Illuminate\Support\Facades\Cache::remember('stat_lecturers', 300, fn() => \App\Models\Lecturer::count()) > 0 ? '2023' : '-' }}</div>
                 <div class="mt-1 text-xs font-medium text-white/60">Berdiri</div>
             </div>
         </div>

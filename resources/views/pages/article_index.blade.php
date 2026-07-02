@@ -2,7 +2,7 @@
 <main class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
   <div class="flex items-start justify-between">
     <div>
-      <h1 class="text-5xl font-black tracking-tight">Article Data</h1>
+      <h1 class="page-title">Article Data</h1>
       <p class="mt-1 text-gray-700">Kelola semua artikel di sistem.</p>
     </div>
     <div class="flex items-center gap-3">

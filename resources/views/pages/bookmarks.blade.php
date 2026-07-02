@@ -2,7 +2,7 @@
 
 <div class="bg-ink-900 py-10">
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-extrabold text-white">🔖 Bookmark Saya</h1>
+    <h1 class="text-2xl font-extrabold text-white">🔖 Bookmark Saya</h1>
     <p class="mt-1 text-sm text-white/60">Artikel yang kamu simpan untuk dibaca nanti.</p>
   </div>
 </div>

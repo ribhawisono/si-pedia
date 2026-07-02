@@ -1,15 +1,15 @@
 <x-layouts.app title="Buat Halaman — SI-Pedia">
 <main class="mx-auto max-w-[1380px] px-10 py-10">
-  <h1 class="text-5xl font-black tracking-tight">Buat Halaman Baru</h1>
+  <h1 class="page-title">Buat Halaman Baru</h1>
   <p class="mt-1 text-xl text-gray-700">Tambahkan halaman baru untuk website</p>
   <div class="mt-7 rounded-3xl border border-gray-200 p-9 shadow-sm">
-    <label class="mb-2 block text-xl font-bold">Nama Halaman</label>
+    <label class="mb-2 block form-label">Nama Halaman</label>
     <div class="rounded-full border border-gray-300 px-6 py-4 text-lg font-bold text-gray-400">Contoh: Sejarah Prodi</div>
-    <label class="mb-2 mt-6 block text-xl font-bold">Judul Halaman</label>
+    <label class="mb-2 mt-6 block form-label">Judul Halaman</label>
     <div class="rounded-full border border-gray-300 px-6 py-4 text-lg font-bold text-gray-400">Contoh: Sejarah Program Studi Sistem Informasi</div>
-    <label class="mb-2 mt-6 block text-xl font-bold">Banner / Gambar Sampul</label>
+    <label class="mb-2 mt-6 block form-label">Banner / Gambar Sampul</label>
     <div class="grid h-72 w-[460px] place-items-center rounded-2xl border-2 border-gray-200 text-center">
-      <div><p class="text-2xl font-bold text-gray-700">Upload Foto/Gambar</p><p class="text-lg text-gray-400">atau drag and drop</p><p class="text-lg text-gray-400">Format: JGP, PNG (Maks. 2MB)</p></div>
+      <div><p class="text-sm font-semibold text-gray-700">Upload Foto/Gambar</p><p class="text-xs text-gray-400">atau drag and drop</p><p class="text-xs text-gray-400">Format: JGP, PNG (Maks. 2MB)</p></div>
     </div>
     <label class="mb-2 mt-6 block text-xl font-bold">Konten Halaman</label>
     <div class="rounded-2xl border border-gray-200">

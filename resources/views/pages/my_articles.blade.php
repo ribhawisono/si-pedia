@@ -3,8 +3,8 @@
 
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-5xl font-extrabold">Artikel Saya</h1>
-      <p class="mt-2 text-gray-500">Kelola semua artikel yang pernah kamu tulis.</p>
+      <h1 class="page-title text-gray-900">Artikel Saya</h1>
+      <p class="page-subtitle">Kelola semua artikel yang pernah kamu tulis.</p>
     </div>
     <a href="{{ route('articles.create') }}"
        class="rounded-xl bg-brand-600 px-6 py-3 text-sm font-bold text-white shadow hover:bg-brand-700 transition">
