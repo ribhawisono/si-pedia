@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 | SI-Pedia REST API v1
 |
 | Base URL : /api/v1
-| Auth     : Bearer token (Laravel Sanctum)
+| Auth     : Bearer token (custom ApiTokenMiddleware)
 | Format   : JSON
 |──────────────────────────────────────────────────────────────────
 */
@@ -37,7 +37,7 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::post('login',    [AuthController::class, 'login'])->middleware('throttle:10,1')->name('login');
         Route::post('register', [AuthController::class, 'register'])->middleware('throttle:5,1')->name('register');
 
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('auth.api')->group(function () {
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
             Route::get('me',      [AuthController::class, 'me'])->name('me');
         });
@@ -51,11 +51,11 @@ Route::prefix('v1')->name('api.')->group(function () {
         // Comments
         Route::get('{article:slug}/comments', [CommentController::class, 'index'])->name('comments.index');
         Route::post('{article:slug}/comments', [CommentController::class, 'store'])
-            ->middleware('auth:sanctum', 'throttle:10,1')->name('comments.store');
+            ->middleware('auth.api', 'throttle:10,1')->name('comments.store');
 
         // Bookmark toggle
         Route::post('{article:slug}/bookmark', [BookmarkController::class, 'toggle'])
-            ->middleware('auth:sanctum')->name('bookmark');
+            ->middleware('auth.api')->name('bookmark');
     });
 
     // ── Categories ────────────────────────────────────────────
@@ -80,7 +80,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     });
 
     // ── Bookmarks (authenticated) ─────────────────────────────
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth.api')->group(function () {
         Route::get('bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
     });
 

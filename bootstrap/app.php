@@ -17,10 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         $middleware->alias([
-            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'admin'          => \App\Http\Middleware\AdminMiddleware::class,
+            'auth.api'       => \App\Http\Middleware\ApiTokenMiddleware::class,
+            'auth.api.optional' => \App\Http\Middleware\ApiTokenOptional::class,
         ]);
-        // Sanctum cookie-based auth for web
-        $middleware->statefulApi();
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
