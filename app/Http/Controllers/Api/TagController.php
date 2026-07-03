@@ -1,4 +1,4 @@
-<?php
+&lt;?php
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\{ArticleResource, TagResource};
@@ -10,9 +10,10 @@ class TagController extends Controller
 {
     public function index()
     {
-        $tags = Cache::remember('api_tags', 300, fn () =>
-            Tag::withCount('articles')->orderByDesc('articles_count')->get()
+        $ids = Cache::remember('api_tag_ids', 300, fn () =>
+            Tag::withCount('articles')->orderByDesc('articles_count')->pluck('id')
         );
+        $tags = Tag::withCount('articles')->whereIn('id', $ids)->orderByDesc('articles_count')->get();
         return TagResource::collection($tags);
     }
 
