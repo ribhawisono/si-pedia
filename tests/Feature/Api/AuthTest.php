@@ -56,7 +56,7 @@ class AuthTest extends TestCase
         $this->withHeader('Authorization', "Bearer {$token}")
             ->getJson('/api/v1/auth/me')
             ->assertOk()
-            ->assertJsonPath('data.email', $user->email);
+            ->assertJsonPath('email', $user->email);
     }
 
     public function test_logout_invalidates_token(): void
