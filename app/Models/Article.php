@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -35,6 +36,13 @@ class Article extends Model
     {
         $wordCount = str_word_count(strip_tags($this->content ?? ''));
         return max(1, (int) ceil($wordCount / 200));
+    }
+
+    // ─── Scopes ───────────────────────────────────────────────────────────────
+
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('status', 'active');
     }
 
     // ─── Relationships ────────────────────────────────────────────────────────
