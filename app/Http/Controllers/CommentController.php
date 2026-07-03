@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCommentRequest;
 use App\Models\Article;
 use App\Models\Comment;
 use Illuminate\Http\Request;
@@ -26,11 +27,9 @@ class CommentController extends Controller
     }
 
     /** User: submit comment (goes to pending) */
-    public function store(Request $request, Article $article)
+    public function store(StoreCommentRequest $request, Article $article)
     {
-        $data = $request->validate([
-            'content' => 'required|string|max:1000',
-        ]);
+        $data = $request->validated();
 
         $article->comments()->create([
             'user_id' => $request->user()->id,

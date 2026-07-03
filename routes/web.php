@@ -108,7 +108,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
     Route::put('/articles/{article}', [ArticleController::class, 'update'])->name('articles.update');
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->name('articles.destroy');
-    Route::patch('/articles/{article}/bulk', [ArticleController::class, 'bulkAction'])->name('articles.bulk');
+    Route::patch('/articles/bulk', [ArticleController::class, 'bulkAction'])->name('articles.bulk');
     Route::patch('/articles/{article}/approve', [ArticleController::class, 'approve'])->name('articles.approve');
     Route::patch('/articles/{article}/reject', [ArticleController::class, 'reject'])->name('articles.reject');
     Route::delete('/articles/{article}/approve-delete', [ArticleController::class, 'approveDelete'])->name('articles.approveDelete');
