@@ -135,7 +135,7 @@ class PageController extends Controller
             'pending'   => Article::whereIn('status', ['pending', 'pending_delete'])->count(),
         ]);
 
-        $monthlyArticles = Cache::remember('admin_monthly_' . now()->year, 300, fn () =>
+        $monthlyArticles = Cache::remember('admin_monthly_v2_' . now()->year, 300, fn () =>
             Article::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
                 ->whereYear('created_at', now()->year)
                 ->groupByRaw('MONTH(created_at)')

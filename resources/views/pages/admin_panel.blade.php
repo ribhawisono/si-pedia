@@ -32,7 +32,7 @@
       <h2 class="mb-4 text-sm font-extrabold text-gray-800">📈 Artikel per Bulan ({{ now()->year }})</h2>
       @php
         $monthData = array_fill(1,12,0);
-        foreach($monthlyArticles as $m) $monthData[$m->month] = $m->count;
+        foreach($monthlyArticles as $m) { $row = is_array($m) ? (object)$m : $m; if (is_object($row) && isset($row->month)) $monthData[(int)$row->month] = (int)$row->count; }
         $maxVal = max(array_values($monthData)) ?: 1;
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
       @endphp
