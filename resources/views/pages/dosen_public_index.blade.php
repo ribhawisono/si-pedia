@@ -1,4 +1,4 @@
-<x-layouts.app title="Dosen — SI-Pedia" active="About us" footer="full"
+<x-layouts.app title="Dosen — SI-Pedia" active="Dosen" footer="full"
                meta_description="Daftar dosen Program Studi Sistem Informasi Universitas Indraprasta PGRI.">
 
 <div class="bg-ink-900 py-10">
