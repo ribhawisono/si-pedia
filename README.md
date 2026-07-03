@@ -14,6 +14,7 @@ Ensiklopedia digital untuk Program Studi Sistem Informasi, Universitas Indrapras
 - **Bulk Action** — Publish, draft, atau hapus artikel secara massal
 - **Activity Log** — Jejak aktivitas admin tersimpan otomatis
 - **Role-based Access** — Admin dan user dengan akses berbeda
+- **REST API v1** — 17 endpoint publik/terautentikasi untuk konsumsi eksternal (lihat bagian [REST API](#rest-api))
 
 ## Stack
 
@@ -114,6 +115,48 @@ routes/
 | GET | `/admin/users` | Kelola user |
 | GET | `/admin/report` | Laporan |
 
+## REST API
+
+Base URL: `/api/v1` · Auth: `Authorization: Bearer {token}` (custom token, bukan Sanctum) · Format: JSON.
+
+| Method | Endpoint | Auth | Fungsi |
+|--------|----------|------|--------|
+| GET | `/api/v1` | - | Health check |
+| POST | `/api/v1/auth/register` | - | Registrasi |
+| POST | `/api/v1/auth/login` | - | Login → token |
+| POST | `/api/v1/auth/logout` | ✔ | Logout |
+| GET | `/api/v1/auth/me` | ✔ | User saat ini |
+| GET | `/api/v1/articles` | - | List artikel (`q`, `category`, `tag`, `sort`, `per_page`) |
+| GET | `/api/v1/articles/{slug}` | - | Detail + artikel terkait |
+| GET | `/api/v1/articles/{slug}/comments` | - | List komentar |
+| POST | `/api/v1/articles/{slug}/comments` | ✔ | Kirim komentar |
+| POST | `/api/v1/articles/{slug}/bookmark` | ✔ | Toggle bookmark |
+| GET | `/api/v1/bookmarks` | ✔ | Bookmark user |
+| GET | `/api/v1/categories` | - | List kategori |
+| GET | `/api/v1/tags` | - | List tag |
+| GET | `/api/v1/tags/{slug}/articles` | - | Artikel per tag |
+| GET | `/api/v1/lecturers` | - | List dosen aktif |
+| GET | `/api/v1/search?q=` | - | Full-text search (min. 2 karakter) |
+| GET | `/api/v1/analytics/popular` | - | Artikel populer + statistik kategori |
+| GET | `/api/v1/analytics/monthly` | - | Jumlah artikel per bulan |
+
+Dokumentasi mesin (`GET /api/v1/docs`) tersedia secara live saat aplikasi berjalan. Untuk request lintas domain (frontend terpisah/mobile app), atur origin yang diizinkan lewat env `CORS_ALLOWED_ORIGINS` (lihat `config/cors.php`).
+
+## Testing
+
+```bash
+php artisan test
+```
+
+Cakupan test (`tests/Feature`, `tests/Unit`):
+
+- **Admin** — CRUD artikel, kategori, dosen, profil
+- **Auth** — Alur login/register/logout web
+- **Api** — Seluruh 17 endpoint REST API (auth, artikel, komentar, bookmark, taxonomy, search, analytics)
+- **Security** — Header keamanan, otorisasi policy
+- **Smoke / E2E** — Alur pengguna end-to-end
+- **Unit/Models** — Relasi & scope model
+
 ## Database
 
 8 tabel utama:
@@ -154,6 +197,8 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 ```
+
+Set `CORS_ALLOWED_ORIGINS` di `.env` production ke domain frontend yang diizinkan (default `*`).
 
 Konfigurasi Nginx dan Apache tersedia di [`tutorial.md`](tutorial.md#14-deploy-ke-server-produksi).
 
