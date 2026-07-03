@@ -2,17 +2,18 @@
 
 namespace App\Services;
 
+use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
 use App\Models\Article;
 use App\Models\ArticleRevision;
 use App\Models\Tag;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class ArticleService
 {
-    /** Build and save an article from request data */
-    public function store(Request $request, bool $isAdmin): Article
+    /** Build and save an article from a validated request */
+    public function store(StoreArticleRequest $request, bool $isAdmin): Article
     {
         $data = $this->prepareData($request, $isAdmin);
         $data['slug']    = $this->uniqueSlug($data['title']);
@@ -33,8 +34,8 @@ class ArticleService
         return $article;
     }
 
-    /** Update an existing article */
-    public function update(Request $request, Article $article, bool $isAdmin): Article
+    /** Update an existing article from a validated request */
+    public function update(UpdateArticleRequest $request, Article $article, bool $isAdmin): Article
     {
         $data = $this->prepareData($request, $isAdmin);
 
@@ -130,33 +131,15 @@ class ArticleService
         return $slug;
     }
 
-    private function prepareData(Request $request, bool $isAdmin): array
+    private function prepareData(StoreArticleRequest|UpdateArticleRequest $request, bool $isAdmin): array
     {
-        $rules = [
-            'title'            => 'required|string|max:255',
-            'category_id'      => 'required|exists:categories,id',
-            'content'          => 'required|string',
-            'image'            => 'nullable|image|max:10240|mimes:jpg,jpeg,png,webp',
-            'tags'             => 'nullable|string|max:500',
-            'meta_title'       => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:300',
-            'meta_keywords'    => 'nullable|string|max:300',
-            'canonical_url'    => 'nullable|url',
-        ];
-
-        if ($isAdmin) {
-            $rules['writer']     = 'required|string|max:255';
-            $rules['status']     = 'required|in:active,draft,archived';
-            $rules['created_at'] = 'required|date';
-        }
-
-        $data = $request->validate($rules);
+        $data = $request->validated();
         $data['writer'] = $isAdmin ? ($request->writer ?? auth()->user()->name) : auth()->user()->name;
 
         return $data;
     }
 
-    private function resolveStatus(Request $request, bool $isAdmin): string
+    private function resolveStatus(StoreArticleRequest $request, bool $isAdmin): string
     {
         if ($isAdmin) return $request->status ?? 'draft';
         return $request->has('submit') ? 'pending' : 'draft';
