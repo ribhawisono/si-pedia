@@ -114,13 +114,13 @@
       </div>
       <div class="divide-y divide-gray-50">
         @foreach([
-          ['Tambah Artikel',   route('admin.articles.create'),          '✏️'],
+          ['Tambah Artikel',   route('admin.articles.create'),          '✏️', null],
           ['Pending Artikel',  route('admin.articles.pending'),         '⏳', $stats['pending']],
           ['Moderasi Komentar',route('admin.comments.index'),           '💬', \App\Models\Comment::where('status','pending')->count()],
           ['Report Akun',      route('admin.account-reports.index'),    '🚩', \App\Models\AccountReport::where('status','pending')->count()],
-          ['Manage Users',     route('admin.users.index'),              '👥'],
-          ['Tambah Dosen',     route('admin.dosen.create'),             '🎓'],
-          ['Laporan Artikel',  route('admin.report'),                   '📊'],
+          ['Manage Users',     route('admin.users.index'),              '👥', null],
+          ['Tambah Dosen',     route('admin.dosen.create'),             '🎓', null],
+          ['Laporan Artikel',  route('admin.report'),                   '📊', null],
         ] as [$label, $url, $icon, $badge])
         <a href="{{ $url }}" class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition group">
           <div class="flex items-center gap-2.5">
