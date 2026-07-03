@@ -1,9 +1,9 @@
-<?php
+&lt;?php
 
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreCategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -13,10 +13,9 @@ class CategoryController extends Controller
         return view('pages.manage_category', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $request->validate(['name' => 'required|string|max:255|unique:categories']);
-        $category = Category::create(['name' => $request->name]);
+        $category = Category::create(['name' => $request->validated()['name']]);
 
         $this->logActivity('create', "Created category: {$category->name}", $category);
 
