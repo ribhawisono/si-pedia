@@ -57,10 +57,10 @@
         <a href="{{ route('admin.articles.index') }}" class="text-xs font-semibold text-brand-600 hover:text-brand-700">Lihat semua →</a>
       </div>
       <div class="divide-y divide-gray-50">
-        @foreach($topArticles as $i => $art)
+        @foreach($topArticles as $art)
         <div class="flex items-center gap-3 px-4 py-3">
-          <span class="flex-shrink-0 w-6 text-sm font-black {{ $i===0?'text-yellow-500':($i===1?'text-gray-400':($i===2?'text-amber-600':'text-gray-300')) }}">
-            {{ $i+1 }}
+          <span class="flex-shrink-0 w-6 text-sm font-black {{ $loop->index===0?'text-yellow-500':($loop->index===1?'text-gray-400':($loop->index===2?'text-amber-600':'text-gray-300')) }}">
+            {{ $loop->iteration }}
           </span>
           @if($art->image_url)
           <img src="{{ $art->image_url }}" alt="{{ $art->title }}" class="h-10 w-14 flex-shrink-0 rounded-lg object-cover">
