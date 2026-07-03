@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
@@ -12,7 +14,7 @@ class ArticleController extends Controller
 {
     public function __construct(private ArticleService $articleService) {}
 
-    // ─── Admin: list ──────────────────────────────────────────────────────────
+    // ─── Admin: list ──────────────────────────────────────────────────
     public function index(Request $request)
     {
         $articles = Article::with(['category:id,name', 'user:id,name', 'tags:id,name'])
@@ -63,7 +65,7 @@ class ArticleController extends Controller
         return back()->with('success', "Permintaan hapus \"{$article->title}\" ditolak.");
     }
 
-    // ─── Create ───────────────────────────────────────────────────────────────
+    // ─── Create ────────────────────────────────────────────────────────
     public function create()
     {
         return view('pages.edit_article', [
@@ -75,7 +77,7 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreArticleRequest $request)
     {
         $isAdmin = auth()->user()->role === 'admin';
         $article = $this->articleService->store($request, $isAdmin);
@@ -88,7 +90,7 @@ class ArticleController extends Controller
         );
     }
 
-    // ─── Edit ─────────────────────────────────────────────────────────────────
+    // ─── Edit ────────────────────────────────────────────────────────
     public function edit(Article $article)
     {
         $user    = auth()->user();
@@ -109,7 +111,7 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function update(Request $request, Article $article)
+    public function update(UpdateArticleRequest $request, Article $article)
     {
         $user    = auth()->user();
         $isAdmin = $user->role === 'admin';

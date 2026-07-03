@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreReviewRequest;
 use App\Models\Review;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller
 {
@@ -33,13 +33,9 @@ class ReviewController extends Controller
         return view('pages.review_create');
     }
 
-    public function store(Request $request)
+    public function store(StoreReviewRequest $request)
     {
-        $data = $request->validate([
-            'title'       => 'required|string|max:255',
-            'type'        => 'required|string|max:100',
-            'description' => 'required|string|max:2000',
-        ]);
+        $data = $request->validated();
 
         Review::create([
             'title'       => $data['title'],

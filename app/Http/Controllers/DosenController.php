@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreDosenRequest;
+use App\Http\Requests\UpdateDosenRequest;
 use App\Models\Lecturer;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -30,17 +32,8 @@ class DosenController extends Controller
         return view('pages.dosen_create');
     }
 
-    public function store(Request $request)
+    public function store(StoreDosenRequest $request)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'nidn'     => 'required|string|max:50',
-            'address'  => 'required|string|max:255',
-            'photo'    => 'nullable|image|max:10240',
-        ]);
-
         DB::transaction(function () use ($request) {
             // 1. Buat akun user dengan role dosen
             $user = User::create([
@@ -76,16 +69,8 @@ class DosenController extends Controller
         return view('pages.dosen_create', compact('lecturer'));
     }
 
-    public function update(Request $request, Lecturer $lecturer)
+    public function update(UpdateDosenRequest $request, Lecturer $lecturer)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,' . $lecturer->user_id,
-            'nidn'     => 'required|string|max:50',
-            'address'  => 'required|string|max:255',
-            'photo'    => 'nullable|image|max:10240',
-        ]);
-
         DB::transaction(function () use ($request, $lecturer) {
             // Update data user
             $lecturer->user->update([
