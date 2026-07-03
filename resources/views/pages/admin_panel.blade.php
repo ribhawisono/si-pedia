@@ -58,6 +58,7 @@
       </div>
       <div class="divide-y divide-gray-50">
         @foreach($topArticles as $art)
+        @continue(!is_object($art))
         <div class="flex items-center gap-3 px-4 py-3">
           <span class="flex-shrink-0 w-6 text-sm font-black {{ $loop->index===0?'text-yellow-500':($loop->index===1?'text-gray-400':($loop->index===2?'text-amber-600':'text-gray-300')) }}">
             {{ $loop->iteration }}
