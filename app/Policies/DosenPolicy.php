@@ -2,17 +2,17 @@
 
 namespace App\Policies;
 
-use App\Models\Article;
+use App\Models\Lecturer;
 use App\Models\User;
 
-class ArticlePolicy
+class DosenPolicy
 {
     public function viewAny(User $user): bool
     {
         return $user->role === 'admin';
     }
 
-    public function view(User $user, Article $article): bool
+    public function view(User $user, Lecturer $lecturer): bool
     {
         return $user->role === 'admin';
     }
@@ -22,22 +22,17 @@ class ArticlePolicy
         return $user->role === 'admin';
     }
 
-    public function update(User $user, Article $article): bool
+    public function update(User $user, Lecturer $lecturer): bool
     {
         return $user->role === 'admin';
     }
 
-    public function delete(User $user, Article $article): bool
+    public function delete(User $user, Lecturer $lecturer): bool
     {
         return $user->role === 'admin';
     }
 
-    public function restore(User $user, Article $article): bool
-    {
-        return $user->role === 'admin';
-    }
-
-    public function forceDelete(User $user, Article $article): bool
+    public function approve(User $user, Lecturer $lecturer): bool
     {
         return $user->role === 'admin';
     }
