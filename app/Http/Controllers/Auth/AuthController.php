@@ -70,26 +70,33 @@ class AuthController extends Controller
             'expires_at' => now()->addMinutes(10),
         ]);
 
-        // Kirim email (butuh MAIL config di .env)
-        try {
-            Mail::send([], [], function ($message) use ($user, $code) {
-                $message->to($user->email, $user->name)
-                    ->subject('Kode Verifikasi SI-Pedia')
-                    ->html("
-                        <div style='font-family:sans-serif;max-width:480px;margin:auto;padding:32px;border:1px solid #e5e7eb;border-radius:12px'>
-                            <h2 style='color:#0a0b2f;margin-bottom:8px'>Verifikasi Email Kamu</h2>
-                            <p style='color:#6b7280;margin-bottom:24px'>Masukkan kode berikut di halaman verifikasi SI-Pedia. Kode berlaku <strong>10 menit</strong>.</p>
-                            <div style='background:#f3f4f6;border-radius:8px;padding:24px;text-align:center'>
-                                <span style='font-size:40px;font-weight:900;letter-spacing:12px;color:#336cbc'>{$code}</span>
-                            </div>
-                            <p style='color:#9ca3af;font-size:12px;margin-top:24px'>Jika kamu tidak mendaftar di SI-Pedia, abaikan email ini.</p>
-                        </div>
-                    ");
-            });
-        } catch (\Exception $e) {
-            // Jika mail tidak dikonfigurasi, simpan ke session untuk dev
+        // Dev fallback (mailer=log) tetap sync, ringan & tanpa I/O jaringan
+        if (config('mail.default') === 'log') {
             session(['dev_otp' => $code]);
         }
+
+        // Kirim email async setelah response dikirim, supaya SMTP lambat/hang
+        // tidak memblokir seluruh request (dan seluruh site di single-process server)
+        defer(function () use ($user, $code) {
+            try {
+                Mail::send([], [], function ($message) use ($user, $code) {
+                    $message->to($user->email, $user->name)
+                        ->subject('Kode Verifikasi SI-Pedia')
+                        ->html("
+                            <div style='font-family:sans-serif;max-width:480px;margin:auto;padding:32px;border:1px solid #e5e7eb;border-radius:12px'>
+                                <h2 style='color:#0a0b2f;margin-bottom:8px'>Verifikasi Email Kamu</h2>
+                                <p style='color:#6b7280;margin-bottom:24px'>Masukkan kode berikut di halaman verifikasi SI-Pedia. Kode berlaku <strong>10 menit</strong>.</p>
+                                <div style='background:#f3f4f6;border-radius:8px;padding:24px;text-align:center'>
+                                    <span style='font-size:40px;font-weight:900;letter-spacing:12px;color:#336cbc'>{$code}</span>
+                                </div>
+                                <p style='color:#9ca3af;font-size:12px;margin-top:24px'>Jika kamu tidak mendaftar di SI-Pedia, abaikan email ini.</p>
+                            </div>
+                        ");
+                });
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('OTP mail failed: ' . $e->getMessage());
+            }
+        });
     }
 
     public function showOtp()
