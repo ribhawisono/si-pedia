@@ -30,7 +30,6 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/catalog', [PageController::class, 'catalog'])->name('catalog');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
-Route::get('/articles/{article:slug}', [PageController::class, 'showArticle'])->name('articles.show');
 Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
 Route::get('/review/create', [ReviewController::class, 'create'])->name('review.create')->middleware('auth', 'verified');
 Route::post('/review', [ReviewController::class, 'store'])->name('review.store')->middleware('auth', 'verified', 'throttle:3,1');
@@ -94,6 +93,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/users/{user}/report', [AccountReportController::class, 'create'])->name('users.report');
     Route::post('/users/{user}/report', [AccountReportController::class, 'store'])->name('users.report.store');
 });
+
+// ─── Article detail (wildcard slug — harus SETELAH /articles/my, /articles/create) ────
+Route::get('/articles/{article:slug}', [PageController::class, 'showArticle'])->name('articles.show');
 
 // ─── Admin ────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
