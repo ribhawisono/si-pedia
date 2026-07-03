@@ -9,9 +9,10 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $cats = Cache::remember('api_categories', 300, fn () =>
-            Category::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->get()
+        $ids = Cache::remember('api_category_ids', 300, fn () =>
+            Category::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->pluck('id')
         );
+        $cats = Category::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->whereIn('id', $ids)->get();
         return CategoryResource::collection($cats);
     }
 }
