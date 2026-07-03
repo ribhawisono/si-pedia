@@ -152,7 +152,7 @@ class PageController extends Controller
         );
         $recentActivities = ActivityLog::with('user:id,name')->latest()->take(10)->get();
 
-        return view('pages.admin_panel', compact('stats', 'articles', 'monthlyArticles', 'recentActivities'));
+        return view('pages.admin_panel', compact('stats', 'articles', 'monthlyArticles', 'recentActivities', 'topArticles', 'topUsers'));
     }
 
     public function reportPosts()
