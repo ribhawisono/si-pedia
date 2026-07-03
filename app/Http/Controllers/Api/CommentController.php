@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\{Article, Comment};
-use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
@@ -16,9 +16,9 @@ class CommentController extends Controller
         return CommentResource::collection($comments);
     }
 
-    public function store(Request $request, Article $article)
+    public function store(StoreCommentRequest $request, Article $article)
     {
-        $data = $request->validate(['content' => 'required|string|max:1000']);
+        $data = $request->validated();
         $comment = $article->comments()->create([
             'user_id' => $request->user()->id,
             'content' => $data['content'],
