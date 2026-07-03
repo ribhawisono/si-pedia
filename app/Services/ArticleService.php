@@ -109,7 +109,7 @@ class ArticleService
     {
         Cache::forget('homepage_articles');
         Cache::forget('admin_stats');
-        Cache::forget('admin_top_articles');
+        Cache::forget('admin_top_articles_v2');
         Cache::forget('api_categories');
         Cache::forget('api_tags');
         Cache::forget('categories_all');
