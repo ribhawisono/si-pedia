@@ -9,11 +9,18 @@ class DosenPublicController extends Controller
 {
     public function index()
     {
-        $lecturers = Cache::remember('public_lecturers', 300, fn () =>
-            Lecturer::with('user:id,name,email')
-                ->where('status', 'active')
-                ->get()
+        // Cache only primitive IDs, then rehydrate via a clean Eloquent query.
+        // Caching raw Collections/Models can crash unserialize() on this route
+        // ("incomplete object ... Collection") if the cache entry was written
+        // before the Eloquent classes were fully autoloaded in a given request.
+        $ids = Cache::remember('public_lecturer_ids', 300, fn () =>
+            Lecturer::where('status', 'active')->pluck('id')
         );
+
+        $lecturers = Lecturer::with('user:id,name,email')
+            ->whereIn('id', $ids)
+            ->get();
+
         return view('pages.dosen_public_index', compact('lecturers'));
     }
 
