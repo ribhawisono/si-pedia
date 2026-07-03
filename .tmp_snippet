@@ -1,0 +1,5 @@
+@if($isAdmin)
+  @component('layouts.admin', ['title' => $mode === 'create' ? 'Tambah Artikel' : 'Edit Artikel', 'section' => 'articles'])
+@else
+  @component('layouts.app', ['title' => $mode === 'create' ? 'Tulis Artikel — SI-Pedia' : 'Edit Artikel — SI-Pedia'])
+@endif
