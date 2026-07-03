@@ -9,13 +9,16 @@ class AnalyticsController extends Controller
 {
     public function popular()
     {
-        $data = Cache::remember('api_analytics_popular', 300, fn () => [
-            'most_viewed'     => Article::with('category:id,name')->where('status','active')->orderByDesc('views')->limit(10)->get(),
+        $mostViewedIds = Cache::remember('api_analytics_popular_ids', 300, fn () =>
+            Article::where('status','active')->orderByDesc('views')->limit(10)->pluck('id')
+        );
+        $data = [
+            'most_viewed'     => Article::with('category:id,name')->whereIn('id', $mostViewedIds)->orderByDesc('views')->get(),
             'category_stats'  => Category::withCount(['articles' => fn ($q) => $q->where('status','active')])->get(),
             'total_articles'  => Article::where('status','active')->count(),
             'total_users'     => User::count(),
             'total_views'     => Article::where('status','active')->sum('views'),
-        ]);
+        ];
 
         return response()->json([
             'most_viewed'    => ArticleResource::collection($data['most_viewed']),
@@ -37,6 +40,7 @@ class AnalyticsController extends Controller
                 ->groupByRaw('MONTH(created_at)')
                 ->orderBy('month')
                 ->get()
+                ->toArray()
         );
         return response()->json(['year' => now()->year, 'data' => $monthly]);
     }
