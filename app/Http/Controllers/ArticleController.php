@@ -14,10 +14,15 @@ class ArticleController extends Controller
 {
     public function __construct(private ArticleService $articleService) {}
 
-    // ─── Admin: list ──────────────────────────────────────────────────
+    // ─── Admin: list ───────────────────────────────────────────────
     public function index(Request $request)
     {
+        // Drafts are a user's private in-progress work and must stay hidden from
+        // admin until submitted (status changes to 'pending'). Admins only see
+        // their own drafts (self-authored articles they manage directly).
+        $adminId  = auth()->id();
         $articles = Article::with(['category:id,name', 'user:id,name', 'tags:id,name'])
+            ->where(fn ($q) => $q->where('status', '!=', 'draft')->orWhere('user_id', $adminId))
             ->when($request->q, fn ($q, $s) => $q->where('title', 'like', "%{$s}%"))
             ->latest()->paginate(10);
 
@@ -65,7 +70,7 @@ class ArticleController extends Controller
         return back()->with('success', "Permintaan hapus \"{$article->title}\" ditolak.");
     }
 
-    // ─── Create ────────────────────────────────────────────────────────
+    // ─── Create ────────────────────────────────────────────
     public function create()
     {
         return view('pages.edit_article', [
@@ -90,13 +95,16 @@ class ArticleController extends Controller
         );
     }
 
-    // ─── Edit ────────────────────────────────────────────────────────
+    // ─── Edit ────────────────────────────────────────────
     public function edit(Article $article)
     {
         $user    = auth()->user();
         $isAdmin = $user->role === 'admin';
 
-        if (!$isAdmin && $article->user_id !== $user->id) abort(403);
+        // Admins may only edit content they authored themselves. For
+        // user-submitted articles the admin's role is limited to approve /
+        // reject / delete via the index actions, not direct editing.
+        if ($article->user_id !== $user->id) abort(403);
         if (!$isAdmin && in_array($article->status, ['active', 'pending_delete'])) {
             return back()->with('error', 'Artikel aktif tidak dapat diedit.');
         }
@@ -115,7 +123,7 @@ class ArticleController extends Controller
     {
         $user    = auth()->user();
         $isAdmin = $user->role === 'admin';
-        if (!$isAdmin && $article->user_id !== $user->id) abort(403);
+        if ($article->user_id !== $user->id) abort(403);
 
         $article = $this->articleService->update($request, $article, $isAdmin);
         $this->logActivity('update', "Updated: {$article->title}", $article);
