@@ -10,7 +10,7 @@
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex flex-col lg:flex-row gap-8">
 
-      {{-- ─── Main article column ──────────────────────────────────────────── --}}
+      {{-- ─── Main article column ────────────────────────────────────── --}}
       <article class="flex-1 min-w-0" aria-labelledby="article-title">
 
         {{-- Back breadcrumb --}}
@@ -150,7 +150,7 @@
         {{-- Author Card --}}
         @if($article->user)
         <div class="mt-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex items-start gap-4" aria-label="Informasi penulis">
-          <img src="{{ $article->user->avatar_url }}" alt="Foto {{ $article->user->name }}"
+          <img src="{{ $article->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($article->user->name) . '&background=336cbc&color=fff&size=112' }}" alt="Foto {{ $article->user->name }}"
                class="h-14 w-14 rounded-full object-cover flex-shrink-0" loading="lazy">
           <div>
             <p class="text-xs font-bold uppercase tracking-wide text-gray-400 mb-1">Ditulis oleh</p>
@@ -211,7 +211,7 @@
               </div>
               @endif
               <div class="flex gap-3">
-                <img src="{{ auth()->user()->avatar_url }}" alt="Foto kamu" class="h-9 w-9 flex-shrink-0 rounded-full object-cover" loading="lazy">
+                <img src="{{ auth()->user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=336cbc&color=fff&size=80' }}" alt="Foto kamu" class="h-9 w-9 flex-shrink-0 rounded-full object-cover" loading="lazy">
                 <div class="flex-1">
                   <label for="comment-input" class="sr-only">Tulis komentar kamu</label>
                   <textarea id="comment-input" name="content" rows="3" required maxlength="1000"
@@ -240,7 +240,7 @@
         </section>
       </article>
 
-      {{-- ─── Sidebar ─────────────────────────────────────────────────────── --}}
+      {{-- ─── Sidebar ───────────────────────────────────────────── --}}
       <aside class="lg:w-72 flex-shrink-0 space-y-5" aria-label="Sidebar artikel">
 
         {{-- Related Articles --}}
