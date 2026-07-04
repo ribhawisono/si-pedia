@@ -329,6 +329,9 @@ html.dark .form-input { background: #1a1d27; border-color: #2d3348; color: #e2e8
 .page-header  { margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .page-title   { font-size: 1.375rem; font-weight: 800; color: #0f172a; }
 .page-subtitle { font-size: 0.8125rem; color: #64748b; margin-top: 0.125rem; }
+html.dark .page-title    { color: #f1f5f9 !important; }
+html.dark .page-subtitle { color: #94a3b8 !important; }
+html.dark .form-label    { color: #cbd5e1 !important; }
 
 /* ─ Table system ─────────────────────────────────────────── */
 .ds-table     { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
