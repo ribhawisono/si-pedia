@@ -6,11 +6,13 @@
     : ($mode === 'create' ? route('articles.store')       : route('articles.update', $article));
   $autosaveKey = 'article_draft_' . ($article->id ?? 'new');
 @endphp
-@if($isAdmin)
-  <x-layouts.admin :title="$mode === 'create' ? 'Tambah Artikel' : 'Edit Artikel'" section="articles">
-@else
-  <x-layouts.app :title="$mode === 'create' ? 'Tulis Artikel — SI-Pedia' : 'Edit Artikel — SI-Pedia'">
-@endif
+@php
+  $layoutName  = $isAdmin ? 'layouts.admin' : 'layouts.app';
+  $layoutTitle = $isAdmin
+      ? ($mode === 'create' ? 'Tambah Artikel' : 'Edit Artikel')
+      : ($mode === 'create' ? 'Tulis Artikel — SI-Pedia' : 'Edit Artikel — SI-Pedia');
+@endphp
+<x-dynamic-component :component="$layoutName" :title="$layoutTitle" section="articles">
 
 <div class="{{ $isAdmin ? '' : 'mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6' }}">
   <div class="mb-5 flex items-center justify-between gap-4">
@@ -303,8 +305,4 @@
 })();
 </script>
 
-@if($isAdmin)
-  </x-layouts.admin>
-@else
-  </x-layouts.app>
-@endif
+</x-dynamic-component>
