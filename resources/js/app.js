@@ -2,7 +2,7 @@ import axios from 'axios';
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-// ─── DOM Ready ────────────────────────────────────────────────────────────────
+// ─── DOM Ready ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initGlobalSearch();
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFocusRing();
 });
 
-// ─── 1. Mobile Menu ───────────────────────────────────────────────────────────
+// ─── 1. Mobile Menu ─────────────────────────────────────────────────────────────────
 function initMobileMenu() {
     const btn        = document.getElementById('mobile-menu-btn');
     const menu       = document.getElementById('mobile-menu');
@@ -41,7 +41,7 @@ function initMobileMenu() {
     });
 }
 
-// ─── 2. Global Search with Debounce & Suggestions ─────────────────────────────
+// ─── 2. Global Search with Debounce & Suggestions ──────────────────────────
 function initGlobalSearch() {
     const input   = document.getElementById('global-search');
     const box     = document.getElementById('search-suggestions');
@@ -133,7 +133,7 @@ function initGlobalSearch() {
     }
 }
 
-// ─── 3. Loading Buttons (forms) ───────────────────────────────────────────────
+// ─── 3. Loading Buttons (forms) ──────────────────────────────────────────────────
 function initLoadingButtons() {
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', () => {
@@ -153,7 +153,7 @@ function initLoadingButtons() {
     });
 }
 
-// ─── 4. Back to Top ───────────────────────────────────────────────────────────
+// ─── 4. Back to Top ───────────────────────────────────────────────────────────────────
 function initBackToTop() {
     const btn = document.getElementById('back-to-top');
     if (!btn) return;
@@ -163,7 +163,7 @@ function initBackToTop() {
     }, { passive: true });
 }
 
-// ─── 5. Flash Auto-Dismiss ────────────────────────────────────────────────────
+// ─── 5. Flash Auto-Dismiss ──────────────────────────────────────────────────────────
 function initFlashAutoDismiss() {
     const container = document.getElementById('flash-container');
     if (!container) return;
@@ -177,7 +177,7 @@ function initFlashAutoDismiss() {
     }, 4000);
 }
 
-// ─── 6. Lazy Image Loading ────────────────────────────────────────────────────
+// ─── 6. Lazy Image Loading ───────────────────────────────────────────────────────────
 function initLazyImages() {
     if (!('IntersectionObserver' in window)) return;
     const obs = new IntersectionObserver((entries) => {
@@ -192,7 +192,7 @@ function initLazyImages() {
     document.querySelectorAll('img[data-src]').forEach(img => obs.observe(img));
 }
 
-// ─── 7. Focus ring (keyboard vs mouse) ───────────────────────────────────────
+// ─── 7. Focus ring (keyboard vs mouse) ────────────────────────────────────────────
 function initFocusRing() {
     let usingKeyboard = false;
     document.addEventListener('keydown', (e) => { if (e.key === 'Tab') usingKeyboard = true; });
@@ -203,7 +203,7 @@ function initFocusRing() {
     });
 }
 
-// ─── 8. User Menu Dropdown ────────────────────────────────────────────────────
+// ─── 8. User Menu Dropdown ─────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     const btn      = document.getElementById('user-menu-btn');
     const menu     = document.getElementById('user-menu');
@@ -237,9 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // PHASE 4 — FORMS: validation, preview, counters, autosave
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
     initImagePreview();
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSEOCounter();
 });
 
-// ─── Image Preview ───────────────────────────────────────
+// ─── Image Preview ────────────────────────────────────────
 function initImagePreview() {
     document.querySelectorAll('input[type=file][accept*=image]').forEach(input => {
         input.addEventListener('change', (e) => {
@@ -288,7 +288,7 @@ function initImagePreview() {
     });
 }
 
-// ─── Character Counters ──────────────────────────────────
+// ─── Character Counters ────────────────────────────────────────
 function initCharCounters() {
     document.querySelectorAll('textarea[data-counter], input[data-counter]').forEach(el => {
         const max = el.getAttribute('maxlength') || el.dataset.counter;
@@ -309,7 +309,7 @@ function initCharCounters() {
     });
 }
 
-// ─── Realtime Validation ─────────────────────────────────
+// ─── Realtime Validation ───────────────────────────────────────
 function initRealtimeValidation() {
     document.querySelectorAll('form[data-validate]').forEach(form => {
         form.querySelectorAll('input[required], textarea[required], select[required]').forEach(field => {
@@ -360,7 +360,7 @@ function getErrMsg(f) {
     return 'Nilai tidak valid.';
 }
 
-// ─── Auto-focus first error ──────────────────────────────
+// ─── Auto-focus first error ─────────────────────────────────
 function initAutoFocusError() {
     const errEl = document.querySelector('[aria-invalid=true], .border-red-500');
     if (errEl) {
@@ -369,7 +369,7 @@ function initAutoFocusError() {
     }
 }
 
-// ─── Autosave (Phase 6) ──────────────────────────────────
+// ─── Autosave (Phase 6) ─────────────────────────────────────
 function initAutosave() {
     const form = document.querySelector('form[data-autosave]');
     if (!form) return;
@@ -408,7 +408,7 @@ function initAutosave() {
     form.addEventListener('submit', () => localStorage.removeItem(key));
 }
 
-// ─── Slug Preview (Phase 6) ──────────────────────────────
+// ─── Slug Preview (Phase 6) ─────────────────────────────
 function initSlugPreview() {
     const titleInput = document.getElementById('article-title-input');
     const slugPreview = document.getElementById('slug-preview');
@@ -423,7 +423,7 @@ function initSlugPreview() {
     });
 }
 
-// ─── SEO counters ────────────────────────────────────────
+// ─── SEO counters ─────────────────────────────────
 function initSEOCounter() {
     [
         { id: 'meta_title', max: 60 },
@@ -443,16 +443,17 @@ function initSEOCounter() {
     });
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // PHASE 7 — DARK MODE, TOOLTIPS, ANIMATIONS
 // PHASE 8 — MEDIA: lazy images, blur, fallback
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 
-// ─── Dark Mode ──────────────────────────────────────────────────────────────
+// ─── Dark Mode ─────────────────────────────────────────────────────────────────
+// Defaults to light mode for first-time visitors; dark mode only activates
+// when the user explicitly toggles it (persisted in localStorage). We no
+// longer auto-follow the OS color-scheme preference.
 (function initDarkMode() {
-    const saved = localStorage.getItem('si-pedia-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (saved === 'dark' || (!saved && prefersDark)) {
+    if (localStorage.getItem('si-pedia-theme') === 'dark') {
         document.documentElement.classList.add('dark');
     }
 })();
@@ -472,16 +473,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.setAttribute('aria-pressed', String(isDark));
         btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
     });
-
-    // System preference change
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('si-pedia-theme')) {
-            document.documentElement.classList.toggle('dark', e.matches);
-        }
-    });
 });
 
-// ─── Phase 8: Image blur placeholder ────────────────────────────────────────
+// ─── Phase 8: Image blur placeholder ─────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('img[loading=lazy]').forEach(img => {
         if (img.complete) return;
@@ -498,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ─── Phase 7: Keyboard shortcut for dark mode (Ctrl+Shift+D) ─────────────────
+// ─── Phase 7: Keyboard shortcut for dark mode (Ctrl+Shift+D) ─────────────
 document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
         e.preventDefault();
