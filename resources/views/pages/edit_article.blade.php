@@ -7,9 +7,9 @@
   $autosaveKey = 'article_draft_' . ($article->id ?? 'new');
 @endphp
 @if($isAdmin)
-  @component('layouts.admin', ['title' => $mode === 'create' ? 'Tambah Artikel' : 'Edit Artikel', 'section' => 'articles'])
+  <x-layouts.admin :title="$mode === 'create' ? 'Tambah Artikel' : 'Edit Artikel'" section="articles">
 @else
-  @component('layouts.app', ['title' => $mode === 'create' ? 'Tulis Artikel — SI-Pedia' : 'Edit Artikel — SI-Pedia'])
+  <x-layouts.app :title="$mode === 'create' ? 'Tulis Artikel — SI-Pedia' : 'Edit Artikel — SI-Pedia'">
 @endif
 
 <div class="{{ $isAdmin ? '' : 'mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6' }}">
@@ -303,4 +303,8 @@
 })();
 </script>
 
-@endcomponent
+@if($isAdmin)
+  </x-layouts.admin>
+@else
+  </x-layouts.app>
+@endif
