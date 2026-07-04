@@ -61,9 +61,9 @@ class ArticleService
     }
 
     /** Sync comma-separated tags */
-    public function syncTags(Article $article, string $tagsInput): void
+    public function syncTags(Article $article, ?string $tagsInput): void
     {
-        if (empty(trim($tagsInput))) {
+        if (empty(trim((string) $tagsInput))) {
             $article->tags()->detach();
             return;
         }
