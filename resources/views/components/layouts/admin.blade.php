@@ -13,7 +13,7 @@
     <link href="https://fonts.bunny.net/css?family=poppins:300,400,500,600,700,800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-100 font-sans antialiased" id="top">
+<body class="bg-gray-100 font-sans antialiased dark:bg-gray-950" id="top">
 
 @php
 $pendingArticles = \App\Models\Article::whereIn('status',['pending','pending_delete'])->count();
@@ -36,7 +36,7 @@ $nav = [
 
 <div class="flex min-h-screen">
 
-    {{-- ── SIDEBAR ───────────────────────────────────────────────────────── --}}
+    {{-- ── SIDEBAR ────────────────────────────────────────────────── --}}
     <aside id="admin-sidebar"
            class="flex w-64 flex-shrink-0 flex-col bg-ink-900 transition-all duration-300 lg:relative fixed inset-y-0 left-0 z-50 -translate-x-full lg:translate-x-0"
            aria-label="Navigasi admin">
@@ -132,20 +132,20 @@ $nav = [
     {{-- Sidebar overlay (mobile) --}}
     <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-black/50 lg:hidden" aria-hidden="true"></div>
 
-    {{-- ── MAIN AREA ─────────────────────────────────────────────────────── --}}
+    {{-- ── MAIN AREA ──────────────────────────────────────────────────── --}}
     <div class="flex min-w-0 flex-1 flex-col">
 
         {{-- Top bar --}}
-        <header class="sticky top-0 z-30 flex h-16 items-center justify-between bg-white border-b border-gray-200 px-4 sm:px-6 shadow-sm">
+        <header class="sticky top-0 z-30 flex h-16 items-center justify-between bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 sm:px-6 shadow-sm">
             <div class="flex items-center gap-4">
                 {{-- Mobile sidebar toggle --}}
                 <button id="sidebar-open" aria-label="Buka menu navigasi admin" aria-controls="admin-sidebar" aria-expanded="false"
-                        class="rounded-lg p-2 text-gray-600 hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-brand-600 lg:hidden">
+                        class="rounded-lg p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-brand-600 lg:hidden">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
                     </svg>
                 </button>
-                <h1 class="text-base font-bold text-gray-900 truncate">{{ $title }}</h1>
+                <h1 class="text-base font-bold text-gray-900 dark:text-white truncate">{{ $title }}</h1>
             </div>
 
             {{-- Top bar right --}}
@@ -153,7 +153,7 @@ $nav = [
                 {{-- Global notification badge --}}
                 @if($totalBadge > 0)
                 <a href="{{ route('admin.articles.pending') }}"
-                   class="relative rounded-lg p-2 text-gray-600 hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-brand-600"
+                   class="relative rounded-lg p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-brand-600"
                    aria-label="{{ $totalBadge }} item memerlukan perhatian">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
@@ -166,7 +166,7 @@ $nav = [
 
             {{-- Dark mode toggle --}}
             <button data-dark-toggle
-                    class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-brand-600"
+                    class="rounded-lg p-2 text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-brand-600"
                     aria-label="Toggle dark mode">
               <svg class="dark-toggle-moon h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/>
@@ -187,13 +187,13 @@ $nav = [
         @if(session('success') || session('error'))
         <div class="px-4 pt-4 sm:px-6" role="alert" aria-live="polite">
             @if(session('success'))
-            <div class="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-sm font-semibold text-green-700 mb-2">
+            <div class="flex items-center gap-2 rounded-xl bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 px-4 py-3 text-sm font-semibold text-green-700 dark:text-green-300 mb-2">
                 <svg class="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
                 {{ session('success') }}
             </div>
             @endif
             @if(session('error'))
-            <div class="flex items-center gap-2 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm font-semibold text-red-700 mb-2">
+            <div class="flex items-center gap-2 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 px-4 py-3 text-sm font-semibold text-red-700 dark:text-red-300 mb-2">
                 <svg class="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
                 {{ session('error') }}
             </div>
