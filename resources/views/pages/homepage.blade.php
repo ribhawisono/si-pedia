@@ -96,10 +96,10 @@
         {{-- Section Header --}}
         <div class="mb-12 flex items-end justify-between">
             <div>
-                <span class="inline-block rounded-full bg-[#336cbc]/10 px-4 py-1.5 text-sm font-semibold text-[#336cbc] tracking-wide mb-3">BERITA & ARTIKEL</span>
-                <h2 class="text-3xl font-extrabold text-[#0a0b2f] tracking-tight sm:text-4xl">Artikel Terbaru</h2>
+                <span class="inline-block rounded-full bg-brand-600/10 px-4 py-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 tracking-wide mb-3">BERITA & ARTIKEL</span>
+                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight sm:text-4xl">Artikel Terbaru</h2>
             </div>
-            <a href="{{ route('catalog') }}" class="hidden items-center gap-2 text-sm font-semibold text-[#336cbc] hover:text-[#2563eb] transition sm:inline-flex">
+            <a href="{{ route('catalog') }}" class="hidden items-center gap-2 text-sm font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 transition sm:inline-flex">
                 Lihat Semua
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
@@ -123,7 +123,7 @@
 
                     {{-- Category Badge --}}
                     <div class="absolute top-3 left-3">
-                        <span class="rounded-md bg-[#336cbc] px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
+                        <span class="rounded-md bg-brand-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
                             {{ $article->category->name ?? 'Umum' }}
                         </span>
                     </div>
@@ -131,13 +131,13 @@
 
                 {{-- Content --}}
                 <div class="p-5">
-                    <h3 class="text-lg font-bold leading-snug text-[#0a0b2f] line-clamp-2 group-hover:text-[#336cbc] transition-colors">
+                    <h3 class="text-lg font-bold leading-snug text-gray-900 dark:text-white line-clamp-2 group-hover:text-brand-700 transition-colors">
                         {{ $article->title }}
                     </h3>
                     <p class="mt-2 text-sm text-gray-500 line-clamp-2">
                         {{ Str::limit(strip_tags($article->content), 120) }}
                     </p>
-                    <div class="mt-4 flex items-center gap-2 text-sm font-semibold text-[#336cbc]">
+                    <div class="mt-4 flex items-center gap-2 text-sm font-semibold text-brand-600 dark:text-brand-400">
                         Baca Selengkapnya
                         <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </div>
@@ -156,7 +156,7 @@
 
         {{-- Mobile "Lihat Semua" --}}
         <div class="mt-8 text-center sm:hidden">
-            <a href="{{ route('catalog') }}" class="inline-flex items-center gap-2 rounded-lg bg-[#336cbc] px-6 py-3 text-sm font-semibold text-white hover:bg-[#2563eb] transition">
+            <a href="{{ route('catalog') }}" class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700 transition">
                 Lihat Semua Artikel
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
@@ -170,8 +170,8 @@
 <section class="bg-gray-50 border-t border-gray-100 py-16">
     <div class="mx-auto max-w-[1440px] px-8">
         <div class="mb-10 text-center">
-            <span class="inline-block rounded-full bg-[#336cbc]/10 px-4 py-1.5 text-sm font-semibold text-[#336cbc] tracking-wide mb-3">KATEGORI</span>
-            <h2 class="text-3xl font-extrabold text-[#0a0b2f] tracking-tight">Jelajahi Berdasarkan Topik</h2>
+            <span class="inline-block rounded-full bg-brand-600/10 px-4 py-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 tracking-wide mb-3">KATEGORI</span>
+            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Jelajahi Berdasarkan Topik</h2>
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -186,14 +186,14 @@
             @endphp
 
             @foreach($categories as $cat)
-            <a href="{{ route('catalog', ['category' => $cat->id]) }}" class="group flex items-center gap-4 rounded-xl bg-white p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-[#336cbc]/20 transition-all duration-300">
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-[#336cbc]/10 flex items-center justify-center text-[#336cbc] group-hover:bg-[#336cbc] group-hover:text-white transition-all duration-300">
+            <a href="{{ route('catalog', ['category' => $cat->id]) }}" class="group flex items-center gap-4 rounded-xl bg-white p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-brand-600/20 transition-all duration-300">
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-brand-600/10 flex items-center justify-center text-brand-600 dark:text-brand-400 group-hover:bg-brand-600 group-hover:text-white transition-all duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         {!! $icons[$cat->name] ?? '<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>' !!}
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-[#0a0b2f] group-hover:text-[#336cbc] transition-colors">{{ $cat->name }}</h3>
+                    <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-brand-700 transition-colors">{{ $cat->name }}</h3>
                     <p class="text-xs text-gray-500 mt-0.5">{{ \App\Models\Article::where('category_id', $cat->id)->where('status', 'active')->count() }} artikel</p>
                 </div>
             </a>
@@ -216,7 +216,7 @@
                 <p class="max-w-2xl mx-auto text-white/70 mb-8">
                     Pelajari lebih lanjut tentang visi, misi, sejarah, dan dosen pengajar Program Studi Sistem Informasi Universitas Indraprasta PGRI.
                 </p>
-                <a href="{{ route('about') }}" class="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-bold text-[#336cbc] shadow-lg hover:bg-gray-50 transition-all hover:shadow-xl hover:-translate-y-0.5">
+                <a href="{{ route('about') }}" class="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-bold text-brand-600 dark:text-brand-400 shadow-lg hover:bg-gray-50 transition-all hover:shadow-xl hover:-translate-y-0.5">
                     Kunjungi Halaman About
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>

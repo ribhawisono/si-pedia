@@ -1,19 +1,19 @@
-<x-layouts.app title="Tentang Kami — SI-Pedia" active="About" footer="full"
+<x-layouts.app title="Tentang Kami — SI-Pedia" active="About us" footer="full"
     meta_description="Tentang Program Studi Sistem Informasi Universitas Indraprasta PGRI — Sejarah, Visi, Misi, dan Dosen.">
 
-<main class="bg-white">
+<div class="bg-white dark:bg-gray-950">
 
     {{-- ============================================ --}}
     {{-- HERO: Profil Prodi                          --}}
     {{-- ============================================ --}}
     <section class="max-w-5xl mx-auto px-6 pt-16 pb-12">
         <div class="mb-4">
-            <span class="inline-block rounded-full bg-[#336cbc]/10 px-4 py-1.5 text-sm font-semibold text-[#336cbc] tracking-wide">
+            <span class="inline-block rounded-full bg-brand-600/10 px-4 py-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 tracking-wide">
                 TENTANG KAMI
             </span>
         </div>
 
-        <h1 class="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-[#0a0b2f] leading-tight mb-6">
+        <h1 class="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-gray-900 dark:text-white leading-tight mb-6">
             Profil Program Studi<br class="hidden sm:block">
             Sistem Informasi
         </h1>
@@ -31,39 +31,39 @@
     <section class="bg-gray-50 border-t border-gray-100">
         <div class="max-w-5xl mx-auto px-6 py-16">
             <div class="flex items-center gap-3 mb-6">
-                <div class="w-1.5 h-8 rounded-full bg-[#336cbc]"></div>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0a0b2f] tracking-tight">Sejarah</h2>
+                <div class="w-1.5 h-8 rounded-full bg-brand-600"></div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Sejarah</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pl-6">
                 <div>
                     <div class="flex items-start gap-4 mb-6">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#336cbc] text-white font-bold text-sm flex items-center justify-center">2023</div>
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center">2023</div>
                         <div>
-                            <h3 class="font-bold text-[#0a0b2f] mb-1">Pendirian Program Studi</h3>
+                            <h3 class="font-bold text-gray-900 dark:text-white mb-1">Pendirian Program Studi</h3>
                             <p class="text-sm text-gray-600 leading-relaxed">Program Studi Sistem Informasi resmi dibuka berdasarkan SK Mendikbudristek Nomor 411/E/O/2023 tanggal 16 Mei 2023 di Universitas Indraprasta PGRI Jakarta.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-4 mb-6">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#336cbc] text-white font-bold text-sm flex items-center justify-center">2023</div>
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center">2023</div>
                         <div>
-                            <h3 class="font-bold text-[#0a0b2f] mb-1">Akreditasi Minimum Terpenuhi</h3>
+                            <h3 class="font-bold text-gray-900 dark:text-white mb-1">Akreditasi Minimum Terpenuhi</h3>
                             <p class="text-sm text-gray-600 leading-relaxed">Berdasarkan keputusan tersebut, program studi dinyatakan telah memenuhi persyaratan akreditasi minimum untuk penyelenggaraan pendidikan tinggi.</p>
                         </div>
                     </div>
                 </div>
                 <div>
                     <div class="flex items-start gap-4 mb-6">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#336cbc] text-white font-bold text-sm flex items-center justify-center">2024</div>
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center">2024</div>
                         <div>
-                            <h3 class="font-bold text-[#0a0b2f] mb-1">Pengembangan Kurikulum</h3>
+                            <h3 class="font-bold text-gray-900 dark:text-white mb-1">Pengembangan Kurikulum</h3>
                             <p class="text-sm text-gray-600 leading-relaxed">Kurikulum dikembangkan dengan fokus pada Business Intelligence dan Artificial Intelligence (AI) untuk menjawab kebutuhan industri digital.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#336cbc] text-white font-bold text-sm flex items-center justify-center">2025</div>
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center">2025</div>
                         <div>
-                            <h3 class="font-bold text-[#0a0b2f] mb-1">Pertumbuhan & Kolaborasi</h3>
+                            <h3 class="font-bold text-gray-900 dark:text-white mb-1">Pertumbuhan & Kolaborasi</h3>
                             <p class="text-sm text-gray-600 leading-relaxed">Menjalin kerjasama dengan berbagai pihak untuk pengabdian masyarakat, penelitian, dan peningkatan kualitas lulusan.</p>
                         </div>
                     </div>
@@ -77,8 +77,8 @@
     {{-- ============================================ --}}
     <section class="max-w-5xl mx-auto px-6 py-16">
         <div class="flex items-center gap-3 mb-8">
-            <div class="w-1.5 h-8 rounded-full bg-[#336cbc]"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0a0b2f] tracking-tight">Dosen Pengajar</h2>
+            <div class="w-1.5 h-8 rounded-full bg-brand-600"></div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Dosen Pengajar</h2>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -125,8 +125,8 @@
             {{-- VISI --}}
             <div class="mb-12">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-1.5 h-8 rounded-full bg-[#336cbc]"></div>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0a0b2f] tracking-tight">VISI</h2>
+                    <div class="w-1.5 h-8 rounded-full bg-brand-600"></div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">VISI</h2>
                 </div>
                 <p class="text-base sm:text-lg text-gray-600 leading-relaxed pl-6 max-w-3xl">
                     Mengembangkan keilmuan Sistem Informasi yang unggul di bidang <strong class="text-gray-800">Business Intelligence</strong> dan <strong class="text-gray-800">Artificial Intelligence (AI)</strong> yang berlandaskan pada peduli, mandiri, kreatif, dan adaptif.
@@ -136,27 +136,27 @@
             {{-- MISI --}}
             <div>
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-1.5 h-8 rounded-full bg-[#336cbc]"></div>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0a0b2f] tracking-tight">MISI</h2>
+                    <div class="w-1.5 h-8 rounded-full bg-brand-600"></div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">MISI</h2>
                 </div>
 
                 <div class="space-y-5 pl-6">
                     <div class="flex gap-4 items-start">
-                        <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-[#336cbc] text-white font-bold text-sm flex items-center justify-center shadow-sm">1</span>
+                        <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-brand-600 text-white font-bold text-sm flex items-center justify-center shadow-sm">1</span>
                         <p class="text-base text-gray-600 leading-relaxed pt-1">
                             Menyelenggarakan pendidikan dan pengajaran yang profesional di bidang Sistem Informasi dan Bisnis Intelligence.
                         </p>
                     </div>
 
                     <div class="flex gap-4 items-start">
-                        <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-[#336cbc] text-white font-bold text-sm flex items-center justify-center shadow-sm">2</span>
+                        <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-brand-600 text-white font-bold text-sm flex items-center justify-center shadow-sm">2</span>
                         <p class="text-base text-gray-600 leading-relaxed pt-1">
                             Melaksanakan kegiatan penelitian dan kajian inovatif dalam pengembangan Sistem Informasi.
                         </p>
                     </div>
 
                     <div class="flex gap-4 items-start">
-                        <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-[#336cbc] text-white font-bold text-sm flex items-center justify-center shadow-sm">3</span>
+                        <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-brand-600 text-white font-bold text-sm flex items-center justify-center shadow-sm">3</span>
                         <p class="text-base text-gray-600 leading-relaxed pt-1">
                             Melaksanakan kegiatan pengabdian kepada Masyarakat dan kerjasama di bidang Sistem Informasi yang dapat memenuhi kepentingan masyarakat (stakeholders).
                         </p>
@@ -167,5 +167,5 @@
         </div>
     </section>
 
-</main>
+</div>
 </x-layouts.app>
