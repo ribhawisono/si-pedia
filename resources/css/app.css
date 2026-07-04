@@ -138,8 +138,11 @@ img.loaded  { opacity: 1; }
    PHASE 7 — DARK MODE, ANIMATIONS, TOOLTIPS, TRANSITIONS
 ══════════════════════════════════════════════════════ */
 
-/* ─ Smooth color transitions on every element ──────────── */
-body, body * {
+/* ─ Smooth color transitions (scoped, not global — a blanket `body *`
+   transition caused Chrome paint/compositing glitches: stale blank tiles
+   left behind after scroll/resize that only cleared on hover/inspect) ── */
+a, button, input, textarea, select, .card, .bg-white, .bg-tablehead,
+[class*="border-"], [class*="text-gray-"], [class*="bg-gray-"] {
     transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease;
 }
 img, svg, .no-transition { transition: none !important; }
