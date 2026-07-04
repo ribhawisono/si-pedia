@@ -4,7 +4,7 @@
     <a href="{{ route('home') }}" class="flex items-center gap-2 text-lg text-gray-800 hover:text-brand-600 transition">← Back</a>
     <div class="flex-1">
       <form action="{{ route('review.index') }}" method="GET">
-        <div class="flex h-12 items-center rounded-full bg-[#e3e3e3] px-6">
+        <div class="flex h-12 items-center rounded-full bg-gray-100 px-6">
           <span class="text-gray-500">🔍</span>
           <input type="text" name="q" value="{{ request('q') }}" placeholder="Search reviews..." class="ml-2 flex-1 bg-transparent border-none focus:ring-0 text-gray-800">
         </div>
@@ -20,7 +20,7 @@
 
   <div class="mt-7 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
     @forelse($reviews as $review)
-    <div class="rounded-2xl bg-[#e8e8e8] p-3 shadow-md hover:shadow-lg transition-shadow">
+    <div class="rounded-2xl bg-gray-100 p-3 shadow-md hover:shadow-lg transition-shadow">
       <div class="relative">
         @if($review->image)
           <img src="{{ $review->image ? (str_starts_with($review->image, "http") ? $review->image : Storage::url($review->image)) : null }}" class="h-[150px] w-full rounded-xl object-cover" loading="lazy" alt="{{ $review->title }}">
