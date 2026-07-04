@@ -63,8 +63,7 @@ $nav = [
             @php $item = $nav[$key]; @endphp
             <a href="{{ route($item['route']) }}"
                class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors mb-0.5
-                      {{ $section === $key ? 'bg-white/15 text-white font-semibold' : 'text-white/70 hover:bg-white/10 hover:text-white' }}
-                      {{ ($item['sub'] ?? false) ? 'ml-4' : '' }}"
+                      {{ $section === $key ? 'bg-white/15 text-white font-semibold' : 'text-white/70 hover:bg-white/10 hover:text-white' }}"
                @if($section === $key) aria-current="page" @endif>
                 <span aria-hidden="true" class="text-base">{{ $item['icon'] }}</span>
                 <span class="flex-1">{{ $item['label'] }}</span>
