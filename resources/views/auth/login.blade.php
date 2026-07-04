@@ -38,7 +38,7 @@
         </div>
 
         <button type="submit"
-                class="mt-7 h-[58px] w-[340px] rounded-[12px] bg-brand-600 text-lg font-bold tracking-wide text-white shadow-[0_8px_16px_-4px_rgba(51,108,188,.6)] transition hover:bg-brand-700">
+                class="mt-7 h-[58px] w-full rounded-[12px] bg-brand-600 text-lg font-bold tracking-wide text-white shadow-[0_8px_16px_-4px_rgba(51,108,188,.6)] transition hover:bg-brand-700">
             ACCESS
         </button>
     </form>
