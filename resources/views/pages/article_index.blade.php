@@ -15,6 +15,10 @@
           </span>
         </a>
       @endif
+      <a href="{{ route('admin.articles.trash') }}"
+         class="rounded-lg bg-gray-200 px-5 py-2.5 text-sm font-bold text-gray-700 shadow hover:bg-gray-300 transition">
+        🗑 Trash
+      </a>
       <a href="{{ route('admin.articles.create') }}"
          class="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-bold text-white shadow hover:bg-brand-700 transition">
         + Add Article
@@ -38,7 +42,7 @@
 
   <div class="mt-3 space-y-3">
     @forelse($articles as $i => $article)
-    <div class="hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_200px] items-center gap-2 rounded-2xl bg-white px-4 py-4 shadow-[0_2px_10px_rgba(0,0,0,0.06)] overflow-hidden">
+    <div class="hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_200px] items-start gap-2 rounded-2xl bg-white px-4 py-4 shadow-[0_2px_10px_rgba(0,0,0,0.06)] overflow-hidden">
       <div class="text-lg font-bold">{{ $i + 1 + ($articles->currentPage() - 1) * $articles->perPage() }}</div>
       <div>
         @if($article->image)
@@ -94,7 +98,7 @@
 
         @if($article->status === 'pending_delete')
           <form action="{{ route('admin.articles.approveDelete', $article) }}" method="POST" class="inline"
-                onsubmit="return confirm('Hapus artikel ini?')">
+                onsubmit="return confirm('Pindahkan artikel ini ke Trash?')">
             @csrf @method('DELETE')
             <button class="rounded-md bg-red-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-600">🗑 Hapus</button>
           </form>
@@ -104,7 +108,7 @@
           </form>
         @else
           <form action="{{ route('admin.articles.destroy', $article) }}" method="POST" class="inline"
-                onsubmit="return confirm('Hapus artikel ini?')">
+                onsubmit="return confirm('Pindahkan artikel ini ke Trash? Bisa dipulihkan nanti.')">
             @csrf @method('DELETE')
             <button class="rounded-md bg-danger px-3 py-1.5 text-xs font-bold text-white">Delete</button>
           </form>
