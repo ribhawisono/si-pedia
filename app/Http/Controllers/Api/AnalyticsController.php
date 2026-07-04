@@ -9,11 +9,11 @@ class AnalyticsController extends Controller
 {
     public function popular()
     {
-        $mostViewedIds = Cache::remember('api_analytics_popular_ids', 300, fn () =>
-            Article::where('status','active')->orderByDesc('views')->limit(10)->pluck('id')
+        $mostViewedIds = Cache::remember('api_analytics_popular_ids_v2', 300, fn () =>
+            Article::where('status','active')->orderByDesc('views')->limit(10)->pluck('id')->all()
         );
         $data = [
-            'most_viewed'     => Article::with('category:id,name')->whereIn('id', $mostViewedIds)->orderByDesc('views')->get(),
+            'most_viewed'     => Article::with('category:id,name')->whereIn('id', (array) $mostViewedIds)->orderByDesc('views')->get(),
             'category_stats'  => Category::withCount(['articles' => fn ($q) => $q->where('status','active')])->get(),
             'total_articles'  => Article::where('status','active')->count(),
             'total_users'     => User::count(),
