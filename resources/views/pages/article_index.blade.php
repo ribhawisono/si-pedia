@@ -36,7 +36,9 @@
     🔍 <span class="ml-3">Search Articles by title, category, or author...</span>
   </div>
 
-  <div class="mt-6 hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_200px] gap-2 rounded-xl bg-tablehead px-4 py-3 text-sm font-bold text-gray-800">
+  <div class="mt-6 overflow-x-auto">
+  <div class="min-w-[1050px]">
+  <div class="hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_200px] gap-2 rounded-xl bg-tablehead px-4 py-3 text-sm font-bold text-gray-800">
     <div>No</div><div>Thumbnail</div><div>Judul Artikel</div><div>Kategori</div><div>Penulis</div><div>Tanggal</div><div>Status</div><div>Action</div>
   </div>
 
@@ -120,6 +122,8 @@
       Tidak ada artikel.
     </div>
     @endforelse
+  </div>
+  </div>
   </div>
 
   <div class="mt-6">{{ $articles->links() }}</div>
