@@ -1,5 +1,5 @@
 <x-layouts.admin title="Manajemen Artikel — SI-Pedia" section="articles">
-<main class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+<div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
   <div class="flex items-start justify-between">
     <div>
       <h1 class="page-title">Article Data</h1>
@@ -127,5 +127,5 @@
   </div>
 
   <div class="mt-6">{{ $articles->links() }}</div>
-</main>
+</div>
 </x-layouts.admin>
