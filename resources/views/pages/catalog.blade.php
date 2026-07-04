@@ -24,12 +24,13 @@
         {{-- Sort --}}
         <label for="sort-select" class="sr-only">Urutkan artikel</label>
         <select id="sort-select" name="sort" onchange="document.getElementById('catalog-form').submit()"
+                style="color-scheme: light;"
                 class="rounded-xl bg-white/10 border border-white/20 py-3 px-4 text-sm text-white focus:outline-none focus:border-white/40 cursor-pointer min-w-[160px]">
-          <option value="newest"      @selected(($sort??'newest')==='newest')>🕐 Terbaru</option>
-          <option value="oldest"      @selected(($sort??'')==='oldest')>📅 Terlama</option>
-          <option value="most_viewed" @selected(($sort??'')==='most_viewed')>👁 Terpopuler</option>
-          <option value="alpha"       @selected(($sort??'')==='alpha')>🔤 A–Z</option>
-          <option value="trending"    @selected(($sort??'')==='trending')>🔥 Trending</option>
+          <option value="newest"      class="text-gray-900 bg-white" @selected(($sort??'newest')==='newest')>🕐 Terbaru</option>
+          <option value="oldest"      class="text-gray-900 bg-white" @selected(($sort??'')==='oldest')>📅 Terlama</option>
+          <option value="most_viewed" class="text-gray-900 bg-white" @selected(($sort??'')==='most_viewed')>👁 Terpopuler</option>
+          <option value="alpha"       class="text-gray-900 bg-white" @selected(($sort??'')==='alpha')>🔤 A–Z</option>
+          <option value="trending"    class="text-gray-900 bg-white" @selected(($sort??'')==='trending')>🔥 Trending</option>
         </select>
         <input type="hidden" name="category" value="{{ request('category') }}">
         <input type="hidden" name="tag" value="{{ request('tag') }}">
@@ -45,7 +46,7 @@
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex flex-col lg:flex-row gap-8">
 
-      {{-- ─── Sidebar Filters ──────────────────────────────────────────── --}}
+      {{-- ─── Sidebar Filters ───────────────────────────── --}}
       <aside class="lg:w-64 flex-shrink-0" aria-label="Filter artikel">
         {{-- Category filter --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm mb-4">
@@ -86,7 +87,7 @@
         @endif
       </aside>
 
-      {{-- ─── Articles Grid ─────────────────────────────────────────────── --}}
+      {{-- ─── Articles Grid ───────────────────────────── --}}
       <div class="flex-1 min-w-0">
         {{-- Active filters & results info --}}
         <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
