@@ -3,7 +3,7 @@
 @php $url = route('articles.show', $article->slug); @endphp
 
 @if($variant === 'grid')
-<a href="{{ $url }}" class="group block overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-brand-600">
+<a href="{{ $url }}" class="group block overflow-hidden rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-brand-600">
     <div class="relative h-48 overflow-hidden bg-gray-100">
         @if($article->image_url)
             <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
@@ -19,10 +19,10 @@
         </div>
     </div>
     <div class="p-5">
-        <h3 class="text-lg font-bold leading-snug text-gray-900 line-clamp-2 group-hover:text-brand-700 transition-colors">
+        <h3 class="text-lg font-bold leading-snug text-gray-900 dark:text-white line-clamp-2 group-hover:text-brand-700 transition-colors">
             {{ $article->title }}
         </h3>
-        <p class="mt-2 text-sm text-gray-500 line-clamp-2">{{ Str::limit(strip_tags($article->content), 100) }}</p>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{{ Str::limit(strip_tags($article->content), 100) }}</p>
         <div class="mt-3 flex items-center justify-between text-xs text-gray-400">
             <span>{{ $article->created_at->translatedFormat('j M Y') }}</span>
             <span>{{ $article->reading_time }} mnt</span>
@@ -31,20 +31,20 @@
 </a>
 
 @elseif($variant === 'compact')
-<a href="{{ $url }}" class="group flex items-start gap-3 rounded-xl p-3 hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-brand-600">
+<a href="{{ $url }}" class="group flex items-start gap-3 rounded-xl p-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-brand-600">
     @if($article->image_url)
         <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="h-16 w-16 flex-shrink-0 rounded-lg object-cover" loading="lazy">
     @else
         <div class="h-16 w-16 flex-shrink-0 rounded-lg bg-gray-100" aria-hidden="true"></div>
     @endif
     <div class="min-w-0">
-        <p class="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-brand-700 transition-colors">{{ $article->title }}</p>
+        <p class="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-brand-700 transition-colors">{{ $article->title }}</p>
         <p class="mt-0.5 text-xs text-gray-400">{{ $article->reading_time }} mnt · {{ number_format($article->views) }}×</p>
     </div>
 </a>
 
 @else {{-- list (default) --}}
-<article class="flex gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-md transition-all group">
+<article class="flex gap-4 rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm hover:shadow-md transition-all group">
     <div class="flex-shrink-0">
         @if($article->image_url)
             <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="h-24 w-32 rounded-xl object-cover sm:h-28 sm:w-36" loading="lazy">
@@ -62,10 +62,10 @@
             <time class="text-xs text-gray-400" datetime="{{ $article->created_at->toISOString() }}">{{ $article->created_at->translatedFormat('j M Y') }}</time>
             <span class="text-xs text-gray-400">{{ $article->reading_time }} mnt</span>
         </div>
-        <h2 class="font-bold text-gray-900 leading-snug line-clamp-2 group-hover:text-brand-700 transition-colors">
+        <h2 class="font-bold text-gray-900 dark:text-white leading-snug line-clamp-2 group-hover:text-brand-700 transition-colors">
             <a href="{{ $url }}" class="focus:outline-none focus:underline">{{ $article->title }}</a>
         </h2>
-        <p class="mt-1.5 text-sm text-gray-500 line-clamp-2">{{ Str::limit(strip_tags($article->content), 130) }}</p>
+        <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{{ Str::limit(strip_tags($article->content), 130) }}</p>
     </div>
 </article>
 @endif
