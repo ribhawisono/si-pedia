@@ -37,7 +37,7 @@
     <link href="https://fonts.bunny.net/css?family=poppins:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-white font-sans text-gray-900 antialiased" id="top">
+<body class="min-h-screen bg-white font-sans text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100" id="top">
 
     {{-- Skip to content (accessibility) --}}
     <a href="#main-content"
