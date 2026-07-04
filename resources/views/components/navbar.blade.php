@@ -55,9 +55,9 @@
         <div id="search-suggestions"
              role="listbox"
              aria-label="Saran pencarian"
-             class="search-suggestions absolute left-0 top-full mt-1 hidden w-full min-w-[280px] overflow-hidden rounded-xl bg-white shadow-xl border border-gray-100 z-50">
+             class="search-suggestions absolute left-0 top-full mt-1 hidden w-full min-w-[280px] overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 z-50">
           <div id="search-suggestions-content" class="py-1"></div>
-          <div id="search-no-results" class="hidden px-4 py-3 text-sm text-gray-500 text-center">
+          <div id="search-no-results" class="hidden px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center">
             Tidak ada hasil untuk "<span id="search-no-results-q"></span>"
           </div>
           <div id="search-loading" class="hidden px-4 py-3 text-center">
@@ -89,10 +89,10 @@
       <div id="user-menu"
            role="menu"
            aria-label="Menu pengguna"
-           class="absolute right-0 top-full mt-2 hidden w-56 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl z-50">
+           class="absolute right-0 top-full mt-2 hidden w-56 overflow-hidden rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-xl z-50">
         {{-- User info --}}
-        <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
-          <p class="truncate text-sm font-bold text-gray-900">{{ auth()->user()->name }}</p>
+        <div class="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3">
+          <p class="truncate text-sm font-bold text-gray-900 dark:text-white">{{ auth()->user()->name }}</p>
           <p class="truncate text-xs text-gray-400">{{ auth()->user()->email }}</p>
           <span class="mt-1 inline-block rounded-full bg-brand-600/10 px-2 py-0.5 text-xs font-bold text-brand-700">
             {{ ucfirst(auth()->user()->role) }}
@@ -101,25 +101,25 @@
 
         <div class="py-1" role="none">
           @if(auth()->user()->role === 'admin')
-            <a href="{{ route('admin.panel') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none">
+            <a href="{{ route('admin.panel') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none">
               <span aria-hidden="true">🛠</span> Admin Panel
             </a>
-            <a href="{{ route('admin.articles.pending') }}" role="menuitem" class="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none">
+            <a href="{{ route('admin.articles.pending') }}" role="menuitem" class="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none">
               <span class="flex items-center gap-2.5"><span aria-hidden="true">📋</span> Pending Artikel</span>
               @php $pc = \App\Models\Article::whereIn('status',['pending','pending_delete'])->count(); @endphp
               @if($pc > 0)<span class="rounded-full bg-red-500 px-1.5 py-0.5 text-xs font-bold text-white" aria-label="{{ $pc }} artikel pending">{{ $pc }}</span>@endif
             </a>
-            <div class="my-1 border-t border-gray-100" role="separator"></div>
+            <div class="my-1 border-t border-gray-100 dark:border-gray-700" role="separator"></div>
           @endif
 
-          <a href="{{ route('articles.create') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:bg-brand-50 focus:outline-none">
+          <a href="{{ route('articles.create') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold text-brand-700 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-gray-700 focus:bg-brand-50 dark:focus:bg-gray-700 focus:outline-none">
             <span aria-hidden="true">✏️</span> Tulis Artikel
           </a>
-          <a href="{{ route('articles.my') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none">
+          <a href="{{ route('articles.my') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none">
             <span aria-hidden="true">📄</span> Artikel Saya
           </a>
-          <div class="my-1 border-t border-gray-100" role="separator"></div>
-          <a href="{{ route('profile.show') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none">
+          <div class="my-1 border-t border-gray-100 dark:border-gray-700" role="separator"></div>
+          <a href="{{ route('profile.show') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none">
             <span aria-hidden="true">👤</span> Profil Saya
           </a>
           <form method="POST" action="{{ route('logout') }}" class="m-0" role="none">
