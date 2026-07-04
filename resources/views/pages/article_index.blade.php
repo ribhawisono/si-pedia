@@ -32,13 +32,13 @@
     🔍 <span class="ml-3">Search Articles by title, category, or author...</span>
   </div>
 
-  <div class="mt-6 hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_180px] gap-2 rounded-xl bg-tablehead px-4 py-3 text-sm font-bold text-gray-800">
+  <div class="mt-6 hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_200px] gap-2 rounded-xl bg-tablehead px-4 py-3 text-sm font-bold text-gray-800">
     <div>No</div><div>Thumbnail</div><div>Judul Artikel</div><div>Kategori</div><div>Penulis</div><div>Tanggal</div><div>Status</div><div>Action</div>
   </div>
 
   <div class="mt-3 space-y-3">
     @forelse($articles as $i => $article)
-    <div class="hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_180px] items-center gap-2 rounded-2xl bg-white px-4 py-4 shadow-[0_2px_10px_rgba(0,0,0,0.06)]">
+    <div class="hidden lg:grid grid-cols-[60px_120px_1fr_130px_110px_150px_140px_200px] items-center gap-2 rounded-2xl bg-white px-4 py-4 shadow-[0_2px_10px_rgba(0,0,0,0.06)] overflow-hidden">
       <div class="text-lg font-bold">{{ $i + 1 + ($articles->currentPage() - 1) * $articles->perPage() }}</div>
       <div>
         @if($article->image)
@@ -47,7 +47,7 @@
           <div class="h-[80px] w-[100px] rounded bg-gray-200 flex items-center justify-center text-xs text-gray-500">No Image</div>
         @endif
       </div>
-      <div class="pr-4">
+      <div class="pr-4 min-w-0">
         <p class="text-sm font-bold leading-snug text-gray-900">{{ $article->title }}</p>
         @if($article->user)
           <p class="mt-1 text-xs text-gray-400">oleh {{ $article->user->name }} ({{ ucfirst($article->user->role) }})</p>
@@ -73,9 +73,13 @@
         @endphp
         <span class="rounded-md {{ $sc }} px-3 py-1 text-xs font-semibold text-white">{{ $sl }}</span>
       </div>
-      <div class="flex flex-wrap gap-1.5">
+      <div class="flex flex-wrap gap-1.5 min-w-0">
+        {{-- Admins may only edit articles they authored themselves; user-submitted
+             articles are moderated via Acc/Tolak/Delete only. --}}
+        @if($article->user_id === auth()->id())
         <a href="{{ route('admin.articles.edit', $article) }}"
            class="rounded-md bg-edit px-3 py-1.5 text-xs font-bold text-black">Edit</a>
+        @endif
 
         @if($article->status === 'pending')
           <form action="{{ route('admin.articles.approve', $article) }}" method="POST" class="inline">
