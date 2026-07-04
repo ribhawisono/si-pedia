@@ -1,37 +1,37 @@
 <x-layouts.admin title="Report Akun — SI-Pedia" section="reports">
-<main class="mx-auto max-w-[1200px] px-8 py-10">
+<main class="mx-auto max-w-[1200px] px-4 sm:px-8 py-6 sm:py-10">
 
-  <div class="flex items-center justify-between">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
       <h1 class="page-title">Laporan Akun</h1>
       <p class="mt-1 text-gray-500 text-sm">Tinjau dan kelola laporan akun dari pengguna.</p>
     </div>
-    <a href="{{ route('admin.panel') }}" class="rounded-xl bg-gray-100 px-5 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-200 transition">
+    <a href="{{ route('admin.panel') }}" class="self-start sm:self-auto rounded-xl bg-gray-100 px-5 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-200 transition whitespace-nowrap">
       ← Admin Panel
     </a>
   </div>
 
   {{-- Stats --}}
-  <div class="mt-8 grid grid-cols-3 gap-4">
-    <div class="rounded-2xl border border-yellow-200 bg-yellow-50 px-6 py-5 text-center">
+  <div class="mt-6 sm:mt-8 grid grid-cols-3 gap-2 sm:gap-4">
+    <div class="rounded-2xl border border-yellow-200 bg-yellow-50 px-3 sm:px-6 py-4 sm:py-5 text-center">
       <p class="stat-card-num text-yellow-600">{{ $counts['pending'] }}</p>
-      <p class="mt-1 text-sm font-bold text-yellow-700">Menunggu Tinjauan</p>
+      <p class="mt-1 text-xs sm:text-sm font-bold text-yellow-700">Menunggu Tinjauan</p>
     </div>
-    <div class="rounded-2xl border border-green-200 bg-green-50 px-6 py-5 text-center">
+    <div class="rounded-2xl border border-green-200 bg-green-50 px-3 sm:px-6 py-4 sm:py-5 text-center">
       <p class="stat-card-num text-green-600">{{ $counts['reviewed'] }}</p>
-      <p class="mt-1 text-sm font-bold text-green-700">Sudah Ditinjau</p>
+      <p class="mt-1 text-xs sm:text-sm font-bold text-green-700">Sudah Ditinjau</p>
     </div>
-    <div class="rounded-2xl border border-gray-200 bg-gray-50 px-6 py-5 text-center">
+    <div class="rounded-2xl border border-gray-200 bg-gray-50 px-3 sm:px-6 py-4 sm:py-5 text-center">
       <p class="stat-card-num text-gray-500">{{ $counts['dismissed'] }}</p>
-      <p class="mt-1 text-sm font-bold text-gray-500">Diabaikan</p>
+      <p class="mt-1 text-xs sm:text-sm font-bold text-gray-500">Diabaikan</p>
     </div>
   </div>
 
   {{-- Filter --}}
-  <div class="mt-6 flex gap-3">
+  <div class="mt-6 flex gap-2 sm:gap-3 overflow-x-auto">
     @foreach(['semua' => '', 'pending' => 'pending', 'reviewed' => 'reviewed', 'dismissed' => 'dismissed'] as $label => $val)
     <a href="{{ route('admin.account-reports.index', $val ? ['status' => $val] : []) }}"
-       class="rounded-lg px-4 py-2 text-sm font-semibold transition
+       class="rounded-lg px-4 py-2 text-sm font-semibold transition whitespace-nowrap
               {{ request('status', '') === $val ? 'bg-ink-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
       {{ ucfirst($label) }}
     </a>
@@ -49,9 +49,9 @@
     @forelse($reports as $report)
     <div class="rounded-2xl border bg-white shadow-sm overflow-hidden
                 {{ $report->status === 'pending' ? 'border-yellow-200' : ($report->status === 'reviewed' ? 'border-green-200' : 'border-gray-200') }}">
-      <div class="px-6 py-5">
-        <div class="flex items-start justify-between gap-4">
-          <div class="flex-1">
+      <div class="px-4 sm:px-6 py-4 sm:py-5">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div class="flex-1 min-w-0">
             {{-- Header --}}
             <div class="flex items-center gap-3 flex-wrap">
               <span class="rounded-full px-3 py-1 text-xs font-bold
@@ -63,7 +63,7 @@
             </div>
 
             {{-- Pelaporkan → Terlapor --}}
-            <div class="mt-3 flex items-center gap-3">
+            <div class="mt-3 flex flex-wrap items-center gap-3">
               <div class="flex items-center gap-2">
                 <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700">
                   {{ strtoupper(substr($report->reporter->name ?? '?', 0, 1)) }}
@@ -73,7 +73,7 @@
                   <p class="text-xs text-gray-400">Pelapor</p>
                 </div>
               </div>
-              <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg class="h-4 w-4 text-gray-400 hidden sm:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
               </svg>
               <div class="flex items-center gap-2">
@@ -106,9 +106,9 @@
 
           {{-- Action --}}
           @if($report->status === 'pending')
-          <div class="flex-shrink-0">
+          <div class="flex-shrink-0 w-full sm:w-auto">
             <form action="{{ route('admin.account-reports.update', $report) }}" method="POST"
-                  class="space-y-2 min-w-[180px]">
+                  class="space-y-2 sm:min-w-[180px]">
               @csrf @method('PATCH')
               <textarea name="admin_note" rows="2" placeholder="Catatan (opsional)"
                         class="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-700 resize-none focus:ring-0 focus:border-gray-400"></textarea>
