@@ -1,5 +1,5 @@
 <x-auth-layout title="Register — SI-Pedia">
-    <h1 class="mb-9 text-4xl font-extrabold tracking-tight text-gray-900">SIGN UP</h1>
+    <h1 class="mb-9 text-center text-4xl font-extrabold tracking-tight text-gray-900">SIGN UP</h1>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-6">
         @csrf

@@ -1,6 +1,6 @@
 <x-auth-layout title="Verify Email — SI-Pedia">
-    <h2 class="text-3xl font-extrabold text-ink-900 mb-2">Verify Your Email</h2>
-    <p class="text-gray-500 mb-6">
+    <h1 class="mb-2 text-center text-3xl font-extrabold tracking-tight text-gray-900">Verify Your Email</h1>
+    <p class="mb-6 text-center text-gray-500">
         Thanks for signing up! Before getting started, please verify your email address by clicking the link we just sent.
     </p>
 
@@ -13,7 +13,7 @@
     <form method="POST" action="{{ route('verification.send') }}">
         @csrf
         <button type="submit"
-            class="w-full py-3 rounded-xl bg-[#336cbc] text-white font-semibold hover:bg-blue-700 transition">
+            class="h-[52px] w-full rounded-[14px] bg-brand-600 text-white font-semibold shadow-sm transition hover:bg-brand-700">
             Resend Verification Email
         </button>
     </form>
