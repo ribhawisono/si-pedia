@@ -9,12 +9,13 @@ use App\Models\Category;
 use App\Models\Tag;
 use App\Services\ArticleService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
     public function __construct(private ArticleService $articleService) {}
 
-    // ─── Admin: list ───────────────────────────────────────────────
+    // ─── Admin: list ────────────────────────────────────────────────────
     public function index(Request $request)
     {
         // Drafts are a user's private in-progress work and must stay hidden from
@@ -39,6 +40,40 @@ class ArticleController extends Controller
         return view('pages.article_pending', compact('pending', 'pendingDelete'));
     }
 
+    // ─── Trash (soft-deleted articles) ─────────────────────────────────
+    public function trash(Request $request)
+    {
+        $articles = Article::onlyTrashed()
+            ->with(['category:id,name', 'user:id,name'])
+            ->when($request->q, fn ($q, $s) => $q->where('title', 'like', "%{$s}%"))
+            ->latest('deleted_at')->paginate(10);
+
+        return view('pages.article_trash', compact('articles'));
+    }
+
+    public function restore($id)
+    {
+        $article = Article::onlyTrashed()->findOrFail($id);
+        $article->restore();
+        // Restored articles go back to Draft so an admin/owner reviews/edits
+        // before it's live again, rather than instantly reappearing as-is.
+        $article->update(['status' => 'draft']);
+        $this->logActivity('restore', "Restored: {$article->title}", $article);
+        $this->articleService->clearCache();
+        return back()->with('success', "\"{$article->title}\" dipulihkan sebagai Draft.");
+    }
+
+    public function forceDelete($id)
+    {
+        $article = Article::onlyTrashed()->findOrFail($id);
+        $title = $article->title;
+        if ($article->image) Storage::disk('public')->delete($article->image);
+        $article->forceDelete();
+        $this->logActivity('force_delete', "Permanently deleted: {$title}");
+        $this->articleService->clearCache();
+        return back()->with('success', "\"{$title}\" dihapus permanen.");
+    }
+
     public function approve(Article $article)
     {
         $article->update(['status' => 'active']);
@@ -60,7 +95,7 @@ class ArticleController extends Controller
         $article->delete();
         $this->logActivity('delete', "Deleted: {$title}");
         $this->articleService->clearCache();
-        return back()->with('success', "\"{$title}\" dihapus.");
+        return back()->with('success', "\"{$title}\" dipindahkan ke Trash.");
     }
 
     public function rejectDelete(Article $article)
@@ -140,7 +175,7 @@ class ArticleController extends Controller
         $this->logActivity('delete', "Deleted: {$article->title}", $article);
         $article->delete();
         $this->articleService->clearCache();
-        return redirect()->route('admin.articles.index')->with('success', 'Artikel dihapus.');
+        return redirect()->route('admin.articles.index')->with('success', 'Artikel dipindahkan ke Trash.');
     }
 
     public function requestDelete(Article $article)
