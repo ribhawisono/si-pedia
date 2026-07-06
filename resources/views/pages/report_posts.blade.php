@@ -67,7 +67,7 @@
           @php
             $avgPerDay = $stats['total'] > 0 ? round($stats['total'] / max(1, \Carbon\Carbon::now()->diffInDays(\App\Models\Article::oldest()->first()?->created_at ?? now())), 1) : 0;
             $topWriter = \App\Models\Article::selectRaw('writer, COUNT(*) as count')->groupBy('writer')->orderByDesc('count')->first();
-            $topCategory = \App\Models\Category::withCount('articles')->orderByDesc('articles_count')->first();
+            $topCategory = \App\Models\Category::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->orderByDesc('articles_count')->first();
           @endphp
           <div class="flex items-center justify-between rounded-lg bg-white px-4 py-3 shadow-sm">
             <span class="text-sm text-gray-700">Average Posts/Day</span>
