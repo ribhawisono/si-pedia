@@ -46,7 +46,7 @@ class SearchService
             ->limit(6)
             ->get();
 
-        $tags = Tag::withCount('articles')
+        $tags = Tag::withCount(['articles' => fn ($q) => $q->where('status', 'active')])
             ->where('name', 'like', $like)
             ->limit(10)
             ->get();
