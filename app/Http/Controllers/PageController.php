@@ -126,6 +126,21 @@ class PageController extends Controller
         return view('pages.faq');
     }
 
+    public function contact()
+    {
+        return view('pages.contact');
+    }
+
+    public function terms()
+    {
+        return view('pages.terms');
+    }
+
+    public function privacy()
+    {
+        return view('pages.privacy');
+    }
+
     public function adminPanel()
     {
         $stats = Cache::remember('admin_stats', 60, fn () => [
