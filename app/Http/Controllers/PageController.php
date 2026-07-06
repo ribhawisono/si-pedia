@@ -78,8 +78,8 @@ class PageController extends Controller
         ])->pluck('id')->all());
         $categories    = Category::withCount(['articles' => fn ($q) => $q->where('status', 'active')])
             ->whereIn('id', (array) $categoryIds)->get();
-        $tagIds        = Cache::remember('tags_popular_ids_v2', 300, fn () => Tag::withCount('articles')->orderByDesc('articles_count')->limit(20)->pluck('id')->all());
-        $tags          = Tag::withCount('articles')->whereIn('id', (array) $tagIds)->orderByDesc('articles_count')->get();
+        $tagIds        = Cache::remember('tags_popular_ids_v3', 300, fn () => Tag::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->orderByDesc('articles_count')->limit(20)->pluck('id')->all());
+        $tags          = Tag::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->whereIn('id', (array) $tagIds)->orderByDesc('articles_count')->get();
 
         return view('pages.catalog', compact('articles', 'categories', 'tags', 'sort', 'q'));
     }
@@ -165,10 +165,10 @@ class PageController extends Controller
             Article::where('status','active')->orderByDesc('views')->limit(5)->pluck('id')->all()
         );
         $topArticles    = Article::with('category:id,name')->whereIn('id', (array) $topArticleIds)->orderByDesc('views')->get();
-        $topUserIds     = Cache::remember('admin_top_user_ids_v2', 120, fn () =>
-            User::withCount('articles')->orderByDesc('articles_count')->limit(5)->pluck('id')->all()
+        $topUserIds     = Cache::remember('admin_top_user_ids_v3', 120, fn () =>
+            User::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->orderByDesc('articles_count')->limit(5)->pluck('id')->all()
         );
-        $topUsers       = User::withCount('articles')->whereIn('id', (array) $topUserIds)->orderByDesc('articles_count')->get();
+        $topUsers       = User::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->whereIn('id', (array) $topUserIds)->orderByDesc('articles_count')->get();
         $recentActivities = ActivityLog::with('user:id,name')->latest()->take(10)->get();
 
         return view('pages.admin_panel', compact('stats', 'articles', 'monthlyArticles', 'recentActivities', 'topArticles', 'topUsers'));
