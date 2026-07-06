@@ -9,7 +9,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount('articles')->latest()->get();
+        $categories = Category::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->latest()->get();
         return view('pages.manage_category', compact('categories'));
     }
 
