@@ -48,7 +48,7 @@
         @if($article->image)
           <img src="{{ $article->image_url }}" class="h-[80px] w-[100px] rounded object-cover">
         @else
-          <!-- <div class="h-[80px] w-[100px] rounded bg-gray-200 flex items-center justify-center text-xs text-gray-500">No Image</div> -->
+          <div class="h-[80px] w-[100px] rounded bg-gray-200 flex items-center justify-center text-xs text-gray-500">No Image</div>
         @endif
       </div>
       <div class="pr-4 min-w-0">
