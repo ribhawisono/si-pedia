@@ -143,8 +143,8 @@ class PageController extends Controller
 
     public function adminPanel()
     {
-        $stats = Cache::remember('admin_stats', 60, fn () => [
-            'articles'  => Article::count(),
+        $stats = Cache::remember('admin_stats_v2', 60, fn () => [
+            'articles'  => Article::where('status', 'active')->count(),
             'lecturers' => Lecturer::count(),
             'reviews'   => Review::count(),
             'users'     => User::count(),
