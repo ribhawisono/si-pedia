@@ -10,10 +10,10 @@ class TagController extends Controller
 {
     public function index()
     {
-        $ids = Cache::remember('api_tag_ids_v2', 300, fn () =>
-            Tag::withCount('articles')->orderByDesc('articles_count')->pluck('id')->all()
+        $ids = Cache::remember('api_tag_ids_v3', 300, fn () =>
+            Tag::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->orderByDesc('articles_count')->pluck('id')->all()
         );
-        $tags = Tag::withCount('articles')->whereIn('id', (array) $ids)->orderByDesc('articles_count')->get();
+        $tags = Tag::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->whereIn('id', (array) $ids)->orderByDesc('articles_count')->get();
         return TagResource::collection($tags);
     }
 
