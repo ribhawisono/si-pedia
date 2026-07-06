@@ -53,7 +53,7 @@
 
   <div class="grid gap-6 lg:grid-cols-[1fr_300px]">
 
-    {{-- ── Main Content Column ────────────────────────────────────────── --}}
+    {{-- ── Main Content Column ───────────────────────────── --}}
     <div class="space-y-5">
 
       {{-- Title --}}
@@ -150,7 +150,7 @@
       </div>
     </div>
 
-    {{-- ── Sidebar Column ──────────────────────────────────────────────── --}}
+    {{-- ── Sidebar Column ───────────────────────────────────── --}}
     <div class="space-y-5">
 
       {{-- Publish settings (admin) --}}
@@ -171,9 +171,9 @@
           </div>
           <div>
             <label for="created_at" class="mb-1.5 block text-xs font-bold text-gray-600">Tanggal Publikasi</label>
-            <input id="created_at" type="date" name="created_at"
+            <input id="created_at" type="date" name="created_at" readonly
                    value="{{ old('created_at', $article->created_at ? \Carbon\Carbon::parse($article->created_at)->format('Y-m-d') : date('Y-m-d')) }}"
-                   class="w-full rounded-lg border-2 border-gray-200 px-3 py-2 text-sm focus:border-brand-600 focus:outline-none focus:ring-0">
+                   class="w-full rounded-lg border-2 border-gray-100 bg-gray-50 px-3 py-2 text-sm text-gray-500 cursor-not-allowed focus:outline-none focus:ring-0">
           </div>
           <input type="hidden" name="revision_note" id="revision_note" value="Pembaruan">
           <div class="pt-2 border-t border-gray-100">
