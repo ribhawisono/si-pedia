@@ -3,7 +3,7 @@
     'section' => '',
 ])
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="id">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,7 +36,7 @@ $nav = [
 
 <div class="flex min-h-screen">
 
-    {{-- ── SIDEBAR ────────────────────────────────────────────────── --}}
+    {{-- ── SIDEBAR ──────────────────────────────────────────── --}}
     <aside id="admin-sidebar"
            class="flex w-64 flex-shrink-0 flex-col bg-ink-900 transition-all duration-300 lg:relative fixed inset-y-0 left-0 z-50 -translate-x-full lg:translate-x-0"
            aria-label="Navigasi admin">
@@ -131,7 +131,7 @@ $nav = [
     {{-- Sidebar overlay (mobile) --}}
     <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-black/50 lg:hidden" aria-hidden="true"></div>
 
-    {{-- ── MAIN AREA ──────────────────────────────────────────────────── --}}
+    {{-- ── MAIN AREA ─────────────────────────────────────────── --}}
     <div class="flex min-w-0 flex-1 flex-col">
 
         {{-- Top bar --}}
