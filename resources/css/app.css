@@ -283,14 +283,11 @@ img { max-width: 100%; height: auto; }
 .img-cover { width: 100%; height: 100%; object-fit: cover; }
 .img-responsive { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
 
-/* ─ Phase 8 — Image error fallback ──────── */
-img::before {
-    content: '';
-    display: block;
-    position: absolute;
-    inset: 0;
-    background: #f1f5f9;
-}
+/* removed: unconditional img::before overlay (position:absolute;inset:0) —
+   was escaping to the nearest positioned ancestor since <img> tags on this
+   site have no position:relative, painting a large viewport-sized #f1f5f9
+   block over subsequent content (root cause of the persistent blank-area
+   bug on admin article table across devices). */
 
 /* ─ Dark mode admin-specific ──────────── */
 html.dark #admin-sidebar { border-right: 1px solid #252836; }
