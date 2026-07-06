@@ -1,36 +1,36 @@
-<footer class="bg-ink-900 text-white">
-    <div class="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-12 py-14 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
-        <div>
-            <div class="flex items-center gap-3"><x-cap class="h-10 w-10" /><span class="text-3xl font-extrabold">SI-Pedia</span></div>
-            <p class="mt-1 text-lg font-bold">Universitas Indraprasta PGRI</p>
-            <p class="mt-4 max-w-xs text-sm leading-relaxed text-white/70">SI-Pedia is a digital platform for exploring and managing academic and creative resources easily and efficiently.</p>
-            <div class="mt-5 flex gap-4">
-                <a href="#" class="grid h-9 w-9 place-items-center rounded-full bg-white/10"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10h3l1-4h-4V4c0-1 0-2 2-2h2V0h-3c-3 0-4 2-4 4v2H7v4h2v10h4V10z"/></svg></a>
-                <a href="#" class="grid h-9 w-9 place-items-center rounded-full bg-white/10"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2c2.7 0 3 0 4.1.1 2.7.1 4 1.4 4.1 4.1.1 1.1.1 1.4.1 4.1s0 3-.1 4.1c-.1 2.7-1.4 4-4.1 4.1-1.1.1-1.4.1-4.1.1s-3 0-4.1-.1c-2.7-.1-4-1.4-4.1-4.1C3.7 13.4 3.7 13 3.7 10s0-3 .1-4.1C4 3.2 5.3 1.9 8 1.8 9.1 1.7 9.4 1.7 12 1.7zM12 6.4a5.6 5.6 0 100 11.2 5.6 5.6 0 000-11.2zm0 9.2a3.6 3.6 0 110-7.2 3.6 3.6 0 010 7.2zm5.8-9.4a1.3 1.3 0 11-2.6 0 1.3 1.3 0 012.6 0z"/></svg></a>
-                <a href="#" class="grid h-9 w-9 place-items-center rounded-full bg-white/10"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23 7.5a3 3 0 00-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 001 7.5 31 31 0 00.6 12 31 31 0 001 16.5a3 3 0 002.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 002.1-2.1A31 31 0 0023.4 12 31 31 0 0023 7.5zM9.8 15.3V8.7l5.7 3.3-5.7 3.3z"/></svg></a>
-            </div>
-        </div>
-        <div>
-            <h4 class="mb-4 text-lg font-bold">Explore</h4>
-            <ul class="space-y-2 text-white/80">
-                <li><a href="{{ route('home') }}">Homepage</a></li>
-                <li><a href="{{ route('about') }}">About us</a></li>
-                <li><a href="{{ route('review.index') }}">Review</a></li>
-                <li><a href="{{ route('catalog') }}">Catalog</a></li>
-            </ul>
-        </div>
-        <div>
-            <h4 class="mb-4 text-lg font-bold">Support</h4>
-            <ul class="space-y-2 text-white/80"><li>Help Center</li><li>Contact Us</li><li>Terms of Service</li><li>Privacy Policy</li></ul>
-        </div>
-        <div>
-            <h4 class="mb-4 text-lg font-bold">Contact</h4>
-            <ul class="space-y-4 text-white/80">
-                <li class="flex gap-3"><span>📍</span>Jl. Nangka No 58 Tanjung Barat,<br>Jakarta Selatan, 12530.</li>
-                <li class="flex gap-3"><span>📞</span>(021) 7818718</li>
-                <li class="flex gap-3"><span>✉</span>kampus@unindra.ac.id</li>
-            </ul>
-        </div>
-    </div>
-    <p class="border-t border-white/10 py-5 text-center text-sm text-white/60">@2024 SI-Pedia Universitas Indraprasta PGRI. All rights reserved.</p>
-</footer>
+&lt;footer class="bg-ink-900 text-white"&gt;
+    &lt;div class="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-12 py-14 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]"&gt;
+        &lt;div&gt;
+            &lt;div class="flex items-center gap-3"&gt;&lt;x-cap class="h-10 w-10" /&gt;&lt;span class="text-3xl font-extrabold"&gt;SI-Pedia&lt;/span&gt;&lt;/div&gt;
+            &lt;p class="mt-1 text-lg font-bold"&gt;Universitas Indraprasta PGRI&lt;/p&gt;
+            &lt;p class="mt-4 max-w-xs text-sm leading-relaxed text-white/70"&gt;SI-Pedia is a digital platform for exploring and managing academic and creative resources easily and efficiently.&lt;/p&gt;
+            &lt;div class="mt-5 flex gap-4"&gt;
+                &lt;a href="#" class="grid h-9 w-9 place-items-center rounded-full bg-white/10"&gt;&lt;svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"&gt;&lt;path d="M13 10h3l1-4h-4V4c0-1 0-2 2-2h2V0h-3c-3 0-4 2-4 4v2H7v4h2v10h4V10z"/&gt;&lt;/svg&gt;&lt;/a&gt;
+                &lt;a href="#" class="grid h-9 w-9 place-items-center rounded-full bg-white/10"&gt;&lt;svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"&gt;&lt;path d="M12 2c2.7 0 3 0 4.1.1 2.7.1 4 1.4 4.1 4.1.1 1.1.1 1.4.1 4.1s0 3-.1 4.1c-.1 2.7-1.4 4-4.1 4.1-1.1.1-1.4.1-4.1.1s-3 0-4.1-.1c-2.7-.1-4-1.4-4.1-4.1C3.7 13.4 3.7 13 3.7 10s0-3 .1-4.1C4 3.2 5.3 1.9 8 1.8 9.1 1.7 9.4 1.7 12 1.7zM12 6.4a5.6 5.6 0 100 11.2 5.6 5.6 0 000-11.2zm0 9.2a3.6 3.6 0 110-7.2 3.6 3.6 0 010 7.2zm5.8-9.4a1.3 1.3 0 11-2.6 0 1.3 1.3 0 012.6 0z"/&gt;&lt;/svg&gt;&lt;/a&gt;
+                &lt;a href="#" class="grid h-9 w-9 place-items-center rounded-full bg-white/10"&gt;&lt;svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"&gt;&lt;path d="M23 7.5a3 3 0 00-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 001 7.5 31 31 0 00.6 12 31 31 0 001 16.5a3 3 0 002.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 002.1-2.1A31 31 0 0023.4 12 31 31 0 0023 7.5zM9.8 15.3V8.7l5.7 3.3-5.7 3.3z"/&gt;&lt;/svg&gt;&lt;/a&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            &lt;h4 class="mb-4 text-lg font-bold"&gt;Explore&lt;/h4&gt;
+            &lt;ul class="space-y-2 text-white/80"&gt;
+                &lt;li&gt;&lt;a href="{{ route('home') }}"&gt;Homepage&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="{{ route('about') }}"&gt;About us&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="{{ route('review.index') }}"&gt;Review&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="{{ route('catalog') }}"&gt;Catalog&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            &lt;h4 class="mb-4 text-lg font-bold"&gt;Support&lt;/h4&gt;
+            &lt;ul class="space-y-2 text-white/80"&gt;&lt;li&gt;&lt;a href="{{ route('faq') }}"&gt;Help Center&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="{{ route('contact') }}"&gt;Contact Us&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="{{ route('terms') }}"&gt;Terms of Service&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="{{ route('privacy') }}"&gt;Privacy Policy&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            &lt;h4 class="mb-4 text-lg font-bold"&gt;Contact&lt;/h4&gt;
+            &lt;ul class="space-y-4 text-white/80"&gt;
+                &lt;li class="flex gap-3"&gt;&lt;span&gt;📍&lt;/span&gt;Jl. Nangka No 58 Tanjung Barat,&lt;br&gt;Jakarta Selatan, 12530.&lt;/li&gt;
+                &lt;li class="flex gap-3"&gt;&lt;span&gt;📞&lt;/span&gt;(021) 7818718&lt;/li&gt;
+                &lt;li class="flex gap-3"&gt;&lt;span&gt;✉&lt;/span&gt;kampus@unindra.ac.id&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;p class="border-t border-white/10 py-5 text-center text-sm text-white/60"&gt;@2024 SI-Pedia Universitas Indraprasta PGRI. All rights reserved.&lt;/p&gt;
+&lt;/footer&gt;
