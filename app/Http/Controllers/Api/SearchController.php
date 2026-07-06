@@ -32,7 +32,7 @@ class SearchController extends Controller
                     ->where('name', 'like', $like)->limit(5)->get()
             ),
             'tags'       => TagResource::collection(
-                Tag::withCount('articles')->where('name', 'like', $like)->limit(8)->get()
+                Tag::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->where('name', 'like', $like)->limit(8)->get()
             ),
         ]);
     }
