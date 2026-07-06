@@ -18,35 +18,38 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// ─── Search ────────────────────────────────────────────────────────────────────────────────────
+// ─── Search ───────────────────────────────────────────────────────────────────────
  Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest')->middleware('throttle:30,1');
 
-// ─── Tags ────────────────────────────────────────────────────────────────────────────────────
+// ─── Tags ───────────────────────────────────────────────────────────────────────────
 Route::get('/tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show');
 
-// ─── Publik ────────────────────────────────────────────────────────────────────────────────────
+// ─── Publik ──────────────────────────────────────────────────────────────────────────
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/catalog', [PageController::class, 'catalog'])->name('catalog');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::get('/terms', [PageController::class, 'terms'])->name('terms');
+Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
 Route::get('/review/create', [ReviewController::class, 'create'])->name('review.create')->middleware('auth', 'verified');
 Route::post('/review', [ReviewController::class, 'store'])->name('review.store')->middleware('auth', 'verified', 'throttle:3,1');
 
-// ─── Public Dosen ───────────────────────────────────────────────────────────────────────────────
+// ─── Public Dosen ──────────────────────────────────────────────────────────────────────
 Route::get('/dosen', [DosenPublicController::class, 'index'])->name('dosen.public.index');
 Route::get('/dosen/{lecturer}', [DosenPublicController::class, 'show'])->name('dosen.public.show');
 
-// ─── Public User Profile ────────────────────────────────────────────────────────────────────────────
+// ─── Public User Profile ──────────────────────────────────────────────────────────────
 Route::get('/u/{user}', [UserPublicController::class, 'show'])->name('users.public.show');
 
-// ─── Comments ────────────────────────────────────────────────────────────────────────────────────
+// ─── Comments ───────────────────────────────────────────────────────────────────────────
 Route::get('/articles/{article:slug}/comments', [CommentController::class, 'index'])->name('comments.index');
 Route::post('/articles/{article}/comments', [CommentController::class, 'store'])
     ->middleware('auth', 'throttle:10,1')->name('comments.store');
 
-// ─── Auth (guest) ───────────────────────────────────────────────────────────────────────────────────
+// ─── Auth (guest) ────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
@@ -59,7 +62,7 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// ─── Email Verification (OTP) ──────────────────────────────────────────────────────────────────────────────────
+// ─── Email Verification (OTP) ─────────────────────────────────────────────────────────────────────────────
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', [AuthController::class, 'showOtp'])->name('verification.notice');
     Route::get('/email/verify/otp', [AuthController::class, 'showOtp'])->name('verification.otp');
@@ -68,7 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/email/verification-notification', [AuthController::class, 'resendOtp'])->name('verification.send');
 });
 
-// ─── User terautentikasi ───────────────────────────────────────────────────────────────────────────────────────────
+// ─── User terautentikasi ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
     // Profil
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -97,7 +100,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // ─── Article detail (wildcard slug — harus SETELAH /articles/my, /articles/create) ────
 Route::get('/articles/{article:slug}', [PageController::class, 'showArticle'])->name('articles.show');
 
-// ─── Admin ───────────────────────────────────────────────────────────────────────────────────────────
+// ─── Admin ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [PageController::class, 'adminPanel'])->name('panel');
     Route::get('/report', [PageController::class, 'reportPosts'])->name('report');
