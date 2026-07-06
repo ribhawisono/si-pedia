@@ -38,7 +38,7 @@ $nav = [
 
     {{-- ── SIDEBAR ──────────────────────────────────────────── --}}
     <aside id="admin-sidebar"
-           class="flex w-64 flex-shrink-0 flex-col bg-ink-900 transition-all duration-300 lg:relative fixed inset-y-0 left-0 z-50 -translate-x-full lg:translate-x-0"
+           class="flex w-64 flex-shrink-0 flex-col bg-ink-900 transition-all duration-300 lg:sticky lg:top-0 lg:h-screen fixed inset-y-0 left-0 z-50 -translate-x-full lg:translate-x-0"
            aria-label="Navigasi admin">
 
         {{-- Logo --}}
