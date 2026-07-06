@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::withCount('articles')->latest()->paginate(15);
+        $users = User::withCount(['articles' => fn ($q) => $q->where('status', 'active')])->latest()->paginate(15);
         return view('pages.manage_users', compact('users'));
     }
 
