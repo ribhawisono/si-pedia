@@ -29,8 +29,13 @@ mysqldump -h $env:REMOTE_DB_HOST -P $env:REMOTE_DB_PORT -u $env:REMOTE_DB_USERNA
 
 $localHost = if ($env:DB_HOST) { $env:DB_HOST } else { "127.0.0.1" }
 $localPort = if ($env:DB_PORT) { $env:DB_PORT } else { "3306" }
+$localPassArg = if ($env:DB_PASSWORD) { "-p$env:DB_PASSWORD" } else { $null }
 Write-Host "==> Importing into local DB ($env:DB_DATABASE)"
-Get-Content $dumpPath | mysql -h $localHost -P $localPort -u $env:DB_USERNAME "-p$env:DB_PASSWORD" $env:DB_DATABASE
+if ($localPassArg) {
+    Get-Content $dumpPath | mysql -h $localHost -P $localPort -u $env:DB_USERNAME $localPassArg $env:DB_DATABASE
+} else {
+    Get-Content $dumpPath | mysql -h $localHost -P $localPort -u $env:DB_USERNAME $env:DB_DATABASE
+}
 
 Remove-Item $dumpPath -Force
 
