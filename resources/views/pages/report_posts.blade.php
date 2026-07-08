@@ -37,24 +37,30 @@
     <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm overflow-x-auto">
       <div class="mb-4 flex items-center justify-between"><h2 class="text-sm font-extrabold text-gray-800">📄 Artikel Terbaru</h2><a href="{{ route('admin.articles.index') }}" class="text-xs font-semibold text-brand-600 hover:text-brand-700">Lihat semua →</a></div>
       <div class="min-w-[640px]">
-        <div class="grid grid-cols-[40px_1fr_90px_70px_120px_80px_70px] gap-2 bg-tablehead/60 px-3 py-2 text-[11px] font-bold text-gray-700"><div>No</div><div>Article Title</div><div>Category</div><div>Writer</div><div>Created Date</div><div>Status</div><div>Views</div></div>
+        <div class="grid grid-cols-[36px_1.4fr_90px_70px_110px_80px_60px] gap-2 bg-tablehead/60 px-3 py-2 text-[11px] font-bold text-gray-700"><div>No</div><div>Article Title</div><div>Category</div><div>Writer</div><div>Created Date</div><div>Status</div><div>Views</div></div>
         <div class="mt-3 space-y-3">
           @foreach($articles as $i => $article)
-          <div class="grid grid-cols-[40px_1fr_90px_70px_120px_80px_70px] items-center gap-2 rounded-xl bg-white px-3 py-3 shadow-sm">
-            <div class="text-sm font-bold">{{ $i + 1 }}</div>
-            <div class="flex items-center gap-2 min-w-0">
+          <div class="grid grid-cols-[36px_1.4fr_90px_70px_110px_80px_60px] items-start gap-2 rounded-xl bg-white px-3 py-3 shadow-sm">
+            <div class="self-center text-sm font-bold">{{ $i + 1 }}</div>
+
+            {{-- Image on top, title below so it has full column width to wrap naturally at spaces --}}
+            <div class="min-w-0">
               @if($article->image)
-                <img src="{{ $article->image_url }}" class="h-11 w-11 rounded object-cover flex-shrink-0" alt="{{ $article->title }}">
+                <img src="{{ $article->image_url }}" class="h-16 w-full max-w-[140px] rounded object-cover" alt="{{ $article->title }}">
               @else
-                <div class="h-11 w-11 rounded bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 flex-shrink-0">No Img</div>
+                <div class="h-16 w-full max-w-[140px] rounded bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">No Img</div>
               @endif
-              <span class="text-[11px] font-bold leading-tight break-words min-w-0">{{ Str::limit($article->title, 60) }}</span>
+              {{-- break-words only forces a mid-word break when a single unbroken
+                   token doesn't fit (effectively long words, ~25+ chars here);
+                   normal titles with spaces always wrap at word boundaries. --}}
+              <span class="mt-1.5 block text-[11px] font-bold leading-tight break-words">{{ $article->title }}</span>
             </div>
-            <div><span class="rounded-full bg-badge-cat px-4 py-1 text-xs font-semibold text-white">{{ $article->category->name ?? 'Uncategorized' }}</span></div>
-            <div class="text-[11px] font-bold">{{ $article->writer }}</div>
-            <div class="text-[11px] font-bold">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('j F Y') }}</div>
-            <div><span class="rounded-md {{ $article->status === 'active' ? 'bg-status-active' : 'bg-red-500' }} px-3 py-1 text-xs font-semibold text-white">{{ ucfirst($article->status) }}</span></div>
-            <div class="text-[11px] text-gray-600">👁 {{ $article->views ?? 0 }}</div>
+
+            <div class="self-center"><span class="rounded-full bg-badge-cat px-4 py-1 text-xs font-semibold text-white">{{ $article->category->name ?? 'Uncategorized' }}</span></div>
+            <div class="self-center text-[11px] font-bold">{{ $article->writer }}</div>
+            <div class="self-center text-[11px] font-bold">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('j F Y') }}</div>
+            <div class="self-center"><span class="rounded-md {{ $article->status === 'active' ? 'bg-status-active' : 'bg-red-500' }} px-3 py-1 text-xs font-semibold text-white">{{ ucfirst($article->status) }}</span></div>
+            <div class="self-center text-[11px] text-gray-600">👁 {{ $article->views ?? 0 }}</div>
           </div>
           @endforeach
         </div>
