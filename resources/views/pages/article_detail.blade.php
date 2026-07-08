@@ -69,9 +69,9 @@
             </div>
             @endif
 
-            {{-- Content --}}
-            <div class="prose prose-gray prose-lg max-w-none text-gray-700 leading-relaxed">
-              {!! nl2br(e($article->content)) !!}
+            {{-- Content (HTML from Quill rich text editor, sanitized server-side in ArticleService) --}}
+            <div class="prose prose-gray prose-lg max-w-none text-gray-700 leading-relaxed text-justify">
+              {!! $article->content !!}
             </div>
 
             {{-- Tags bottom (repeat for discoverability) --}}
@@ -171,7 +171,7 @@
             <span class="inline-block rounded-full bg-brand-600/10 px-2.5 py-0.5 text-xs font-semibold text-brand-700 mt-1">
               {{ ucfirst($article->user->role) }}
             </span>
-            <p class="mt-2 text-sm text-gray-500">Kontributor SI-Pedia — Program Studi Sistem Informasi Universitas Indraprasta PGRI.</p>
+            <p class="mt-2 text-sm text-gray-500 text-justify">Kontributor SI-Pedia — Program Studi Sistem Informasi Universitas Indraprasta PGRI.</p>
           </div>
         </div>
         @endif
@@ -207,7 +207,7 @@
                       {{ $comment->created_at->diffForHumans() }}
                     </time>
                   </div>
-                  <p class="text-sm text-gray-700">{{ $comment->content }}</p>
+                  <p class="text-sm text-gray-700 text-justify">{{ $comment->content }}</p>
                 </div>
               </div>
               @endforeach
