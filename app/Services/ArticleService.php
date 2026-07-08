@@ -104,17 +104,26 @@ class ArticleService
         }
     }
 
-    /** Clear article-related caches */
+    /** Clear article-related caches.
+     *  NOTE: keys here must stay in sync with the Cache::remember() keys used
+     *  in PageController — previously this listed the pre-versioning key
+     *  names (e.g. 'tags_popular', 'categories_all', 'admin_stats') while
+     *  PageController had since moved to versioned keys ('tags_popular_ids_v3',
+     *  'categories_all_ids_v2', 'admin_stats_v2', etc). Since forget() is a
+     *  no-op on a key that isn't set, deleting an article never actually
+     *  invalidated the catalog's tag/category list or homepage/admin stats —
+     *  they only refreshed once the 5/10/60 min TTL happened to expire. */
     public function clearCache(): void
     {
+        Cache::forget('homepage_article_ids_v2');
         Cache::forget('homepage_articles');
-        Cache::forget('admin_stats');
-        Cache::forget('admin_top_articles_v2');
+        Cache::forget('admin_stats_v2');
+        Cache::forget('admin_top_articles_ids_v2');
+        Cache::forget('admin_top_user_ids_v3');
         Cache::forget('api_categories');
         Cache::forget('api_tags');
-        Cache::forget('categories_all');
-        Cache::forget('tags_popular');
-        Cache::forget('admin_top_users');
+        Cache::forget('categories_all_ids_v2');
+        Cache::forget('tags_popular_ids_v3');
         Cache::forget('admin_monthly_v2_' . now()->year);
     }
 
