@@ -184,7 +184,15 @@ class PageController extends Controller
             'deleted'   => Article::onlyTrashed()->count(),
             'scheduled' => Article::whereNotNull('scheduled_at')->where('scheduled_at', '>', now())->count(),
         ];
-        $articles        = Article::with(['category:id,name', 'user:id,name'])->latest()->take(6)->get();
+
+        // Drafts are a user's private in-progress work; keep other users'
+        // drafts out of this admin-facing report (same privacy rule as
+        // ArticleController::index) — only show the admin's own drafts.
+        $adminId  = auth()->id();
+        $articles = Article::with(['category:id,name', 'user:id,name'])
+            ->where(fn ($q) => $q->where('status', '!=', 'draft')->orWhere('user_id', $adminId))
+            ->latest()->take(6)->get();
+
         $recentActivities = ActivityLog::with('user:id,name')->latest()->take(10)->get();
 
         return view('pages.report_posts', compact('stats', 'articles', 'recentActivities'));
