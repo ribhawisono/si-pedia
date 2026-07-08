@@ -13,13 +13,13 @@
 
   {{-- Stats --}}
   <div class="mt-6 sm:mt-8 grid grid-cols-3 gap-2 sm:gap-4">
-    <div class="rounded-2xl border border-yellow-200 bg-yellow-50 px-3 sm:px-6 py-4 sm:py-5 text-center">
-      <p class="stat-card-num text-yellow-600">{{ $counts['pending'] }}</p>
-      <p class="mt-1 text-xs sm:text-sm font-bold text-yellow-700">Menunggu Tinjauan</p>
+    <div class="rounded-2xl border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/30 px-3 sm:px-6 py-4 sm:py-5 text-center">
+      <p class="stat-card-num text-yellow-600 dark:text-yellow-400">{{ $counts['pending'] }}</p>
+      <p class="mt-1 text-xs sm:text-sm font-bold text-yellow-700 dark:text-yellow-300">Menunggu Tinjauan</p>
     </div>
-    <div class="rounded-2xl border border-green-200 bg-green-50 px-3 sm:px-6 py-4 sm:py-5 text-center">
-      <p class="stat-card-num text-green-600">{{ $counts['reviewed'] }}</p>
-      <p class="mt-1 text-xs sm:text-sm font-bold text-green-700">Sudah Ditinjau</p>
+    <div class="rounded-2xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/30 px-3 sm:px-6 py-4 sm:py-5 text-center">
+      <p class="stat-card-num text-green-600 dark:text-green-400">{{ $counts['reviewed'] }}</p>
+      <p class="mt-1 text-xs sm:text-sm font-bold text-green-700 dark:text-green-300">Sudah Ditinjau</p>
     </div>
     <div class="rounded-2xl border border-gray-200 bg-gray-50 px-3 sm:px-6 py-4 sm:py-5 text-center">
       <p class="stat-card-num text-gray-500">{{ $counts['dismissed'] }}</p>
@@ -39,7 +39,7 @@
   </div>
 
   @if(session('success'))
-    <div class="mt-5 rounded-xl bg-green-50 border border-green-200 px-5 py-3 text-sm font-semibold text-green-700">
+    <div class="mt-5 rounded-xl bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 px-5 py-3 text-sm font-semibold text-green-700 dark:text-green-300">
       ✅ {{ session('success') }}
     </div>
   @endif
@@ -48,15 +48,15 @@
   <div class="mt-6 space-y-4">
     @forelse($reports as $report)
     <div class="rounded-2xl border bg-white shadow-sm overflow-hidden
-                {{ $report->status === 'pending' ? 'border-yellow-200' : ($report->status === 'reviewed' ? 'border-green-200' : 'border-gray-200') }}">
+                {{ $report->status === 'pending' ? 'border-yellow-200 dark:border-yellow-800' : ($report->status === 'reviewed' ? 'border-green-200 dark:border-green-800' : 'border-gray-200') }}">
       <div class="px-4 sm:px-6 py-4 sm:py-5">
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div class="flex-1 min-w-0">
             {{-- Header --}}
             <div class="flex items-center gap-3 flex-wrap">
               <span class="rounded-full px-3 py-1 text-xs font-bold
-                {{ $report->status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                   ($report->status === 'reviewed' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600') }}">
+                {{ $report->status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' :
+                   ($report->status === 'reviewed' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 text-gray-600') }}">
                 {{ ucfirst($report->status) }}
               </span>
               <span class="text-xs text-gray-400">{{ $report->created_at->translatedFormat('j F Y, H:i') }}</span>
@@ -65,7 +65,7 @@
             {{-- Pelaporkan → Terlapor --}}
             <div class="mt-3 flex flex-wrap items-center gap-3">
               <div class="flex items-center gap-2">
-                <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700">
+                <div class="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-xs font-bold text-blue-700 dark:text-blue-300">
                   {{ strtoupper(substr($report->reporter->name ?? '?', 0, 1)) }}
                 </div>
                 <div>
@@ -77,7 +77,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
               </svg>
               <div class="flex items-center gap-2">
-                <div class="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center text-xs font-bold text-red-700">
+                <div class="h-8 w-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-xs font-bold text-red-700 dark:text-red-300">
                   {{ strtoupper(substr($report->reportedUser->name ?? '?', 0, 1)) }}
                 </div>
                 <div>
@@ -89,7 +89,7 @@
 
             {{-- Alasan & Deskripsi --}}
             <div class="mt-3">
-              <span class="inline-block rounded-md bg-red-50 border border-red-200 px-3 py-1 text-xs font-bold text-red-700">
+              <span class="inline-block rounded-md bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 px-3 py-1 text-xs font-bold text-red-700 dark:text-red-300">
                 {{ $report->reason }}
               </span>
               @if($report->description)
