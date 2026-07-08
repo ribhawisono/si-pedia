@@ -14,6 +14,9 @@
 @endphp
 <x-dynamic-component :component="$layoutName" :title="$layoutTitle" section="articles">
 
+{{-- Quill rich text editor (CDN) --}}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+
 <div class="{{ $isAdmin ? '' : 'mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6' }}">
   <div class="mb-5 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
@@ -22,7 +25,7 @@
       </a>
       <div>
         <h1 class="text-xl font-extrabold text-gray-900">{{ $mode === 'create' ? 'Tulis Artikel Baru' : 'Edit Artikel' }}</h1>
-        <p id="autosave-indicator" class="mt-0.5 hidden text-xs text-gray-400"></p>
+        <p id="autosave-indicator" class="mt-0.5 hidden text-xs font-semibold text-green-600"></p>
       </div>
     </div>
     @if($mode === 'edit' && isset($article->id))
@@ -46,14 +49,14 @@
     </div>
   @endif
 
-  <form action="{{ $storeRoute }}" method="POST" enctype="multipart/form-data"
+  <form id="article-form" action="{{ $storeRoute }}" method="POST" enctype="multipart/form-data"
         data-validate data-autosave="{{ $autosaveKey }}">
   @csrf
   @if($mode === 'edit') @method('PUT') @endif
 
   <div class="grid gap-6 lg:grid-cols-[1fr_300px]">
 
-    {{-- ── Main Content Column ───────────────────────────── --}}
+    {{-- ── Main Content Column ─────────────────────────── --}}
     <div class="space-y-5">
 
       {{-- Title --}}
@@ -136,21 +139,21 @@
         @error('image') <p class="mt-2 text-xs text-red-500" role="alert">{{ $message }}</p> @enderror
       </div>
 
-      {{-- Content --}}
+      {{-- Content (rich text) --}}
       <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
         <div class="mb-2 flex items-center justify-between">
-          <label for="content-textarea" class="text-sm font-bold text-gray-700">
+          <label class="text-sm font-bold text-gray-700">
             Isi Artikel <span class="text-red-500" aria-hidden="true">*</span>
           </label>
           <span class="text-xs text-gray-400" id="content-word-count">0 kata</span>
         </div>
-        <textarea id="content-textarea" name="content" rows="16" required
-                  placeholder="Tulis konten artikel di sini..."
-                  class="w-full rounded-xl border-2 border-gray-200 p-4 text-sm leading-relaxed text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-0 transition resize-y">{{ old('content', $article->content) }}</textarea>
+        <div id="content-editor" style="height: 420px;"></div>
+        {{-- Hidden field actually submitted; kept in sync with the Quill editor by JS below --}}
+        <textarea id="content-textarea" name="content" required class="hidden">{{ old('content', $article->content) }}</textarea>
       </div>
     </div>
 
-    {{-- ── Sidebar Column ───────────────────────────────────── --}}
+    {{-- ── Sidebar Column ──────────────────────── --}}
     <div class="space-y-5">
 
       {{-- Publish settings (admin) --}}
@@ -277,18 +280,50 @@
   </form>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
 <script>
-// Content word counter
+// Rich text editor (Quill): bold, italic, underline, strike, headings,
+// lists, blockquote, link, image — full formatting toolbar for writers.
 (function(){
-    const ta = document.getElementById('content-textarea');
+    const hiddenField = document.getElementById('content-textarea');
+    const quill = new Quill('#content-editor', {
+        theme: 'snow',
+        placeholder: 'Tulis konten artikel di sini...',
+        modules: {
+            toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['blockquote', 'link', 'image'],
+                ['clean']
+            ]
+        }
+    });
+
+    // Load existing content (plain text with real newlines from before this
+    // editor existed, or HTML from a previous Quill save) into the editor.
+    const initial = hiddenField.value || '';
+    if (initial.trim().startsWith('<')) {
+        quill.root.innerHTML = initial;
+    } else if (initial) {
+        quill.setText(initial);
+    }
+
     const cnt = document.getElementById('content-word-count');
-    if (!ta || !cnt) return;
-    const count = () => {
-        const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
-        cnt.textContent = words + ' kata';
+    const syncAndCount = () => {
+        hiddenField.value = quill.root.innerHTML;
+        const words = quill.getText().trim().split(/\s+/).filter(Boolean).length;
+        if (cnt) cnt.textContent = words + ' kata';
+        hiddenField.dispatchEvent(new Event('input', { bubbles: true })); // keep autosave() in app.js in sync
     };
-    ta.addEventListener('input', count);
-    count();
+    quill.on('text-change', syncAndCount);
+    syncAndCount();
+
+    // Always sync right before the form actually submits, in case the last
+    // edit didn't fire a text-change tick yet.
+    document.getElementById('article-form').addEventListener('submit', () => {
+        hiddenField.value = quill.root.innerHTML;
+    });
 })();
 
 // SEO panel toggle
