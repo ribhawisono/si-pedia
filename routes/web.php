@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountReportController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ArticleReportController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
@@ -18,22 +19,22 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// ─── Search ───────────────────────────────────────────────────────────────────────
+// ─── Search ─────────────────────────────────────────────────────────────────────────────────
  Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest')->middleware('throttle:30,1');
 
-// ─── Tags ───────────────────────────────────────────────────────────────────────────
+// ─── Tags ────────────────────────────────────────────────────────────────────────
 Route::get('/tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show');
 
-// ─── Favicon (logo topi wisuda SI-Pedia, di-serve statis agar tampil instan) ────────
+// ─── Favicon (logo topi wisuda SI-Pedia, di-serve statis agar tampil instan) ────
 Route::get('/favicon.ico', function () {
-    $ico = base64_decode('AAABAAEAEBAAAAAAIABZAgAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAAQAAAAEAgGAAAAH/P/YQAAAiBJREFUeJyNkk9Ik3Ecxj+/d53eQxMvklgzMv/Qu4zWxZGKVjKlY4SSWXkwIzrUG4KxkLJ2MrwYRDE8ZCJYKPSPLh6GCboE10LrZhq7bu8szdr27TTdnGUP/A7fP8/D8334KQA9z2gHTIQywMa/IQJflChzNR5+o/Q8ox3BvwNpWyEl0qQB5nbTivISno8M8Gr8CUcqK7ZbUaJUL7rdSOh2Q9LvYMUJ8Q+OSiKRlDRSqZS8GHsnhyo9krmr243fpItCh1se9Ptlbe2n/A3r67/EPzgq+w5UpwVS5Be4pNvbJ9GolUOYC83LXGg+px+NWtLt7ZP8AldK24xWNo6zrBXMLh/Vdc1U1zVjdvmwrJWsAHy9Jk2eWrJOmJ4JydDwuDhKarbeKo6SGhkaHpeZYEgKHW4REWm9cGPTQSwWZ2k5gqY0lFI5kScSSSzrO1+XIsRi8Y2+lrmklOLUyeMEp8bo7GjBZtOw2TQ6O1qYC77k7JkmNC2Lki0AEJgMUt/QirvKRWBihMDECO4qF/UNrQQmgznOdmUW76dmuXL5HKWl+2m7dJNjLicAH2bDNHpqcRplPHr8DIDzF02mZ0Io3W4kyPj/e4v20OO9RnFxEb2+hwDcvnWVxcVv3L0/wNJyJCsapduNWeDoVmuHneXcu3MdAG9PPx/Dn3PsA2Gl73Y2ouQ1kBv9DlBCm7YaD79F1GlgAUj9By8JhJXQ9iP+6ekfuuMod8b6I/8AAAAASUVORK5CYII=');
+    $ico = base64_decode('AAABAAEAEBAAAAAAIABZAgAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAAQAAAAEAgGAAAAH/P/YQAAAiBJREFUeJyNkk9Ik3Ecxj+/d53eQxMvklgzMv/Qu4zWxZGKVjKlY4SSWXkwIzrUG4KxkLJ2MrwYRDE8ZCJYKPSPLh6GCboE10LrZhq7bu8szdr27TTdnGUP/A7fP8/D8334KQA9z2gHTIQywMa/IQJflChzNR5+o/Q8ox3BvwNpWyEl0qQB5nbTivISno8M8Gr8CUcqK7ZbUaJUL7rdSOh2Q9LvYMUJ8Q+OSiKRlDRSqZS8GHsnhyo9krmr243fpItCh1se9Ptlbe2n/A3r67/EPzgq+w5UpwVS5Be4pNvbJ9GolUOYC83LXGg+px+NWtLt7ZP8AldK24xWNo6zrBXMLh/Vdc1U1zVjdvmwrJWsAHy9Jk2eWrJOmJ4JydDwuDhKarbeKo6SGhkaHpeZYEgKHW4REWm9cGPTQSwWZ2k5gqY0lFI5kScSSSzrO1+XIsRi8Y2+lrmklOLUyeMEp8bo7GjBZtOw2TQ6O1qYC77k7JkmNC2Lki0AEJgMUt/QirvKRWBihMDECO4qF/UNrQQmgynOdmUW76dmuXL5HKWl+2m7dJNjLicAH2bDNHpqcRplPHr8DIDzF02mZ0Io3W4kyPj/e4v20OO9RnFxEb2+hwDcvnWVxcVv3L0/wNJyJCsapduNWeDoVmuHneXcu3MdAG9PPx/Dn3PsA2Gl73Y2ouQ1kBv9DlBCm7YaD79F1GlgAUj9By8JhJXQ9iP+6ekfuuMod8b6I/8AAAAASUVORK5CYII=');
     return response($ico, 200)
         ->header('Content-Type', 'image/x-icon')
         ->header('Cache-Control', 'public, max-age=604800');
 })->name('favicon');
 
-// ─── Publik ──────────────────────────────────────────────────────────────────────────
+// ─── Publik ───────────────────────────────────────────────────────────────────────
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/catalog', [PageController::class, 'catalog'])->name('catalog');
@@ -45,19 +46,19 @@ Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
 Route::get('/review/create', [ReviewController::class, 'create'])->name('review.create')->middleware('auth', 'verified');
 Route::post('/review', [ReviewController::class, 'store'])->name('review.store')->middleware('auth', 'verified', 'throttle:3,1');
 
-// ─── Public Dosen ──────────────────────────────────────────────────────────────────────
+// ─── Public Dosen ─────────────────────────────────────────────────────────────
 Route::get('/dosen', [DosenPublicController::class, 'index'])->name('dosen.public.index');
 Route::get('/dosen/{lecturer}', [DosenPublicController::class, 'show'])->name('dosen.public.show');
 
-// ─── Public User Profile ──────────────────────────────────────────────────────────────
+// ─── Public User Profile ─────────────────────────────────────────────────────────────────────
 Route::get('/u/{user}', [UserPublicController::class, 'show'])->name('users.public.show');
 
-// ─── Comments ───────────────────────────────────────────────────────────────────────────
+// ─── Comments ───────────────────────────────────────────────────────────────────────────────────
 Route::get('/articles/{article:slug}/comments', [CommentController::class, 'index'])->name('comments.index');
 Route::post('/articles/{article}/comments', [CommentController::class, 'store'])
     ->middleware('auth', 'throttle:10,1')->name('comments.store');
 
-// ─── Auth (guest) ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Auth (guest) ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
@@ -70,7 +71,7 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// ─── Email Verification (OTP) ─────────────────────────────────────────────────────────────────────────────
+// ─── Email Verification (OTP) ─────────────────────────────────────────────────────────────
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', [AuthController::class, 'showOtp'])->name('verification.notice');
     Route::get('/email/verify/otp', [AuthController::class, 'showOtp'])->name('verification.otp');
@@ -79,7 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/email/verification-notification', [AuthController::class, 'resendOtp'])->name('verification.send');
 });
 
-// ─── User terautentikasi ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── User terautentikasi ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
     // Profil
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -103,12 +104,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Report akun
     Route::get('/users/{user}/report', [AccountReportController::class, 'create'])->name('users.report');
     Route::post('/users/{user}/report', [AccountReportController::class, 'store'])->name('users.report.store');
+
+    // Report artikel
+    Route::get('/articles/{article}/report', [ArticleReportController::class, 'create'])->name('articles.report');
+    Route::post('/articles/{article}/report', [ArticleReportController::class, 'store'])->name('articles.report.store');
 });
 
 // ─── Article detail (wildcard slug — harus SETELAH /articles/my, /articles/create) ────
 Route::get('/articles/{article:slug}', [PageController::class, 'showArticle'])->name('articles.show');
 
-// ─── Admin ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Admin ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [PageController::class, 'adminPanel'])->name('panel');
     Route::get('/report', [PageController::class, 'reportPosts'])->name('report');
@@ -179,4 +184,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Report Akun
     Route::get('/account-reports', [AccountReportController::class, 'index'])->name('account-reports.index');
     Route::patch('/account-reports/{report}', [AccountReportController::class, 'update'])->name('account-reports.update');
+
+    // Report Artikel
+    Route::get('/article-reports', [ArticleReportController::class, 'index'])->name('article-reports.index');
+    Route::patch('/article-reports/{report}', [ArticleReportController::class, 'update'])->name('article-reports.update');
 });
