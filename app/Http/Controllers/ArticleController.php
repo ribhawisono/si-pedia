@@ -15,7 +15,7 @@ class ArticleController extends Controller
 {
     public function __construct(private ArticleService $articleService) {}
 
-    // ─── Admin: list ────────────────────────────────────────────────────
+    // ─── Admin: list ───────────────────────────────────────
     public function index(Request $request)
     {
         // Drafts are a user's private in-progress work and must stay hidden from
@@ -40,7 +40,7 @@ class ArticleController extends Controller
         return view('pages.article_pending', compact('pending', 'pendingDelete'));
     }
 
-    // ─── Trash (soft-deleted articles) ─────────────────────────────────
+    // ─── Trash (soft-deleted articles) ───────────────────────
     public function trash(Request $request)
     {
         $articles = Article::onlyTrashed()
@@ -76,17 +76,24 @@ class ArticleController extends Controller
 
     public function approve(Article $article)
     {
-        $article->update(['status' => 'active']);
+        $article->update(['status' => 'active', 'rejection_note' => null]);
         $this->logActivity('approve', "Approved: {$article->title}", $article);
         $this->articleService->clearCache();
         return back()->with('success', "\"{$article->title}\" dipublikasikan.");
     }
 
-    public function reject(Article $article)
+    public function reject(Request $request, Article $article)
     {
-        $article->update(['status' => 'draft']);
+        $data = $request->validate([
+            'rejection_note' => 'nullable|string|max:1000',
+        ]);
+
+        $article->update([
+            'status'         => 'draft',
+            'rejection_note' => $data['rejection_note'] ?? null,
+        ]);
         $this->logActivity('reject', "Rejected: {$article->title}", $article);
-        return back()->with('success', "\"{$article->title}\" dikembalikan ke draft.");
+        return back()->with('success', "\"{$article->title}\" dikembalikan ke draft. Penulis akan melihat catatan perbaikan yang kamu berikan.");
     }
 
     public function approveDelete(Article $article)
@@ -105,7 +112,7 @@ class ArticleController extends Controller
         return back()->with('success', "Permintaan hapus \"{$article->title}\" ditolak.");
     }
 
-    // ─── Create ────────────────────────────────────────────
+    // ─── Create ──────────────────────────
     public function create()
     {
         return view('pages.edit_article', [
@@ -130,7 +137,7 @@ class ArticleController extends Controller
         );
     }
 
-    // ─── Edit ────────────────────────────────────────────
+    // ─── Edit ──────────────────────────
     public function edit(Article $article)
     {
         $user    = auth()->user();
