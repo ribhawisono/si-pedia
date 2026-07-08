@@ -33,7 +33,8 @@
 
   <div class="mt-6 space-y-4">
     @forelse($articles as $article)
-    <div class="rounded-2xl bg-white shadow-sm border border-gray-100 px-6 py-5 flex items-center gap-5">
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-100 px-6 py-5">
+     <div class="flex items-center gap-5">
 
       {{-- Thumbnail --}}
       <div class="flex-shrink-0">
@@ -104,6 +105,15 @@
           </form>
         @endif
       </div>
+     </div>
+
+      {{-- Admin rejection note: only visible on drafts that were rejected --}}
+      @if($article->status === 'draft' && $article->rejection_note)
+      <div class="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3">
+        <p class="text-xs font-bold text-red-700 mb-1">⚠️ Ditolak admin — perlu diperbaiki:</p>
+        <p class="text-sm text-red-700">{{ $article->rejection_note }}</p>
+      </div>
+      @endif
     </div>
     @empty
     <div class="rounded-2xl bg-white border border-gray-100 shadow-sm p-16 text-center">
