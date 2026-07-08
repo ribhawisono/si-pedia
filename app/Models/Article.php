@@ -17,7 +17,7 @@ class Article extends Model
 
     protected $fillable = [
         'user_id', 'title', 'slug', 'category_id', 'writer',
-        'status', 'rejection_note', 'content', 'image', 'views', 'scheduled_at',
+        'status', 'rejection_note', 'trashed_reason', 'content', 'image', 'views', 'scheduled_at',
         'meta_title', 'meta_description', 'meta_keywords', 'canonical_url',
     ];
 
