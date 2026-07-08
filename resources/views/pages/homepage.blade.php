@@ -90,7 +90,7 @@
 {{-- ============================================ --}}
 {{-- ARTIKEL TERBARU                              --}}
 {{-- ============================================ --}}
-<section class="bg-white py-20">
+<section class="bg-white dark:bg-gray-950 py-20">
     <div class="mx-auto max-w-[1440px] px-8">
 
         {{-- Section Header --}}
@@ -108,14 +108,14 @@
         {{-- Articles Grid --}}
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             @forelse($articles as $article)
-            <a href="{{ route('articles.show', $article->slug ?? $article->id) }}" class="group block overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <a href="{{ route('articles.show', $article->slug ?? $article->id) }}" class="group block overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 {{-- Image --}}
-                <div class="relative h-48 overflow-hidden bg-gray-100">
+                <div class="relative h-48 overflow-hidden bg-gray-100 dark:bg-gray-800">
                     @if($article->image)
                         <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
                     @else
-                        <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                            <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+                            <svg class="w-12 h-12 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/>
                             </svg>
                         </div>
@@ -131,10 +131,10 @@
 
                 {{-- Content --}}
                 <div class="p-5">
-                    <h3 class="text-lg font-bold leading-snug text-gray-900 dark:text-white line-clamp-2 group-hover:text-brand-700 transition-colors">
+                    <h3 class="text-lg font-bold leading-snug text-gray-900 dark:text-white line-clamp-2 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors">
                         {{ $article->title }}
                     </h3>
-                    <p class="mt-2 text-sm text-gray-500 line-clamp-2">
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
                         {{ Str::limit(strip_tags($article->content), 120) }}
                     </p>
                     <div class="mt-4 flex items-center gap-2 text-sm font-semibold text-brand-600 dark:text-brand-400">
@@ -145,11 +145,11 @@
             </a>
             @empty
             <div class="col-span-full py-16 text-center">
-                <svg class="mx-auto w-16 h-16 text-gray-300" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                <svg class="mx-auto w-16 h-16 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12H9.75m3 0l-3-3m3 3l-3 3M3.375 7.5h7.5c.621 0 1.125.504 1.125 1.125v7.5c0 .621-.504 1.125-1.125 1.125h-7.5A1.125 1.125 0 012.25 16.125v-7.5C2.25 8.004 2.754 7.5 3.375 7.5z"/>
                 </svg>
-                <h3 class="mt-4 text-lg font-semibold text-gray-400">Belum ada artikel</h3>
-                <p class="mt-1 text-sm text-gray-400">Artikel akan segera tersedia</p>
+                <h3 class="mt-4 text-lg font-semibold text-gray-400 dark:text-gray-500">Belum ada artikel</h3>
+                <p class="mt-1 text-sm text-gray-400 dark:text-gray-500">Artikel akan segera tersedia</p>
             </div>
             @endforelse
         </div>
@@ -167,7 +167,7 @@
 {{-- ============================================ --}}
 {{-- KATEGORI                                     --}}
 {{-- ============================================ --}}
-<section class="bg-gray-50 border-t border-gray-100 py-16">
+<section class="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
     <div class="mx-auto max-w-[1440px] px-8">
         <div class="mb-10 text-center">
             <span class="inline-block rounded-full bg-brand-600/10 px-4 py-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 tracking-wide mb-3">KATEGORI</span>
@@ -186,15 +186,15 @@
             @endphp
 
             @foreach($categories as $cat)
-            <a href="{{ route('catalog', ['category' => $cat->id]) }}" class="group flex items-center gap-4 rounded-xl bg-white p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-brand-600/20 transition-all duration-300">
+            <a href="{{ route('catalog', ['category' => $cat->id]) }}" class="group flex items-center gap-4 rounded-xl bg-white dark:bg-gray-800 p-5 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-brand-600/20 transition-all duration-300">
                 <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-brand-600/10 flex items-center justify-center text-brand-600 dark:text-brand-400 group-hover:bg-brand-600 group-hover:text-white transition-all duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         {!! $icons[$cat->name] ?? '<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>' !!}
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-brand-700 transition-colors">{{ $cat->name }}</h3>
-                    <p class="text-xs text-gray-500 mt-0.5">{{ \App\Models\Article::where('category_id', $cat->id)->where('status', 'active')->count() }} artikel</p>
+                    <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors">{{ $cat->name }}</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ \App\Models\Article::where('category_id', $cat->id)->where('status', 'active')->count() }} artikel</p>
                 </div>
             </a>
             @endforeach
@@ -205,7 +205,7 @@
 {{-- ============================================ --}}
 {{-- CTA SECTION                                  --}}
 {{-- ============================================ --}}
-<section class="bg-white py-16">
+<section class="bg-white dark:bg-gray-950 py-16">
     <div class="mx-auto max-w-[1440px] px-8">
         <div class="rounded-2xl bg-gradient-to-br from-[#336cbc] to-[#1e4f8f] p-10 sm:p-14 text-center relative overflow-hidden">
             <div class="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/5"></div>
@@ -216,7 +216,7 @@
                 <p class="max-w-2xl mx-auto text-white/70 mb-8">
                     Pelajari lebih lanjut tentang visi, misi, sejarah, dan dosen pengajar Program Studi Sistem Informasi Universitas Indraprasta PGRI.
                 </p>
-                <a href="{{ route('about') }}" class="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-bold text-brand-600 dark:text-brand-400 shadow-lg hover:bg-gray-50 transition-all hover:shadow-xl hover:-translate-y-0.5">
+                <a href="{{ route('about') }}" class="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-bold text-brand-600 shadow-lg hover:bg-gray-50 transition-all hover:shadow-xl hover:-translate-y-0.5">
                     Kunjungi Halaman About
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
