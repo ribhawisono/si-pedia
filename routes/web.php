@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/email/verification-notification', [AuthController::class, 'resendOtp'])->name('verification.send');
 });
 
-// ─── User terautentikasi ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── User terautentikasi ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
     // Profil
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -92,8 +92,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/my', [ArticleController::class, 'myArticles'])->name('my');
         Route::get('/create', [ArticleController::class, 'create'])->name('create');
         Route::post('/', [ArticleController::class, 'store'])->name('store');
-        Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit');
-        Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
+        // withTrashed(): a takedown'd article (trashed_reason=takedown) must
+        // still be reachable here so its writer can fix and resubmit it.
+        // ArticleController::edit()/update() still block a normal 'deleted'
+        // one from being edited even though the route itself allows binding it.
+        Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit')->withTrashed();
+        Route::put('/{article}', [ArticleController::class, 'update'])->name('update')->withTrashed();
         Route::patch('/{article}/request-delete', [ArticleController::class, 'requestDelete'])->name('requestDelete');
     });
 
@@ -135,6 +139,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/articles/{article}/approve-delete', [ArticleController::class, 'approveDelete'])->name('articles.approveDelete');
     Route::patch('/articles/{article}/reject-delete', [ArticleController::class, 'rejectDelete'])->name('articles.rejectDelete');
 
+    // Takedown (separate from Edit/Hapus): pulls a live article down but
+    // keeps it editable by its writer via "Artikel Saya".
+    Route::get('/articles/{article}/takedown', [ArticleController::class, 'takedownForm'])->name('articles.takedownForm');
+    Route::post('/articles/{article}/takedown', [ArticleController::class, 'takedown'])->name('articles.takedown');
+
     // Review
     Route::patch('/reviews/{review}/accept', [ReviewController::class, 'accept'])->name('reviews.accept');
     Route::patch('/reviews/{review}/decline', [ReviewController::class, 'decline'])->name('reviews.decline');
@@ -170,7 +179,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/dosen/{lecturer}', [DosenController::class, 'destroy'])->name('dosen.destroy');
 
     // Comments moderation
-    // Comment moderation
     Route::get('/comments', [\App\Http\Controllers\CommentController::class, 'index'])->name('comments.index');
     Route::patch('/comments/{comment}/approve', [\App\Http\Controllers\CommentController::class, 'approve'])->name('comments.approve');
     Route::patch('/comments/{comment}/reject', [\App\Http\Controllers\CommentController::class, 'reject'])->name('comments.reject');
