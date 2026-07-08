@@ -25,6 +25,14 @@ Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('searc
 // ─── Tags ───────────────────────────────────────────────────────────────────────────
 Route::get('/tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show');
 
+// ─── Favicon (logo topi wisuda SI-Pedia, di-serve statis agar tampil instan) ────────
+Route::get('/favicon.ico', function () {
+    $ico = base64_decode('AAABAAEAEBAAAAAAIABZAgAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAAQAAAAEAgGAAAAH/P/YQAAAiBJREFUeJyNkk9Ik3Ecxj+/d53eQxMvklgzMv/Qu4zWxZGKVjKlY4SSWXkwIzrUG4KxkLJ2MrwYRDE8ZCJYKPSPLh6GCboE10LrZhq7bu8szdr27TTdnGUP/A7fP8/D8334KQA9z2gHTIQywMa/IQJflChzNR5+o/Q8ox3BvwNpWyEl0qQB5nbTivISno8M8Gr8CUcqK7ZbUaJUL7rdSOh2Q9LvYMUJ8Q+OSiKRlDRSqZS8GHsnhyo9krmr243fpItCh1se9Ptlbe2n/A3r67/EPzgq+w5UpwVS5Be4pNvbJ9GolUOYC83LXGg+px+NWtLt7ZP8AldK24xWNo6zrBXMLh/Vdc1U1zVjdvmwrJWsAHy9Jk2eWrJOmJ4JydDwuDhKarbeKo6SGhkaHpeZYEgKHW4REWm9cGPTQSwWZ2k5gqY0lFI5kScSSSzrO1+XIsRi8Y2+lrmklOLUyeMEp8bo7GjBZtOw2TQ6O1qYC77k7JkmNC2Lki0AEJgMUt/QirvKRWBihMDECO4qF/UNrQQmgznOdmUW76dmuXL5HKWl+2m7dJNjLicAH2bDNHpqcRplPHr8DIDzF02mZ0Io3W4kyPj/e4v20OO9RnFxEb2+hwDcvnWVxcVv3L0/wNJyJCsapduNWeDoVmuHneXcu3MdAG9PPx/Dn3PsA2Gl73Y2ouQ1kBv9DlBCm7YaD79F1GlgAUj9By8JhJXQ9iP+6ekfuuMod8b6I/8AAAAASUVORK5CYII=');
+    return response($ico, 200)
+        ->header('Content-Type', 'image/x-icon')
+        ->header('Cache-Control', 'public, max-age=604800');
+})->name('favicon');
+
 // ─── Publik ──────────────────────────────────────────────────────────────────────────
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
