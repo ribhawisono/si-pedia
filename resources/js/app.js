@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFocusRing();
 });
 
-// ─── 1. Mobile Menu ─────────────────────────────────────────────────────────────────
+// ─── 1. Mobile Menu ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 function initMobileMenu() {
     const btn        = document.getElementById('mobile-menu-btn');
     const menu       = document.getElementById('mobile-menu');
@@ -384,6 +384,7 @@ function initAutosave() {
     if (!form) return;
     const key = form.dataset.autosave;
     const indicator = document.getElementById('autosave-indicator');
+    let dirty = false;
 
     // Restore saved data (only if value is empty to avoid overwriting server data)
     try {
@@ -397,13 +398,14 @@ function initAutosave() {
         }
     } catch {}
 
-    // Save every 30s
+    // Save every 30s (and via debounced input, and immediately before leaving)
     const save = () => {
         const data = {};
         form.querySelectorAll('input:not([type=file]):not([type=hidden]):not([type=submit]), textarea, select').forEach(el => {
             if (el.name) data[el.name] = el.value;
         });
         localStorage.setItem(key, JSON.stringify(data));
+        dirty = false;
         if (indicator) {
             indicator.textContent = '✓ Draft disimpan otomatis ' + new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
             indicator.classList.remove('hidden');
@@ -412,10 +414,52 @@ function initAutosave() {
 
     setInterval(save, 30000);
     form.querySelectorAll('textarea, input:not([type=file])').forEach(el => {
-        el.addEventListener('input', () => clearTimeout(el._saveTimer) || (el._saveTimer = setTimeout(save, 5000)));
+        el.addEventListener('input', () => {
+            dirty = true;
+            clearTimeout(el._saveTimer);
+            el._saveTimer = setTimeout(save, 5000);
+        });
     });
     form.addEventListener('submit', () => localStorage.removeItem(key));
+
+    // Flush any pending autosave immediately when the user navigates away
+    // (link click, browser back/forward, closing tab) so nothing is lost
+    // between the last keystroke and the 5s debounce. Also flags a one-time
+    // toast to show on the NEXT page confirming the draft was saved, since
+    // there's no reliable way to show custom UI during unload itself.
+    const flushOnLeave = () => {
+        if (!dirty) return;
+        save();
+        try { sessionStorage.setItem('si-pedia-autosaved-flash', '1'); } catch {}
+    };
+    window.addEventListener('beforeunload', flushOnLeave);
+    window.addEventListener('pagehide', flushOnLeave);
 }
+
+// Show a one-time toast on whichever page loads next, confirming the
+// previous page's unsaved draft was autosaved before leaving.
+document.addEventListener('DOMContentLoaded', () => {
+    let shouldNotify = false;
+    try { shouldNotify = sessionStorage.getItem('si-pedia-autosaved-flash') === '1'; } catch {}
+    if (!shouldNotify) return;
+    try { sessionStorage.removeItem('si-pedia-autosaved-flash'); } catch {}
+
+    let container = document.getElementById('flash-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'flash-container';
+        container.className = 'fixed top-4 right-4 z-50 w-80 space-y-2';
+        container.setAttribute('role', 'alert');
+        container.setAttribute('aria-live', 'polite');
+        document.body.appendChild(container);
+    }
+    const msg = document.createElement('div');
+    msg.className = 'flash-msg flex items-start gap-3 rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-lg';
+    msg.innerHTML = `<span>💾 Perubahan draft kamu tersimpan otomatis.</span>
+        <button onclick="this.closest('.flash-msg').remove()" class="ml-auto text-white/70 hover:text-white" aria-label="Tutup notifikasi">✕</button>`;
+    container.appendChild(msg);
+    setTimeout(() => msg.remove(), 5000);
+});
 
 // ─── Slug Preview (Phase 6) ─────────────────────────────
 function initSlugPreview() {
@@ -432,7 +476,7 @@ function initSlugPreview() {
     });
 }
 
-// ─── SEO counters ─────────────────────────────────
+// ─── SEO counters ────────────────────────────────────────
 function initSEOCounter() {
     [
         { id: 'meta_title', max: 60 },
@@ -452,10 +496,10 @@ function initSEOCounter() {
     });
 }
 
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 // PHASE 7 — DARK MODE, TOOLTIPS, ANIMATIONS
 // PHASE 8 — MEDIA: lazy images, blur, fallback
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 
 // ─── Dark Mode ─────────────────────────────────────────────────────────────────
 // Defaults to light mode for first-time visitors; dark mode only activates
