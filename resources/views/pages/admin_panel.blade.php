@@ -4,10 +4,10 @@
 
 <div class="mb-6 grid gap-4 grid-cols-2 sm:grid-cols-4">
   @foreach([
-    ['label'=>'Total Artikel','value'=>$stats['articles'],'icon'=>'📄','color'=>'bg-blue-50 text-blue-700','border'=>'border-blue-200'],
-    ['label'=>'Dosen','value'=>$stats['lecturers'],'icon'=>'🎓','color'=>'bg-green-50 text-green-700','border'=>'border-green-200'],
-    ['label'=>'Pengguna','value'=>$stats['users'],'icon'=>'👥','color'=>'bg-purple-50 text-purple-700','border'=>'border-purple-200'],
-    ['label'=>'Pending','value'=>$stats['pending'],'icon'=>'⏳','color'=>'bg-yellow-50 text-yellow-700','border'=>'border-yellow-200','alert'=>true],
+    ['label'=>'Total Artikel','value'=>$stats['articles'],'icon'=>'📄','color'=>'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300','border'=>'border-blue-200 dark:border-blue-800'],
+    ['label'=>'Dosen','value'=>$stats['lecturers'],'icon'=>'🎓','color'=>'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300','border'=>'border-green-200 dark:border-green-800'],
+    ['label'=>'Pengguna','value'=>$stats['users'],'icon'=>'👥','color'=>'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300','border'=>'border-purple-200 dark:border-purple-800'],
+    ['label'=>'Pending','value'=>$stats['pending'],'icon'=>'⏳','color'=>'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300','border'=>'border-yellow-200 dark:border-yellow-800','alert'=>true],
   ] as $stat)
   <div class="rounded-xl border {{ $stat['border'] }} bg-white p-4 shadow-sm">
     <div class="flex items-center justify-between mb-2">
