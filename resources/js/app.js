@@ -136,19 +136,28 @@ function initGlobalSearch() {
 // ─── 3. Loading Buttons (forms) ──────────────────────────────────────────────────
 function initLoadingButtons() {
     document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', () => {
-            const btn = form.querySelector('[type="submit"]');
+        form.addEventListener('submit', (e) => {
+            // Use the actual submitter (works even when a form has multiple
+            // [type=submit] buttons, e.g. "Tinjau" / "Abaikan") instead of
+            // always grabbing the first submit button in the DOM.
+            const btn = e.submitter || form.querySelector('[type="submit"]');
             if (!btn || btn.dataset.noLoading) return;
-            btn.disabled = true;
             const original = btn.innerHTML;
             btn.dataset.original = original;
-            btn.innerHTML = `<span class="inline-flex items-center gap-2">
-                <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                </svg>
-                Memproses...</span>`;
-            btn.setAttribute('aria-busy', 'true');
+            // Defer disabling to the next tick: disabling the submitter
+            // synchronously inside the submit handler can strip its
+            // name/value pair from the request and silently cancel the
+            // submission in some browsers.
+            setTimeout(() => {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="inline-flex items-center gap-2">
+                    <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    Memproses...</span>`;
+                btn.setAttribute('aria-busy', 'true');
+            }, 0);
         });
     });
 }
