@@ -147,7 +147,8 @@ class ArticleService
     private function prepareData(StoreArticleRequest|UpdateArticleRequest $request, bool $isAdmin): array
     {
         $data = $request->validated();
-        $data['writer'] = $isAdmin ? ($request->writer ?? auth()->user()->name) : auth()->user()->name;
+        $data['writer']  = $isAdmin ? ($request->writer ?? auth()->user()->name) : auth()->user()->name;
+        $data['content'] = $this->sanitizeHtml($data['content'] ?? '');
 
         return $data;
     }
@@ -156,5 +157,21 @@ class ArticleService
     {
         if ($isAdmin) return $request->status ?? 'draft';
         return $request->has('submit') ? 'pending' : 'draft';
+    }
+
+    /**
+     * Sanitize article content HTML coming from the Quill rich text editor.
+     * Only allows basic formatting tags (bold/italic/underline/lists/
+     * headings/links/images/blockquote) and strips event-handler attributes
+     * (onerror, onclick, ...) and javascript: URIs to prevent stored XSS.
+     */
+    private function sanitizeHtml(string $html): string
+    {
+        $allowed = '<p><br><b><strong><i><em><u><s><ul><ol><li><h1><h2><h3><h4><blockquote><a><img><span>';
+        $html    = strip_tags($html, $allowed);
+        $html    = preg_replace('/\son\w+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
+        $html    = preg_replace('/(href|src)(\s*=\s*)(["\'])\s*javascript:[^"\']*("|\'|$)/i', '$1$2$3#$3', $html);
+
+        return $html;
     }
 }
