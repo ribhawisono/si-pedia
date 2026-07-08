@@ -26,8 +26,8 @@
       <img src="{{ $article->image_url }}" alt="{{ $article->title }}"
            class="h-24 w-32 flex-shrink-0 rounded-xl object-cover sm:h-28 sm:w-36" loading="lazy">
       @else
-      <div class="h-24 w-32 flex-shrink-0 rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 flex items-center justify-center sm:h-28 sm:w-36" aria-hidden="true">
-        <svg class="h-8 w-8 text-brand-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <div class="h-24 w-32 flex-shrink-0 rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center sm:h-28 sm:w-36" aria-hidden="true">
+        <svg class="h-8 w-8 text-brand-300 dark:text-gray-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5"/>
         </svg>
       </div>
