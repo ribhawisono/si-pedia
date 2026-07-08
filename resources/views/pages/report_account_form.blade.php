@@ -18,13 +18,13 @@
       <p class="font-bold text-gray-900">{{ $user->name }}</p>
       <p class="text-sm text-gray-500">{{ $user->email }} · {{ ucfirst($user->role) }}</p>
     </div>
-    <span class="ml-auto rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-600">
+    <span class="ml-auto rounded-full bg-red-100 dark:bg-red-900/30 px-3 py-1 text-xs font-bold text-red-600 dark:text-red-300">
       Akan Dilaporkan
     </span>
   </div>
 
   @if(session('error'))
-    <div class="mb-5 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600 font-semibold">
+    <div class="mb-5 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 px-4 py-3 text-sm text-red-600 dark:text-red-300 font-semibold">
       ⚠️ {{ session('error') }}
     </div>
   @endif
@@ -60,7 +60,7 @@
       @error('description') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
     </div>
 
-    <div class="rounded-lg bg-yellow-50 border border-yellow-200 px-4 py-3 text-xs text-yellow-700">
+    <div class="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 px-4 py-3 text-xs text-yellow-700 dark:text-yellow-400">
       ⚠️ Laporan palsu atau yang tidak berdasar dapat berakibat pada akunmu sendiri.
       Pastikan kamu hanya melaporkan pelanggaran yang nyata.
     </div>
