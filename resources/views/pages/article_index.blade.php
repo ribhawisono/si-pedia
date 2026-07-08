@@ -36,13 +36,13 @@
     🔍 <span class="ml-3">Search Articles by title, category, or author...</span>
   </div>
 
-  <div class="mt-6 hidden lg:grid grid-cols-[60px_120px_1fr_170px_110px_170px_170px] gap-2 rounded-xl bg-tablehead px-4 py-3 text-sm font-bold text-gray-800">
+  <div class="mt-6 hidden lg:grid grid-cols-[60px_120px_1fr_170px_110px_170px_190px] gap-2 rounded-xl bg-tablehead px-4 py-3 text-sm font-bold text-gray-800">
     <div>No</div><div>Thumbnail</div><div>Judul Artikel</div><div>Kategori</div><div>Penulis</div><div>Tanggal / Status</div><div>Action</div>
   </div>
 
   <div class="mt-3 space-y-3">
     @forelse($articles as $i => $article)
-    <div class="hidden lg:grid grid-cols-[60px_120px_1fr_170px_110px_170px_170px] items-start gap-2 rounded-2xl bg-white px-4 py-4 shadow-[0_2px_10px_rgba(0,0,0,0.06)] overflow-hidden">
+    <div class="hidden lg:grid grid-cols-[60px_120px_1fr_170px_110px_170px_190px] items-start gap-2 rounded-2xl bg-white px-4 py-4 shadow-[0_2px_10px_rgba(0,0,0,0.06)] overflow-hidden">
       <div class="text-lg font-bold">{{ $i + 1 + ($articles->currentPage() - 1) * $articles->perPage() }}</div>
       <div>
         @if($article->image)
@@ -77,42 +77,54 @@
         <p class="text-sm font-bold">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('j F Y') }}</p>
         <span class="mt-1 inline-block rounded-md {{ $sc }} px-3 py-1 text-xs font-semibold text-white">{{ $sl }}</span>
       </div>
-      {{-- Fixed-size buttons (w-[76px] h-8), left-aligned + wrapped so they
-           never stretch to fill the column, and always line up neatly. --}}
-      <div class="flex flex-wrap gap-1.5 min-w-0">
-        @if($article->user_id === auth()->id())
-        <a href="{{ route('admin.articles.edit', $article) }}"
-           class="flex h-8 w-[76px] items-center justify-center rounded-md bg-edit text-xs font-bold text-black">Edit</a>
+
+      {{-- Actions: Takedown is a separate row on top (pulls a LIVE article
+           down but keeps it editable by its writer); Edit/Hapus sit below as
+           their own row. Every button is a fixed w-[86px] so widths line up
+           regardless of which combination is shown for a given status. --}}
+      <div class="flex flex-col gap-1.5 min-w-0">
+        @if($article->status === 'active')
+        <a href="{{ route('admin.articles.takedownForm', $article) }}"
+           class="flex h-8 w-[86px] items-center justify-center rounded-md bg-purple-500 text-[11px] font-bold text-white hover:bg-purple-600">
+          ⬇ Takedown
+        </a>
         @endif
 
-        @if($article->status === 'pending')
-          <form action="{{ route('admin.articles.approve', $article) }}" method="POST">
-            @csrf @method('PATCH')
-            <button class="flex h-8 w-[76px] items-center justify-center rounded-md bg-green-500 text-xs font-bold text-white hover:bg-green-600">✅ Acc</button>
-          </form>
-          <form action="{{ route('admin.articles.reject', $article) }}" method="POST">
-            @csrf @method('PATCH')
-            <button class="flex h-8 w-[76px] items-center justify-center rounded-md bg-orange-400 text-xs font-bold text-white hover:bg-orange-500">❌ Tolak</button>
-          </form>
-        @endif
+        <div class="flex flex-wrap gap-1.5">
+          @if($article->user_id === auth()->id())
+          <a href="{{ route('admin.articles.edit', $article) }}"
+             class="flex h-8 w-[86px] items-center justify-center rounded-md bg-edit text-xs font-bold text-black">Edit</a>
+          @endif
 
-        @if($article->status === 'pending_delete')
-          <form action="{{ route('admin.articles.approveDelete', $article) }}" method="POST"
-                onsubmit="return confirm('Pindahkan artikel ini ke Trash?')">
-            @csrf @method('DELETE')
-            <button class="flex h-8 w-[76px] items-center justify-center rounded-md bg-red-500 text-xs font-bold text-white hover:bg-red-600">🗑 Hapus</button>
-          </form>
-          <form action="{{ route('admin.articles.rejectDelete', $article) }}" method="POST">
-            @csrf @method('PATCH')
-            <button class="flex h-8 w-[76px] items-center justify-center rounded-md bg-gray-200 text-xs font-bold text-gray-700 hover:bg-gray-300">↩ Batal</button>
-          </form>
-        @else
-          <form action="{{ route('admin.articles.destroy', $article) }}" method="POST"
-                onsubmit="return confirm('Pindahkan artikel ini ke Trash? Bisa dipulihkan nanti.')">
-            @csrf @method('DELETE')
-            <button class="flex h-8 w-[76px] items-center justify-center rounded-md bg-danger text-xs font-bold text-white">Delete</button>
-          </form>
-        @endif
+          @if($article->status === 'pending')
+            <form action="{{ route('admin.articles.approve', $article) }}" method="POST">
+              @csrf @method('PATCH')
+              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-green-500 text-[11px] font-bold text-white hover:bg-green-600">✅ Acc</button>
+            </form>
+            <form action="{{ route('admin.articles.reject', $article) }}" method="POST">
+              @csrf @method('PATCH')
+              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-orange-400 text-[11px] font-bold text-white hover:bg-orange-500">❌ Tolak</button>
+            </form>
+          @endif
+
+          @if($article->status === 'pending_delete')
+            <form action="{{ route('admin.articles.approveDelete', $article) }}" method="POST"
+                  onsubmit="return confirm('Pindahkan artikel ini ke Trash?')">
+              @csrf @method('DELETE')
+              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-red-500 text-[11px] font-bold text-white hover:bg-red-600">🗑 Hapus</button>
+            </form>
+            <form action="{{ route('admin.articles.rejectDelete', $article) }}" method="POST">
+              @csrf @method('PATCH')
+              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-gray-200 text-[11px] font-bold text-gray-700 hover:bg-gray-300">↩ Batal</button>
+            </form>
+          @else
+            <form action="{{ route('admin.articles.destroy', $article) }}" method="POST"
+                  onsubmit="return confirm('Pindahkan artikel ini ke Trash? Bisa dipulihkan nanti.')">
+              @csrf @method('DELETE')
+              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-danger text-xs font-bold text-white">Hapus</button>
+            </form>
+          @endif
+        </div>
       </div>
     </div>
     @empty
