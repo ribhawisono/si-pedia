@@ -40,13 +40,13 @@
           @foreach($articles as $i => $article)
           <div class="grid grid-cols-[40px_1fr_90px_70px_120px_80px_70px] items-center gap-2 rounded-xl bg-white px-3 py-3 shadow-sm">
             <div class="text-sm font-bold">{{ $i + 1 }}</div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 min-w-0">
               @if($article->image)
-                <img src="{{ $article->image_url }}" class="h-11 w-11 rounded object-cover" alt="{{ $article->title }}">
+                <img src="{{ $article->image_url }}" class="h-11 w-11 rounded object-cover flex-shrink-0" alt="{{ $article->title }}">
               @else
-                <div class="h-11 w-11 rounded bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">No Img</div>
+                <div class="h-11 w-11 rounded bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 flex-shrink-0">No Img</div>
               @endif
-              <span class="text-[11px] font-bold leading-tight">{{ Str::limit($article->title, 60) }}</span>
+              <span class="text-[11px] font-bold leading-tight break-words min-w-0">{{ Str::limit($article->title, 60) }}</span>
             </div>
             <div><span class="rounded-full bg-badge-cat px-4 py-1 text-xs font-semibold text-white">{{ $article->category->name ?? 'Uncategorized' }}</span></div>
             <div class="text-[11px] font-bold">{{ $article->writer }}</div>
