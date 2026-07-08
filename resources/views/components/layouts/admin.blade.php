@@ -21,6 +21,12 @@ $pendingReports  = \App\Models\AccountReport::where('status','pending')->count()
 $pendingComments = \App\Models\Comment::where('status','pending')->count();
 $totalBadge = $pendingArticles + $pendingReports + $pendingComments;
 
+$notifItems = [
+    ['label' => 'Artikel pending',  'icon' => '📄', 'count' => $pendingArticles, 'route' => 'admin.articles.pending'],
+    ['label' => 'Komentar pending', 'icon' => '💬', 'count' => $pendingComments, 'route' => 'admin.comments.index'],
+    ['label' => 'Report akun',      'icon' => '🚩', 'count' => $pendingReports,  'route' => 'admin.account-reports.index'],
+];
+
 $nav = [
     'dashboard' => ['label'=>'Dashboard',   'icon'=>'🏠', 'route'=>'admin.panel'],
     'articles'  => ['label'=>'Artikel',     'icon'=>'📄', 'route'=>'admin.articles.index',  'badge'=>$pendingArticles],
@@ -36,7 +42,7 @@ $nav = [
 
 <div class="flex min-h-screen">
 
-    {{-- ── SIDEBAR ──────────────────────────────────────────── --}}
+    {{-- ── SIDEBAR ─────────────────────── --}}
     <aside id="admin-sidebar"
            class="flex w-64 flex-shrink-0 flex-col bg-ink-900 transition-all duration-300 lg:sticky lg:top-0 lg:h-screen fixed inset-y-0 left-0 z-50 -translate-x-full lg:translate-x-0"
            aria-label="Navigasi admin">
@@ -131,7 +137,7 @@ $nav = [
     {{-- Sidebar overlay (mobile) --}}
     <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-black/50 lg:hidden" aria-hidden="true"></div>
 
-    {{-- ── MAIN AREA ─────────────────────────────────────────── --}}
+    {{-- ── MAIN AREA ───────────────────── --}}
     <div class="flex min-w-0 flex-1 flex-col">
 
         {{-- Top bar --}}
@@ -149,19 +155,39 @@ $nav = [
 
             {{-- Top bar right --}}
             <div class="flex items-center gap-3">
-                {{-- Global notification badge --}}
-                @if($totalBadge > 0)
-                <a href="{{ route('admin.articles.pending') }}"
-                   class="relative rounded-lg p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-brand-600"
-                   aria-label="{{ $totalBadge }} item memerlukan perhatian">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
-                    </svg>
-                    <span class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white">
-                        {{ $totalBadge }}
-                    </span>
-                </a>
-                @endif
+                {{-- Global notification dropdown --}}
+                <div id="notif-container" class="relative">
+                    <button id="notif-btn" type="button"
+                            class="relative rounded-lg p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-brand-600"
+                            aria-haspopup="true" aria-expanded="false" aria-controls="notif-menu"
+                            aria-label="{{ $totalBadge }} item memerlukan perhatian">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
+                        </svg>
+                        @if($totalBadge > 0)
+                        <span class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white">
+                            {{ $totalBadge }}
+                        </span>
+                        @endif
+                    </button>
+                    <div id="notif-menu" class="hidden absolute right-0 mt-2 w-72 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg overflow-hidden z-40" role="menu">
+                        <div class="px-4 py-2.5 border-b border-gray-100 dark:border-gray-800 text-xs font-bold text-gray-500">Notifikasi</div>
+                        @if($totalBadge === 0)
+                        <div class="px-4 py-6 text-center text-xs text-gray-400">Tidak ada notifikasi baru.</div>
+                        @else
+                        @foreach($notifItems as $item)
+                        @if($item['count'] > 0)
+                        <a href="{{ route($item['route']) }}" role="menuitem"
+                           class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                            <span aria-hidden="true" class="text-base">{{ $item['icon'] }}</span>
+                            <span class="flex-1 text-gray-700 dark:text-gray-200">{{ $item['label'] }}</span>
+                            <span class="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-black text-white">{{ $item['count'] }}</span>
+                        </a>
+                        @endif
+                        @endforeach
+                        @endif
+                    </div>
+                </div>
 
             {{-- Dark mode toggle --}}
             <button data-dark-toggle
@@ -232,6 +258,36 @@ $nav = [
     close?.addEventListener('click', closeSidebar);
     overlay?.addEventListener('click', closeSidebar);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSidebar(); });
+})();
+
+// Admin notification dropdown
+(function() {
+    const btn  = document.getElementById('notif-btn');
+    const menu = document.getElementById('notif-menu');
+    const container = document.getElementById('notif-container');
+    if (!btn || !menu) return;
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = !menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', isOpen);
+        btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    document.addEventListener('click', (e) => {
+        if (container && !container.contains(e.target)) {
+            menu.classList.add('hidden');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+            menu.classList.add('hidden');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.focus();
+        }
+    });
 })();
 </script>
 
