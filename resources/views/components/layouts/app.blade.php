@@ -15,6 +15,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $meta_description }}">
 
+    {{-- Favicon (logo topi wisuda SI-Pedia) --}}
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230a0f2c'/%3E%3Cpath fill='white' d='M12 3 1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zM18.18 12 12 15.72 5.82 12 12 8.28 18.18 12zM7 14.5l5 2.72 5-2.72v2.41L12 19.5l-5-2.59V14.5z'/%3E%3C/svg%3E">
+
     {{-- OpenGraph --}}
     <meta property="og:title"       content="{{ $title }}">
     <meta property="og:description" content="{{ $meta_description }}">
