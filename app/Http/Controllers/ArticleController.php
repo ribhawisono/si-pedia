@@ -18,9 +18,6 @@ class ArticleController extends Controller
     // ─── Admin: list ───────────────────────────────────────
     public function index(Request $request)
     {
-        // Drafts are a user's private in-progress work and must stay hidden from
-        // admin until submitted (status changes to 'pending'). Admins only see
-        // their own drafts (self-authored articles they manage directly).
         $adminId  = auth()->id();
         $articles = Article::with(['category:id,name', 'user:id,name', 'tags:id,name'])
             ->where(fn ($q) => $q->where('status', '!=', 'draft')->orWhere('user_id', $adminId))
@@ -40,7 +37,6 @@ class ArticleController extends Controller
         return view('pages.article_pending', compact('pending', 'pendingDelete'));
     }
 
-    // ─── Trash (soft-deleted articles) ───────────────────────
     public function trash(Request $request)
     {
         $articles = Article::onlyTrashed()
@@ -55,9 +51,7 @@ class ArticleController extends Controller
     {
         $article = Article::onlyTrashed()->findOrFail($id);
         $article->restore();
-        // Restored articles go back to Draft so an admin/owner reviews/edits
-        // before it's live again, rather than instantly reappearing as-is.
-        $article->update(['status' => 'draft']);
+        $article->update(['status' => 'draft', 'trashed_reason' => null]);
         $this->logActivity('restore', "Restored: {$article->title}", $article);
         $this->articleService->clearCache();
         return back()->with('success', "\"{$article->title}\" dipulihkan sebagai Draft.");
@@ -96,9 +90,38 @@ class ArticleController extends Controller
         return back()->with('success', "\"{$article->title}\" dikembalikan ke draft. Penulis akan melihat catatan perbaikan yang kamu berikan.");
     }
 
+    // Takedown: pull a LIVE article down (distinct from Edit/Hapus). Soft-
+    // deletes it (lands in Trash like any delete) but tags trashed_reason as
+    // 'takedown' so it still surfaces in the writer's "Artikel Saya" for
+    // editing — unlike a normal Hapus, which stays hidden from the writer.
+    public function takedownForm(Article $article)
+    {
+        return view('pages.admin_takedown_form', compact('article'));
+    }
+
+    public function takedown(Request $request, Article $article)
+    {
+        $data = $request->validate([
+            'rejection_note' => 'required|string|max:1000',
+        ]);
+
+        $article->update([
+            'rejection_note' => $data['rejection_note'],
+            'trashed_reason' => 'takedown',
+        ]);
+        $article->delete();
+        $this->logActivity('takedown', "Takedown: {$article->title}", $article);
+        $this->articleService->clearCache();
+
+        return redirect()->route('admin.articles.index')->with('success',
+            "\"{$article->title}\" ditakedown. Penulis dapat memperbaiki dan mengedit ulang dari \"Artikel Saya\"."
+        );
+    }
+
     public function approveDelete(Article $article)
     {
         $title = $article->title;
+        $article->update(['trashed_reason' => 'deleted']);
         $article->delete();
         $this->logActivity('delete', "Deleted: {$title}");
         $this->articleService->clearCache();
@@ -112,7 +135,6 @@ class ArticleController extends Controller
         return back()->with('success', "Permintaan hapus \"{$article->title}\" ditolak.");
     }
 
-    // ─── Create ──────────────────────────
     public function create()
     {
         return view('pages.edit_article', [
@@ -137,16 +159,18 @@ class ArticleController extends Controller
         );
     }
 
-    // ─── Edit ──────────────────────────
     public function edit(Article $article)
     {
         $user    = auth()->user();
         $isAdmin = $user->role === 'admin';
 
-        // Admins may only edit content they authored themselves. For
-        // user-submitted articles the admin's role is limited to approve /
-        // reject / delete via the index actions, not direct editing.
         if ($article->user_id !== $user->id) abort(403);
+
+        // A takedown'd article is soft-deleted but intentionally editable by
+        // its writer (see takedown() above). A normally-deleted article
+        // (trashed_reason=deleted) must NOT be editable at all.
+        if ($article->trashed() && $article->trashed_reason !== 'takedown') abort(403);
+
         if (!$isAdmin && in_array($article->status, ['active', 'pending_delete'])) {
             return back()->with('error', 'Artikel aktif tidak dapat diedit.');
         }
@@ -166,8 +190,19 @@ class ArticleController extends Controller
         $user    = auth()->user();
         $isAdmin = $user->role === 'admin';
         if ($article->user_id !== $user->id) abort(403);
+        if ($article->trashed() && $article->trashed_reason !== 'takedown') abort(403);
+
+        $wasTakendown = $article->trashed_reason === 'takedown';
 
         $article = $this->articleService->update($request, $article, $isAdmin);
+
+        // Saving a takedown'd article resubmits it: restore from Trash, clear
+        // the takedown flag and note, back to normal draft/pending flow.
+        if ($wasTakendown) {
+            $article->restore();
+            $article->update(['trashed_reason' => null]);
+        }
+
         $this->logActivity('update', "Updated: {$article->title}", $article);
 
         if ($isAdmin) return redirect()->route('admin.articles.index')->with('success', 'Artikel diperbarui.');
@@ -180,6 +215,7 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         $this->logActivity('delete', "Deleted: {$article->title}", $article);
+        $article->update(['trashed_reason' => 'deleted']);
         $article->delete();
         $this->articleService->clearCache();
         return redirect()->route('admin.articles.index')->with('success', 'Artikel dipindahkan ke Trash.');
@@ -195,7 +231,12 @@ class ArticleController extends Controller
 
     public function myArticles()
     {
-        $articles = Article::with(['category:id,name', 'tags:id,name,slug'])
+        // Include trashed articles too: a normal 'deleted' one shows as a
+        // read-only "deleted by admin" placeholder (no edit, no content), a
+        // 'takedown' one shows fully editable so the writer can fix and
+        // resubmit it. See my_articles.blade.php for the branching.
+        $articles = Article::withTrashed()
+            ->with(['category:id,name', 'tags:id,name,slug'])
             ->where('user_id', auth()->id())
             ->latest()
             ->paginate(10);
@@ -209,7 +250,10 @@ class ArticleController extends Controller
         match ($request->action) {
             'publish' => $q->update(['status' => 'active']),
             'draft'   => $q->update(['status' => 'draft']),
-            'delete'  => Article::whereIn('id', $request->ids)->delete(),
+            'delete'  => (function () use ($request) {
+                Article::whereIn('id', $request->ids)->update(['trashed_reason' => 'deleted']);
+                Article::whereIn('id', $request->ids)->delete();
+            })(),
         };
         $this->articleService->clearCache();
         return redirect()->route('admin.articles.index')->with('success', 'Bulk action selesai.');
