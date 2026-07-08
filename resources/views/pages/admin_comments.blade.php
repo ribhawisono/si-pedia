@@ -86,8 +86,8 @@
         </td>
         <td class="py-4 px-4">
           <span class="rounded-full px-2.5 py-1 text-[10px] font-bold
-            {{ $comment->status === 'approved' ? 'bg-green-100 text-green-700' :
-               ($comment->status === 'rejected' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-700') }}">
+            {{ $comment->status === 'approved' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
+               ($comment->status === 'rejected' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300') }}">
             {{ ucfirst($comment->status) }}
           </span>
         </td>
