@@ -29,92 +29,135 @@
     <span class="rounded-full bg-yellow-400 px-3 py-1 text-white">Pending = Menunggu Persetujuan</span>
     <span class="rounded-full bg-gray-400 px-3 py-1 text-white">Draft = Tersimpan</span>
     <span class="rounded-full bg-red-500 px-3 py-1 text-white">Pending Delete = Request Hapus Dikirim</span>
+    <span class="rounded-full bg-purple-500 px-3 py-1 text-white">Takedown = Perlu Diperbaiki</span>
+    <span class="rounded-full bg-gray-700 px-3 py-1 text-white">Dihapus = Dihapus Admin</span>
   </div>
 
   <div class="mt-6 space-y-4">
     @forelse($articles as $article)
-    <div class="rounded-2xl bg-white shadow-sm border border-gray-100 px-6 py-5">
-     <div class="flex items-center gap-5">
 
-      {{-- Thumbnail --}}
-      <div class="flex-shrink-0">
-        @if($article->image)
-          <img src="{{ $article->image_url }}" class="h-20 w-24 rounded-lg object-cover">
-        @else
-          <div class="h-20 w-24 rounded-lg bg-gray-100 flex items-center justify-center text-2xl">📄</div>
-        @endif
+      {{-- Article deleted (Hapus) by admin/self-request: writer is only told
+           it was deleted — no edit, no content, nothing to view. --}}
+      @if($article->trashed() && $article->trashed_reason !== 'takedown')
+      <div class="rounded-2xl bg-gray-50 border border-gray-200 px-6 py-5 flex items-center gap-5 opacity-75">
+        <div class="h-20 w-24 rounded-lg bg-gray-200 flex items-center justify-center text-2xl flex-shrink-0">🗑</div>
+        <div class="flex-1 min-w-0">
+          <h2 class="text-lg font-extrabold text-gray-500">(Artikel telah dihapus)</h2>
+          <p class="mt-1 text-sm text-gray-400">Dihapus pada {{ $article->deleted_at->translatedFormat('j F Y') }}</p>
+        </div>
+        <span class="rounded-full bg-gray-700 px-4 py-1 text-xs font-bold text-white flex-shrink-0">Dihapus</span>
       </div>
 
-      {{-- Info --}}
-      <div class="flex-1 min-w-0">
-        <h2 class="text-lg font-extrabold text-gray-900 truncate">{{ $article->title }}</h2>
-        <p class="mt-1 text-sm text-gray-500">
-          {{ $article->category->name ?? 'Tanpa Kategori' }} ·
-          {{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('j F Y') }}
-        </p>
-        @if($article->status === 'pending_delete')
-          <p class="mt-1 text-xs text-red-500 font-semibold">⏳ Permintaan hapus sedang menunggu keputusan admin.</p>
-        @elseif($article->status === 'pending')
-          <p class="mt-1 text-xs text-yellow-600 font-semibold">⏳ Artikel sedang menunggu persetujuan admin untuk dipublikasikan.</p>
-        @endif
-      </div>
-
-      {{-- Status badge --}}
-      <div class="flex-shrink-0">
-        @php
-          $badgeClass = match($article->status) {
-            'active'         => 'bg-green-500',
-            'pending'        => 'bg-yellow-400',
-            'pending_delete' => 'bg-red-500',
-            default          => 'bg-gray-400',
-          };
-          $badgeLabel = match($article->status) {
-            'active'         => 'Active',
-            'pending'        => 'Pending',
-            'pending_delete' => 'Pending Delete',
-            default          => 'Draft',
-          };
-        @endphp
-        <span class="rounded-full {{ $badgeClass }} px-4 py-1 text-xs font-bold text-white">{{ $badgeLabel }}</span>
-      </div>
-
-      {{-- Actions --}}
-      <div class="flex-shrink-0 flex gap-2">
-        @if($article->status === 'active')
-          <a href="{{ route('articles.show', $article->slug) }}"
-             class="rounded-lg bg-gray-100 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-200 transition">
-            👁 Lihat
-          </a>
-        @endif
-
-        @if(in_array($article->status, ['draft', 'pending']))
+      {{-- Article takedown: fully editable, shows admin's note --}}
+      @elseif($article->trashed() && $article->trashed_reason === 'takedown')
+      <div class="rounded-2xl bg-white shadow-sm border border-purple-200 px-6 py-5">
+        <div class="flex items-center gap-5">
+          <div class="flex-shrink-0">
+            @if($article->image)
+              <img src="{{ $article->image_url }}" class="h-20 w-24 rounded-lg object-cover">
+            @else
+              <div class="h-20 w-24 rounded-lg bg-gray-100 flex items-center justify-center text-2xl">📄</div>
+            @endif
+          </div>
+          <div class="flex-1 min-w-0">
+            <h2 class="text-lg font-extrabold text-gray-900 truncate">{{ $article->title }}</h2>
+            <p class="mt-1 text-sm text-gray-500">{{ $article->category->name ?? 'Tanpa Kategori' }}</p>
+          </div>
+          <span class="rounded-full bg-purple-500 px-4 py-1 text-xs font-bold text-white flex-shrink-0">Takedown</span>
           <a href="{{ route('articles.edit', $article) }}"
-             class="rounded-lg bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-100 transition">
-            ✏️ Edit
+             class="flex-shrink-0 rounded-lg bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-100 transition">
+            ✏️ Edit &amp; Perbaiki
           </a>
-        @endif
-
-        @if(!in_array($article->status, ['pending_delete']))
-          <form action="{{ route('articles.requestDelete', $article) }}" method="POST"
-                onsubmit="return confirm('Kirim permintaan hapus artikel ini ke admin?')">
-            @csrf @method('PATCH')
-            <button type="submit"
-                    class="rounded-lg bg-red-50 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-100 transition">
-              🗑 Request Hapus
-            </button>
-          </form>
+        </div>
+        @if($article->rejection_note)
+        <div class="mt-4 rounded-xl bg-purple-50 border border-purple-200 px-4 py-3">
+          <p class="text-xs font-bold text-purple-700 mb-1">⬇ Ditakedown admin — perlu diperbaiki:</p>
+          <p class="text-sm text-purple-700">{{ $article->rejection_note }}</p>
+        </div>
         @endif
       </div>
-     </div>
 
-      {{-- Admin rejection note: only visible on drafts that were rejected --}}
-      @if($article->status === 'draft' && $article->rejection_note)
-      <div class="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3">
-        <p class="text-xs font-bold text-red-700 mb-1">⚠️ Ditolak admin — perlu diperbaiki:</p>
-        <p class="text-sm text-red-700">{{ $article->rejection_note }}</p>
+      @else
+      {{-- Normal (non-trashed) article --}}
+      <div class="rounded-2xl bg-white shadow-sm border border-gray-100 px-6 py-5">
+       <div class="flex items-center gap-5">
+
+        <div class="flex-shrink-0">
+          @if($article->image)
+            <img src="{{ $article->image_url }}" class="h-20 w-24 rounded-lg object-cover">
+          @else
+            <div class="h-20 w-24 rounded-lg bg-gray-100 flex items-center justify-center text-2xl">📄</div>
+          @endif
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <h2 class="text-lg font-extrabold text-gray-900 truncate">{{ $article->title }}</h2>
+          <p class="mt-1 text-sm text-gray-500">
+            {{ $article->category->name ?? 'Tanpa Kategori' }} ·
+            {{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('j F Y') }}
+          </p>
+          @if($article->status === 'pending_delete')
+            <p class="mt-1 text-xs text-red-500 font-semibold">⏳ Permintaan hapus sedang menunggu keputusan admin.</p>
+          @elseif($article->status === 'pending')
+            <p class="mt-1 text-xs text-yellow-600 font-semibold">⏳ Artikel sedang menunggu persetujuan admin untuk dipublikasikan.</p>
+          @endif
+        </div>
+
+        <div class="flex-shrink-0">
+          @php
+            $badgeClass = match($article->status) {
+              'active'         => 'bg-green-500',
+              'pending'        => 'bg-yellow-400',
+              'pending_delete' => 'bg-red-500',
+              default          => 'bg-gray-400',
+            };
+            $badgeLabel = match($article->status) {
+              'active'         => 'Active',
+              'pending'        => 'Pending',
+              'pending_delete' => 'Pending Delete',
+              default          => 'Draft',
+            };
+          @endphp
+          <span class="rounded-full {{ $badgeClass }} px-4 py-1 text-xs font-bold text-white">{{ $badgeLabel }}</span>
+        </div>
+
+        <div class="flex-shrink-0 flex gap-2">
+          @if($article->status === 'active')
+            <a href="{{ route('articles.show', $article->slug) }}"
+               class="rounded-lg bg-gray-100 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-200 transition">
+              👁 Lihat
+            </a>
+          @endif
+
+          @if(in_array($article->status, ['draft', 'pending']))
+            <a href="{{ route('articles.edit', $article) }}"
+               class="rounded-lg bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-100 transition">
+              ✏️ Edit
+            </a>
+          @endif
+
+          @if(!in_array($article->status, ['pending_delete']))
+            <form action="{{ route('articles.requestDelete', $article) }}" method="POST"
+                  onsubmit="return confirm('Kirim permintaan hapus artikel ini ke admin?')">
+              @csrf @method('PATCH')
+              <button type="submit"
+                      class="rounded-lg bg-red-50 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-100 transition">
+                🗑 Request Hapus
+              </button>
+            </form>
+          @endif
+        </div>
+       </div>
+
+        @if($article->status === 'draft' && $article->rejection_note)
+        <div class="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3">
+          <p class="text-xs font-bold text-red-700 mb-1">⚠️ Ditolak admin — perlu diperbaiki:</p>
+          <p class="text-sm text-red-700">{{ $article->rejection_note }}</p>
+        </div>
+        @endif
       </div>
       @endif
-    </div>
+
     @empty
     <div class="rounded-2xl bg-white border border-gray-100 shadow-sm p-16 text-center">
       <p class="text-5xl mb-4">📝</p>
