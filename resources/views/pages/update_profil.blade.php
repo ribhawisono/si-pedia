@@ -1,4 +1,4 @@
-<x-layouts.app title="Update Profil — SI-Pedia" footer="min">
+<x-layouts.app title="Update Profil — SI-Pedia">
 <main class="mx-auto max-w-[640px] px-4 sm:px-6 py-10" id="main-content">
   <div class="mb-6 flex items-center gap-3">
     <a href="{{ route('profile.show') }}" class="rounded-lg border border-gray-200 p-2 text-gray-500 hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-brand-600" aria-label="Kembali ke profil">
