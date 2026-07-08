@@ -22,6 +22,7 @@ class AuthController extends Controller
             'email'    => 'required|email',
             'password' => 'required',
         ]);
+        $credentials['email'] = strtolower($credentials['email']);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
@@ -35,6 +36,8 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        $request->merge(['email' => strtolower((string) $request->input('email'))]);
+
         $data = $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
@@ -57,7 +60,7 @@ class AuthController extends Controller
         return redirect()->route('verification.otp')->with('status', 'Kode verifikasi telah dikirim ke email kamu.');
     }
 
-    // ─── OTP Verification ─────────────────────────────────────────────────────
+    // ─── OTP Verification ──────────────────────────────────────────────────────
 
     private function sendOtp(User $user): void
     {
@@ -140,10 +143,11 @@ class AuthController extends Controller
         return back()->with('status', 'Kode verifikasi baru telah dikirim ke ' . $user->email);
     }
 
-    // ─── Reset Password ────────────────────────────────────────────────────────
+    // ─── Reset Password ───────────────────────────────────────────────────────
 
     public function sendResetLink(Request $request)
     {
+        $request->merge(['email' => strtolower((string) $request->input('email'))]);
         $request->validate(['email' => 'required|email']);
         $status = Password::sendResetLink($request->only('email'));
 
@@ -156,6 +160,8 @@ class AuthController extends Controller
 
     public function resetPassword(Request $request)
     {
+        $request->merge(['email' => strtolower((string) $request->input('email'))]);
+
         $request->validate([
             'token'    => 'required',
             'email'    => 'required|email',
