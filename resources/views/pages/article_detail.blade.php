@@ -10,7 +10,7 @@
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex flex-col lg:flex-row gap-8">
 
-      {{-- ─── Main article column ────────────────────────────────────── --}}
+      {{-- ─── Main article column ────────────────────────────────── --}}
       <article class="flex-1 min-w-0" aria-labelledby="article-title">
 
         {{-- Back breadcrumb --}}
@@ -142,6 +142,19 @@
                   <span id="bookmark-label">{{ $isBookmarked ? 'Tersimpan' : 'Simpan' }}</span>
                 </button>
                 @endauth
+
+                {{-- Report artikel --}}
+                @auth
+                @if($article->user_id !== auth()->id())
+                <a href="{{ route('articles.report', $article) }}"
+                   class="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-500 hover:border-red-300 hover:text-red-600 transition focus:outline-none focus:ring-2 focus:ring-red-400">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3 1.5 3H3"/>
+                  </svg>
+                  Laporkan
+                </a>
+                @endif
+                @endauth
               </div>
             </div>
           </div>
@@ -240,7 +253,7 @@
         </section>
       </article>
 
-      {{-- ─── Sidebar ───────────────────────────────────────────── --}}
+      {{-- ─── Sidebar ──────────────────────────── --}}
       <aside class="lg:w-72 flex-shrink-0 space-y-5" aria-label="Sidebar artikel">
 
         {{-- Related Articles --}}
