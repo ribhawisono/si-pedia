@@ -300,6 +300,16 @@ html.dark ::-webkit-scrollbar-thumb { background: #374151; }
 /* ─ Dark mode admin-specific ────────── */
 html.dark #admin-sidebar { border-right: 1px solid #252836; }
 
+/* ─ Paragraph text alignment ─────── */
+/* All paragraph-shaped text blocks are justified by default. Layered in
+   @layer base so any explicit Tailwind alignment utility (text-center,
+   text-left, etc.) placed on a <p> elsewhere still wins the cascade.
+   Single-line text is visually unaffected by justify (nothing to stretch),
+   so this is safe on short labels/badges wrapped in <p> too. */
+@layer base {
+    p { text-align: justify; text-justify: inter-word; }
+}
+
 /* ═══════════════════════════════════════════════════
    PHASE 14 — DESIGN SYSTEM TOKENS
    Consistent typography, spacing, components
@@ -328,7 +338,7 @@ html.dark #admin-sidebar { border-right: 1px solid #252836; }
 .btn-sm       { padding: 0.375rem 0.75rem; font-size: 0.75rem; border-radius: 0.5rem; }
 .btn-lg       { padding: 0.625rem 1.5rem; font-size: 0.9375rem; border-radius: 0.75rem; }
 
-/* ─ Card system ──────────────── */
+/* ─ Card system ─────────────── */
 .card         { background: #fff; border: 1px solid #f1f5f9; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 .card-header  { padding: 0.875rem 1.25rem; border-bottom: 1px solid #f1f5f9; background: #f8fafc; border-radius: 1rem 1rem 0 0; font-size: 0.8125rem; font-weight: 700; color: #374151; }
 .card-body    { padding: 1.25rem; }
@@ -358,7 +368,7 @@ html.dark .form-label    { color: #cbd5e1 !important; }
 html.dark .ds-table th { background: #252836; color: #9ca3af; border-color: #2d3348; }
 html.dark .ds-table td { border-color: #1a1d27; color: #cbd5e1; }
 
-/* ─ Status badges ─────────────── */
+/* ─ Status badges ───────────── */
 .status-active   { background: #dcfce7; color: #15803d; }
 .status-draft    { background: #f1f5f9; color: #475569; }
 .status-pending  { background: #fef9c3; color: #854d0e; }
