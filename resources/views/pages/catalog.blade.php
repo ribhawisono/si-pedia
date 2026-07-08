@@ -1,7 +1,7 @@
 <x-layouts.app title="Katalog Artikel — SI-Pedia" active="Catalog" footer="full"
                meta_description="Jelajahi semua artikel Program Studi Sistem Informasi Universitas Indraprasta PGRI.">
 
-{{-- ─── Filter & Sort Header ──────────────────────────────────────────────── --}}
+{{-- ─── Filter & Sort Header ─────────────────────────────────────────────────── --}}
 <div class="bg-ink-900 py-10">
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
     <h1 class="text-3xl font-extrabold text-white mb-1">Katalog Artikel</h1>
@@ -46,7 +46,7 @@
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex flex-col lg:flex-row gap-8">
 
-      {{-- ─── Sidebar Filters ───────────────────────────── --}}
+      {{-- ─── Sidebar Filters ─────────────────── --}}
       <aside class="lg:w-64 flex-shrink-0" aria-label="Filter artikel">
         {{-- Category filter --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm mb-4">
@@ -87,7 +87,7 @@
         @endif
       </aside>
 
-      {{-- ─── Articles Grid ───────────────────────────── --}}
+      {{-- ─── Articles Grid ─────────────────── --}}
       <div class="flex-1 min-w-0">
         {{-- Active filters & results info --}}
         <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -117,8 +117,8 @@
                  class="h-24 w-32 rounded-xl object-cover sm:h-28 sm:w-36"
                  loading="lazy">
             @else
-            <div class="flex h-24 w-32 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 sm:h-28 sm:w-36" aria-hidden="true">
-              <svg class="h-10 w-10 text-brand-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <div class="flex h-24 w-32 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 dark:from-gray-800 dark:to-gray-900 sm:h-28 sm:w-36" aria-hidden="true">
+              <svg class="h-10 w-10 text-brand-300 dark:text-gray-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12H9.75m3 0l-3-3m3 3l-3 3"/>
               </svg>
             </div>
