@@ -16,33 +16,36 @@
 <body class="bg-gray-100 font-sans antialiased dark:bg-gray-950" id="top">
 
 @php
-$pendingArticles = \App\Models\Article::whereIn('status',['pending','pending_delete'])->count();
-$pendingReports  = \App\Models\AccountReport::where('status','pending')->count();
-$pendingComments = \App\Models\Comment::where('status','pending')->count();
-$totalBadge = $pendingArticles + $pendingReports + $pendingComments;
+$pendingArticles      = \App\Models\Article::whereIn('status',['pending','pending_delete'])->count();
+$pendingAccountReports = \App\Models\AccountReport::where('status','pending')->count();
+$pendingArticleReports = \App\Models\ArticleReport::where('status','pending')->count();
+$pendingComments       = \App\Models\Comment::where('status','pending')->count();
+$totalBadge = $pendingArticles + $pendingAccountReports + $pendingArticleReports + $pendingComments;
 
 $notifItems = [
-    ['label' => 'Artikel pending',  'icon' => '📄', 'count' => $pendingArticles, 'route' => 'admin.articles.pending'],
-    ['label' => 'Komentar pending', 'icon' => '💬', 'count' => $pendingComments, 'route' => 'admin.comments.index'],
-    ['label' => 'Report akun',      'icon' => '🚩', 'count' => $pendingReports,  'route' => 'admin.account-reports.index'],
+    ['label' => 'Artikel pending',    'icon' => '📄', 'count' => $pendingArticles,       'route' => 'admin.articles.pending'],
+    ['label' => 'Komentar pending',   'icon' => '💬', 'count' => $pendingComments,       'route' => 'admin.comments.index'],
+    ['label' => 'Report artikel',     'icon' => '🚩', 'count' => $pendingArticleReports, 'route' => 'admin.article-reports.index'],
+    ['label' => 'Report akun',        'icon' => '👤', 'count' => $pendingAccountReports, 'route' => 'admin.account-reports.index'],
 ];
 
 $nav = [
-    'dashboard' => ['label'=>'Dashboard',   'icon'=>'🏠', 'route'=>'admin.panel'],
-    'articles'  => ['label'=>'Artikel',     'icon'=>'📄', 'route'=>'admin.articles.index',  'badge'=>$pendingArticles],
-    'pending'   => ['label'=>'Pending',     'icon'=>'⏳', 'route'=>'admin.articles.pending','badge'=>$pendingArticles, 'sub'=>true],
-    'comments'  => ['label'=>'Komentar',    'icon'=>'💬', 'route'=>'admin.comments.index',  'badge'=>$pendingComments],
-    'categories'=> ['label'=>'Kategori',    'icon'=>'📂', 'route'=>'admin.categories.index'],
-    'users'     => ['label'=>'Users',       'icon'=>'👥', 'route'=>'admin.users.index'],
-    'dosen'     => ['label'=>'Dosen',       'icon'=>'🎓', 'route'=>'admin.dosen.index'],
-    'reports'   => ['label'=>'Report Akun', 'icon'=>'🚩', 'route'=>'admin.account-reports.index', 'badge'=>$pendingReports],
-    'analytics' => ['label'=>'Laporan',     'icon'=>'📊', 'route'=>'admin.report'],
+    'dashboard'      => ['label'=>'Dashboard',       'icon'=>'🏠', 'route'=>'admin.panel'],
+    'articles'       => ['label'=>'Artikel',         'icon'=>'📄', 'route'=>'admin.articles.index',  'badge'=>$pendingArticles],
+    'pending'        => ['label'=>'Pending',         'icon'=>'⏳', 'route'=>'admin.articles.pending','badge'=>$pendingArticles, 'sub'=>true],
+    'comments'       => ['label'=>'Komentar',        'icon'=>'💬', 'route'=>'admin.comments.index',  'badge'=>$pendingComments],
+    'categories'     => ['label'=>'Kategori',        'icon'=>'📂', 'route'=>'admin.categories.index'],
+    'users'          => ['label'=>'Users',           'icon'=>'👥', 'route'=>'admin.users.index'],
+    'dosen'          => ['label'=>'Dosen',           'icon'=>'🎓', 'route'=>'admin.dosen.index'],
+    'article-reports'=> ['label'=>'Report Artikel',  'icon'=>'🚩', 'route'=>'admin.article-reports.index', 'badge'=>$pendingArticleReports],
+    'reports'        => ['label'=>'Report Akun',     'icon'=>'👤', 'route'=>'admin.account-reports.index', 'badge'=>$pendingAccountReports],
+    'analytics'      => ['label'=>'Laporan',         'icon'=>'📊', 'route'=>'admin.report'],
 ];
 @endphp
 
 <div class="flex min-h-screen">
 
-    {{-- ── SIDEBAR ─────────────────────── --}}
+    {{-- ── SIDEBAR ───────────────────── --}}
     <aside id="admin-sidebar"
            class="flex w-64 flex-shrink-0 flex-col bg-ink-900 transition-all duration-300 lg:sticky lg:top-0 lg:h-screen fixed inset-y-0 left-0 z-50 -translate-x-full lg:translate-x-0"
            aria-label="Navigasi admin">
@@ -96,7 +99,7 @@ $nav = [
 
             {{-- Laporan --}}
             <p class="mb-1 mt-4 px-3 text-[10px] font-bold uppercase tracking-widest text-white/30">Laporan</p>
-            @foreach(['reports','analytics'] as $key)
+            @foreach(['article-reports','reports','analytics'] as $key)
             @php $item = $nav[$key]; @endphp
             <a href="{{ route($item['route']) }}"
                class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors mb-0.5
