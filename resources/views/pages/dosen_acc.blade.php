@@ -94,9 +94,9 @@
             <p class="text-xs font-bold text-gray-400 mb-1">Status Saat Ini</p>
             @php
               $statusClass = match($lecturer->status) {
-                'active'   => 'bg-green-100 text-green-700',
-                'rejected' => 'bg-red-100 text-red-700',
-                default    => 'bg-yellow-100 text-yellow-700',
+                'active'   => 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
+                'rejected' => 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+                default    => 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
               };
               $statusLabel = match($lecturer->status) {
                 'active'   => '✅ Aktif',
@@ -116,9 +116,9 @@
       </div>
 
       @if($lecturer->status === 'waiting')
-      <div class="rounded-2xl border border-yellow-200 bg-yellow-50 p-5 space-y-3">
-        <p class="text-sm font-bold text-yellow-800">Tindakan Verifikasi</p>
-        <p class="text-xs text-yellow-700">Setujui atau tolak pendaftaran dosen ini.</p>
+      <div class="rounded-2xl border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 p-5 space-y-3">
+        <p class="text-sm font-bold text-yellow-800 dark:text-yellow-300">Tindakan Verifikasi</p>
+        <p class="text-xs text-yellow-700 dark:text-yellow-400">Setujui atau tolak pendaftaran dosen ini.</p>
         <div class="flex gap-3">
           <form action="{{ route('admin.dosen.destroy', $lecturer) }}" method="POST"
                 onsubmit="return confirm('Tolak dan hapus dosen ini?')" class="flex-1">
