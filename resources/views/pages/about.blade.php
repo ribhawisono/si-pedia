@@ -88,13 +88,11 @@
                 <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5"></div>
                 <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-white/5"></div>
 
-                <div class="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center mb-5 ring-4 ring-white/30">
-                    <svg class="w-12 h-12 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
+                <div class="w-24 h-24 rounded-full overflow-hidden mb-5 ring-4 ring-white/30 bg-white/20">
+                    <img src="{{ route('images.lecturers.zaimatun') }}" alt="Foto Dr. Za'imatun Niswati" class="w-full h-full object-cover">
                 </div>
 
-                <h3 class="text-xl sm:text-2xl font-bold text-white text-center">Za'imatun Niswati</h3>
+                <h3 class="text-lg sm:text-xl font-bold text-white text-center leading-snug">Dr. Za'imatun Niswati, S.Pt., M.Pd., S.Kom., M.Kom.</h3>
                 <p class="mt-2 text-sm text-white/70 font-medium">Ketua Program Studi</p>
             </div>
 
@@ -103,13 +101,11 @@
                 <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5"></div>
                 <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-white/5"></div>
 
-                <div class="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center mb-5 ring-4 ring-white/30">
-                    <svg class="w-12 h-12 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
+                <div class="w-24 h-24 rounded-full overflow-hidden mb-5 ring-4 ring-white/30 bg-white/20">
+                    <img src="{{ route('images.lecturers.dwi') }}" alt="Foto Dr. Dwi Marlina" class="w-full h-full object-cover">
                 </div>
 
-                <h3 class="text-xl sm:text-2xl font-bold text-white text-center">Dwi Marlina</h3>
+                <h3 class="text-lg sm:text-xl font-bold text-white text-center leading-snug">Dr. Dwi Marlina, S.Kom., M.Kom.</h3>
                 <p class="mt-2 text-sm text-white/70 font-medium">Sekretaris Program Studi</p>
             </div>
 
