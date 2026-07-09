@@ -19,6 +19,10 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+// Foto dosen (Za'imatun Niswati & Dwi Marlina) di-serve dari file terpisah
+// agar base64 payloadnya tidak membengkakkan file routing utama ini.
+require __DIR__.'/lecturer_photos.php';
+
 // ─── Search ─────────────────────────────────────────────────────────────────────────────────
  Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest')->middleware('throttle:30,1');
