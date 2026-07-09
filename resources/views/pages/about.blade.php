@@ -89,7 +89,7 @@
                 <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-white/5"></div>
 
                 <div class="w-24 h-24 rounded-full overflow-hidden mb-5 ring-4 ring-white/30 bg-white/20">
-                    <img src="{{ route('images.lecturers.zaimatun') }}?v=2" alt="Foto Dr. Za'imatun Niswati" class="w-full h-full object-cover">
+                    <img src="{{ route('images.lecturers.zaimatun') }}?v=3" alt="Foto Dr. Za'imatun Niswati" class="w-full h-full object-cover">
                 </div>
 
                 <h3 class="text-lg sm:text-xl font-bold text-white text-center leading-snug">Dr. Za'imatun Niswati, S.Pt., M.Pd., S.Kom., M.Kom.</h3>
@@ -102,7 +102,7 @@
                 <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-white/5"></div>
 
                 <div class="w-24 h-24 rounded-full overflow-hidden mb-5 ring-4 ring-white/30 bg-white/20">
-                    <img src="{{ route('images.lecturers.dwi') }}?v=2" alt="Foto Dr. Dwi Marlina" class="w-full h-full object-cover">
+                    <img src="{{ route('images.lecturers.dwi') }}?v=3" alt="Foto Dr. Dwi Marlina" class="w-full h-full object-cover">
                 </div>
 
                 <h3 class="text-lg sm:text-xl font-bold text-white text-center leading-snug">Dr. Dwi Marlina, S.Kom., M.Kom.</h3>
