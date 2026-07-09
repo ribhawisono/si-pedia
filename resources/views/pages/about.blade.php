@@ -73,12 +73,12 @@
     </section>
 
     {{-- ============================================ --}}
-    {{-- DOSEN / PERSONNEL CARDS                     --}}
+    {{-- PIMPINAN PROGRAM STUDI (jabatan struktural)   --}}
     {{-- ============================================ --}}
     <section class="max-w-5xl mx-auto px-6 py-16">
         <div class="flex items-center gap-3 mb-8">
             <div class="w-1.5 h-8 rounded-full bg-brand-600"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Dosen Pengajar</h2>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Pimpinan Program Studi</h2>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
