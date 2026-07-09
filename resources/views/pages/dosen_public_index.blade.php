@@ -24,15 +24,26 @@
     @else
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       @foreach($lecturers as $lecturer)
+      @php
+        // Not every lecturer directory entry has a linked login account
+        // (user_id) — e.g. structural leadership entries added directly by
+        // admin. Fall back to the lecturer's own full_name in that case.
+        $displayName = $lecturer->user->name ?? $lecturer->full_name ?? '—';
+        $photoSrc = $lecturer->photo
+            ? (str_starts_with($lecturer->photo, 'http') || str_starts_with($lecturer->photo, '/')
+                ? $lecturer->photo
+                : Storage::url($lecturer->photo))
+            : 'https://ui-avatars.com/api/?name=' . urlencode($displayName !== '—' ? $displayName : 'Dosen') . '&background=336cbc&color=fff&size=80';
+      @endphp
       <a href="{{ route('dosen.public.show', $lecturer) }}"
          class="group card hover-lift p-5 flex flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-brand-600">
         <div class="mb-3 h-20 w-20 overflow-hidden rounded-full bg-gray-100 ring-2 ring-white shadow-md">
-          <img src="{{ $lecturer->photo ? (str_starts_with($lecturer->photo,'http') ? $lecturer->photo : Storage::url($lecturer->photo)) : 'https://ui-avatars.com/api/?name='.urlencode($lecturer->user->name??'Dosen').'&background=336cbc&color=fff&size=80' }}"
-               alt="Foto {{ $lecturer->user->name ?? 'Dosen' }}"
+          <img src="{{ $photoSrc }}"
+               alt="Foto {{ $displayName }}"
                class="h-full w-full object-cover" loading="lazy">
         </div>
         <h2 class="text-sm font-bold text-gray-900 group-hover:text-brand-700 transition-colors leading-snug">
-          {{ $lecturer->user->name ?? '—' }}
+          {{ $displayName }}
         </h2>
         @if($lecturer->nidn)
         <p class="mt-1 text-xs text-gray-400 font-mono">NIDN {{ $lecturer->nidn }}</p>

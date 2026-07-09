@@ -1,5 +1,14 @@
-<x-layouts.app :title="($lecturer->user->name ?? 'Dosen') . ' — SI-Pedia'" active="Dosen" footer="full"
-               :meta_description="'Profil dosen ' . ($lecturer->user->name ?? '') . ', Program Studi Sistem Informasi Unindra.'">
+<x-layouts.app :title="($lecturer->user->name ?? $lecturer->full_name ?? 'Dosen') . ' — SI-Pedia'" active="Dosen" footer="full"
+               :meta_description="'Profil dosen ' . ($lecturer->user->name ?? $lecturer->full_name ?? '') . ', Program Studi Sistem Informasi Unindra.'">
+
+@php
+  $displayName = $lecturer->user->name ?? $lecturer->full_name ?? '—';
+  $photoSrc = $lecturer->photo
+      ? (str_starts_with($lecturer->photo, 'http') || str_starts_with($lecturer->photo, '/')
+          ? $lecturer->photo
+          : Storage::url($lecturer->photo))
+      : 'https://ui-avatars.com/api/?name=' . urlencode($displayName !== '—' ? $displayName : 'Dosen') . '&background=336cbc&color=fff&size=96';
+@endphp
 
 <div class="bg-ink-900 py-10">
   <div class="mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-8">
@@ -8,7 +17,7 @@
       <span aria-hidden="true">›</span>
       <a href="{{ route('dosen.public.index') }}" class="hover:text-white transition">Dosen</a>
       <span aria-hidden="true">›</span>
-      <span class="text-white">{{ $lecturer->user->name ?? 'Profil' }}</span>
+      <span class="text-white">{{ $displayName !== '—' ? $displayName : 'Profil' }}</span>
     </nav>
   </div>
 </div>
@@ -21,10 +30,10 @@
       <div class="space-y-4">
         <div class="card p-6 text-center">
           <div class="mx-auto mb-4 h-24 w-24 overflow-hidden rounded-full bg-gray-100 ring-4 ring-white shadow-md">
-            <img src="{{ $lecturer->photo ? (str_starts_with($lecturer->photo,'http') ? $lecturer->photo : Storage::url($lecturer->photo)) : 'https://ui-avatars.com/api/?name='.urlencode($lecturer->user->name??'Dosen').'&background=336cbc&color=fff&size=96' }}"
-                 alt="Foto {{ $lecturer->user->name ?? 'Dosen' }}" class="h-full w-full object-cover">
+            <img src="{{ $photoSrc }}"
+                 alt="Foto {{ $displayName }}" class="h-full w-full object-cover">
           </div>
-          <h1 class="text-base font-bold text-gray-900">{{ $lecturer->user->name ?? '—' }}</h1>
+          <h1 class="text-base font-bold text-gray-900">{{ $displayName }}</h1>
           <p class="text-xs text-gray-500 mt-1">Dosen Sistem Informasi</p>
           <span class="mt-2 inline-block rounded-full bg-green-100 px-3 py-0.5 text-xs font-semibold text-green-700">Aktif</span>
         </div>
@@ -68,11 +77,11 @@
       <div>
         <div class="mb-5 flex items-center justify-between">
           <h2 class="text-base font-bold text-gray-900">
-            Artikel oleh {{ $lecturer->user->name ?? 'Dosen ini' }}
+            Artikel oleh {{ $displayName !== '—' ? $displayName : 'Dosen ini' }}
             <span class="ml-2 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-500">{{ $articles->count() }}</span>
           </h2>
           @if($articles->count() > 0)
-          <a href="{{ route('catalog', ['q' => $lecturer->user->name ?? '']) }}"
+          <a href="{{ route('catalog', ['q' => $displayName !== '—' ? $displayName : '']) }}"
              class="text-xs font-semibold text-brand-600 hover:text-brand-700">Lihat semua →</a>
           @endif
         </div>
