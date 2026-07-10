@@ -1,10 +1,38 @@
 <x-layouts.app :title="'Preview: ' . $article->title" footer="none">
 <div class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-yellow-400 px-6 py-2 text-sm font-bold text-yellow-900 shadow" role="alert">
   <span>👁 MODE PREVIEW — Artikel ini belum dipublikasikan</span>
-  <a href="javascript:history.back()" class="rounded-lg border border-yellow-700 px-4 py-1 hover:bg-yellow-500 transition">← Kembali Edit</a>
+  <a href="javascript:history.back()" class="rounded-lg border border-yellow-700 px-4 py-1 hover:bg-yellow-500 transition">← Kembali</a>
 </div>
 <div class="pt-12">
   <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+
+    {{-- Admin review actions: only shown while this article is actually
+         awaiting approval, so approve/reject is decided AFTER reading the
+         full content here — not blind from the short excerpt on the
+         pending list page. --}}
+    @if($article->status === 'pending' && auth()->user()->role === 'admin')
+    <div class="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
+      <p class="mb-3 text-sm font-bold text-yellow-800">Artikel ini menunggu persetujuan — tinjau isinya di bawah, lalu putuskan:</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <form action="{{ route('admin.articles.approve', $article) }}" method="POST" class="sm:w-40">
+          @csrf @method('PATCH')
+          <button type="submit" class="w-full rounded-xl bg-green-500 py-2.5 text-sm font-bold text-white hover:bg-green-600 transition">
+            ✅ Approve
+          </button>
+        </form>
+        <form action="{{ route('admin.articles.reject', $article) }}" method="POST" class="flex-1 flex flex-col sm:flex-row gap-2">
+          @csrf @method('PATCH')
+          <textarea name="rejection_note" rows="1" required maxlength="1000"
+                    placeholder="Catatan perbaikan untuk penulis (wajib diisi jika menolak)..."
+                    class="flex-1 rounded-xl border border-yellow-300 px-3 py-2 text-sm text-gray-700 resize-none focus:border-red-400 focus:ring-0"></textarea>
+          <button type="submit" class="rounded-xl bg-red-100 px-5 py-2.5 text-sm font-bold text-red-600 hover:bg-red-200 transition whitespace-nowrap">
+            ❌ Tolak &amp; Kirim Catatan
+          </button>
+        </form>
+      </div>
+    </div>
+    @endif
+
     <article class="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
       @if($article->image_url)
       <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="w-full h-64 sm:h-80 object-cover">
@@ -19,8 +47,10 @@
             @endforeach
           @endif
         </div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6">{{ $article->title }}</h1>
-        <div class="prose prose-lg max-w-none text-gray-700">{!! nl2br(e($article->content)) !!}</div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">{{ $article->title }}</h1>
+        <p class="mb-6 text-sm text-gray-500">Oleh {{ $article->user->name ?? $article->writer }}</p>
+        {{-- Content is sanitized HTML from the Quill editor (see ArticleService::sanitizeHtml) --}}
+        <div class="prose prose-lg max-w-none text-gray-700 text-justify">{!! $article->content !!}</div>
 
         @if($article->meta_title || $article->meta_description)
         <div class="mt-8 rounded-xl bg-gray-50 border border-gray-200 p-4 text-xs space-y-2">
