@@ -8,7 +8,7 @@
     <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-brand-600/10 blur-3xl -translate-y-1/2 translate-x-1/3"></div>
     <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-brand-600/5 blur-3xl translate-y-1/2 -translate-x-1/3"></div>
 
-    <div class="relative mx-auto max-w-[1440px] px-8 py-20 lg:py-28">
+    <div class="relative mx-auto max-w-[1440px] px-4 sm:px-8 py-16 sm:py-20 lg:py-28">
         <div class="grid items-center gap-12 lg:grid-cols-2">
             {{-- Left: Text --}}
             <div>
@@ -17,11 +17,11 @@
                     Universitas Indraprasta PGRI
                 </span>
 
-                <h1 class="text-4xl font-black leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-[3.5rem]">
+                <h1 class="text-3xl sm:text-4xl font-black leading-[1.1] tracking-tight text-white lg:text-[3.5rem]">
                     {{ $page->title ?? 'Sistem Informasi Pedia' }}
                 </h1>
 
-                <p class="mt-6 max-w-lg text-lg leading-relaxed text-white/70">
+                <p class="mt-6 max-w-lg text-base sm:text-lg leading-relaxed text-white/70">
                     {{ $page->content ?? 'Platform digital untuk menjelajahi artikel, informasi dosen, dan sumber daya akademik Program Studi Sistem Informasi.' }}
                 </p>
 
@@ -65,7 +65,7 @@
 {{-- MOBILE STATS                                 --}}
 {{-- ============================================ --}}
 <section class="bg-ink-900 lg:hidden">
-    <div class="mx-auto max-w-[1440px] px-8 pb-12">
+    <div class="mx-auto max-w-[1440px] px-4 sm:px-8 pb-12">
         <div class="grid grid-cols-2 gap-4">
             <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-5 text-center">
                 <div class="text-3xl font-extrabold text-white">{{ \Illuminate\Support\Facades\Cache::remember('stat_articles', 300, fn() => \App\Models\Article::where('status','active')->count()) }}</div>
@@ -90,14 +90,14 @@
 {{-- ============================================ --}}
 {{-- ARTIKEL TERBARU                              --}}
 {{-- ============================================ --}}
-<section class="bg-white dark:bg-gray-950 py-20">
-    <div class="mx-auto max-w-[1440px] px-8">
+<section class="bg-white dark:bg-gray-950 py-14 sm:py-20">
+    <div class="mx-auto max-w-[1440px] px-4 sm:px-8">
 
         {{-- Section Header --}}
-        <div class="mb-12 flex items-end justify-between">
+        <div class="mb-10 sm:mb-12 flex items-end justify-between">
             <div>
                 <span class="inline-block rounded-full bg-brand-600/10 px-4 py-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 tracking-wide mb-3">BERITA & ARTIKEL</span>
-                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight sm:text-4xl">Artikel Terbaru</h2>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight lg:text-4xl">Artikel Terbaru</h2>
             </div>
             <a href="{{ route('catalog') }}" class="hidden items-center gap-2 text-sm font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 transition sm:inline-flex">
                 Lihat Semua
@@ -106,7 +106,7 @@
         </div>
 
         {{-- Articles Grid --}}
-        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
             @forelse($articles as $article)
             <a href="{{ route('articles.show', $article->slug ?? $article->id) }}" class="group block overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 {{-- Image --}}
@@ -167,11 +167,11 @@
 {{-- ============================================ --}}
 {{-- KATEGORI                                     --}}
 {{-- ============================================ --}}
-<section class="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
-    <div class="mx-auto max-w-[1440px] px-8">
-        <div class="mb-10 text-center">
+<section class="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-12 sm:py-16">
+    <div class="mx-auto max-w-[1440px] px-4 sm:px-8">
+        <div class="mb-8 sm:mb-10 text-center">
             <span class="inline-block rounded-full bg-brand-600/10 px-4 py-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 tracking-wide mb-3">KATEGORI</span>
-            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Jelajahi Berdasarkan Topik</h2>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Jelajahi Berdasarkan Topik</h2>
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -205,14 +205,14 @@
 {{-- ============================================ --}}
 {{-- CTA SECTION                                  --}}
 {{-- ============================================ --}}
-<section class="bg-white dark:bg-gray-950 py-16">
-    <div class="mx-auto max-w-[1440px] px-8">
-        <div class="rounded-2xl bg-gradient-to-br from-[#336cbc] to-[#1e4f8f] p-10 sm:p-14 text-center relative overflow-hidden">
+<section class="bg-white dark:bg-gray-950 py-12 sm:py-16">
+    <div class="mx-auto max-w-[1440px] px-4 sm:px-8">
+        <div class="rounded-2xl bg-gradient-to-br from-[#336cbc] to-[#1e4f8f] p-8 sm:p-14 text-center relative overflow-hidden">
             <div class="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/5"></div>
             <div class="absolute -bottom-16 -left-16 w-40 h-40 rounded-full bg-white/5"></div>
 
             <div class="relative">
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-4">Tentang Program Studi Kami</h2>
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mb-4">Tentang Program Studi Kami</h2>
                 <p class="max-w-2xl mx-auto text-white/70 mb-8">
                     Pelajari lebih lanjut tentang visi, misi, sejarah, dan dosen pengajar Program Studi Sistem Informasi Universitas Indraprasta PGRI.
                 </p>
