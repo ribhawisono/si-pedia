@@ -20,24 +20,27 @@
 </div>
 
 {{-- Stats --}}
-<div class="mb-6 grid grid-cols-3 gap-4">
-  <a href="{{ route('admin.comments.index') }}" class="rounded-xl border bg-white p-4 text-center shadow-sm hover:shadow-md transition {{ !request('status') ? 'border-brand-300 ring-1 ring-brand-300' : 'border-gray-200' }}">
-    <p class="text-2xl font-black text-gray-900">{{ $counts['pending'] + $counts['approved'] + $counts['rejected'] }}</p>
-    <p class="text-xs font-semibold text-gray-500 mt-1">Total</p>
+<div class="mb-6 grid grid-cols-3 gap-2 sm:gap-4">
+  <a href="{{ route('admin.comments.index') }}" class="rounded-xl border bg-white p-3 sm:p-4 text-center shadow-sm hover:shadow-md transition {{ !request('status') ? 'border-brand-300 ring-1 ring-brand-300' : 'border-gray-200' }}">
+    <p class="text-xl sm:text-2xl font-black text-gray-900">{{ $counts['pending'] + $counts['approved'] + $counts['rejected'] }}</p>
+    <p class="text-[11px] sm:text-xs font-semibold text-gray-500 mt-1">Total</p>
   </a>
-  <a href="{{ route('admin.comments.index', ['status'=>'pending']) }}" class="rounded-xl border bg-white p-4 text-center shadow-sm hover:shadow-md transition {{ request('status')==='pending' ? 'border-yellow-400 ring-1 ring-yellow-400' : 'border-gray-200' }}">
-    <p class="text-2xl font-black text-yellow-500">{{ $counts['pending'] }}</p>
-    <p class="text-xs font-semibold text-gray-500 mt-1">Pending</p>
+  <a href="{{ route('admin.comments.index', ['status'=>'pending']) }}" class="rounded-xl border bg-white p-3 sm:p-4 text-center shadow-sm hover:shadow-md transition {{ request('status')==='pending' ? 'border-yellow-400 ring-1 ring-yellow-400' : 'border-gray-200' }}">
+    <p class="text-xl sm:text-2xl font-black text-yellow-500">{{ $counts['pending'] }}</p>
+    <p class="text-[11px] sm:text-xs font-semibold text-gray-500 mt-1">Pending</p>
   </a>
-  <a href="{{ route('admin.comments.index', ['status'=>'approved']) }}" class="rounded-xl border bg-white p-4 text-center shadow-sm hover:shadow-md transition {{ request('status')==='approved' ? 'border-green-400 ring-1 ring-green-400' : 'border-gray-200' }}">
-    <p class="text-2xl font-black text-green-600">{{ $counts['approved'] }}</p>
-    <p class="text-xs font-semibold text-gray-500 mt-1">Approved</p>
+  <a href="{{ route('admin.comments.index', ['status'=>'approved']) }}" class="rounded-xl border bg-white p-3 sm:p-4 text-center shadow-sm hover:shadow-md transition {{ request('status')==='approved' ? 'border-green-400 ring-1 ring-green-400' : 'border-gray-200' }}">
+    <p class="text-xl sm:text-2xl font-black text-green-600">{{ $counts['approved'] }}</p>
+    <p class="text-[11px] sm:text-xs font-semibold text-gray-500 mt-1">Approved</p>
   </a>
 </div>
 
-{{-- Comments list --}}
+{{-- Comments list — overflow-x-auto on its own inner wrapper so the table
+     scrolls horizontally on narrow screens instead of being clipped by the
+     outer rounded-corner overflow-hidden container. --}}
 <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-  <table class="w-full text-left text-sm">
+  <div class="overflow-x-auto">
+  <table class="w-full min-w-[560px] text-left text-sm">
     <thead>
       <tr class="border-b border-gray-100 bg-gray-50 text-xs font-bold uppercase tracking-wide text-gray-500">
         <th class="py-3 px-4 w-8">
@@ -118,6 +121,7 @@
       @endforelse
     </tbody>
   </table>
+  </div>
 </div>
 
 <div class="mt-5">{{ $comments->links() }}</div>
