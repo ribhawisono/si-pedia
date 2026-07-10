@@ -26,18 +26,24 @@ class CommentController extends Controller
         return view('pages.admin_comments', compact('comments', 'counts'));
     }
 
-    /** User: submit comment (goes to pending) */
+    /** Submit comment. Admin comments are auto-approved (skip moderation)
+     *  and show up on the article immediately; everyone else's comment
+     *  goes to pending for admin review as before. */
     public function store(StoreCommentRequest $request, Article $article)
     {
-        $data = $request->validated();
+        $data    = $request->validated();
+        $isAdmin = $request->user()->role === 'admin';
 
         $article->comments()->create([
             'user_id' => $request->user()->id,
             'content' => $data['content'],
-            'status'  => 'pending', // require admin moderation
+            'status'  => $isAdmin ? 'approved' : 'pending',
         ]);
 
-        return back()->with('success', 'Komentar dikirim dan menunggu moderasi admin.');
+        return back()->with('success', $isAdmin
+            ? 'Komentar ditambahkan.'
+            : 'Komentar dikirim dan menunggu moderasi admin.'
+        );
     }
 
     /** Admin: approve */
