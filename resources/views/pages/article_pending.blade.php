@@ -26,9 +26,13 @@
         {{ $pending->total() }} artikel
       </span>
     </div>
+    <p class="mb-5 text-xs text-gray-400">
+      ℹ️ Approve/Tolak dilakukan setelah membaca isi lengkap artikel di halaman Review — klik "Review Isi" untuk memutuskan.
+    </p>
 
     @forelse($pending as $article)
-    <div class="mb-4 rounded-2xl bg-white border border-yellow-200 shadow-sm px-6 py-5 flex items-start gap-5">
+    <a href="{{ route('admin.articles.preview', $article) }}"
+       class="mb-4 flex items-start gap-5 rounded-2xl bg-white border border-yellow-200 shadow-sm px-6 py-5 hover:border-yellow-400 hover:shadow-md transition">
       @if($article->image)
         <img src="{{ $article->image_url }}" class="h-20 w-24 rounded-lg object-cover flex-shrink-0">
       @else
@@ -48,32 +52,13 @@
         </p>
       </div>
 
-      <div class="flex-shrink-0 flex flex-col gap-2 w-56">
-        <form action="{{ route('admin.articles.approve', $article) }}" method="POST">
-          @csrf @method('PATCH')
-          <button type="submit"
-                  class="w-full rounded-xl bg-green-500 px-5 py-2 text-sm font-bold text-white hover:bg-green-600 transition">
-            ✅ Approve
-          </button>
-        </form>
-        <a href="{{ route('admin.articles.edit', $article) }}"
-           class="block text-center rounded-xl bg-gray-100 px-5 py-2 text-sm font-bold text-gray-600 hover:bg-gray-200 transition">
-          ✏️ Edit
-        </a>
-
-        {{-- Reject: admin must explain what needs fixing so the writer knows where to improve --}}
-        <form action="{{ route('admin.articles.reject', $article) }}" method="POST" class="space-y-1.5">
-          @csrf @method('PATCH')
-          <textarea name="rejection_note" rows="2" maxlength="1000" required
-                    placeholder="Catatan perbaikan untuk penulis (wajib diisi)..."
-                    class="w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs text-gray-700 resize-none focus:border-red-400 focus:ring-0"></textarea>
-          <button type="submit"
-                  class="w-full rounded-xl bg-red-100 px-5 py-2 text-sm font-bold text-red-600 hover:bg-red-200 transition">
-            ❌ Tolak &amp; Kirim Catatan
-          </button>
-        </form>
+      <div class="flex-shrink-0 flex flex-col items-center gap-2">
+        <span class="flex items-center gap-1.5 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white">
+          👁 Review Isi
+        </span>
+        <span class="text-[11px] text-gray-400">Approve / Tolak di sini</span>
       </div>
-    </div>
+    </a>
     @empty
     <div class="rounded-2xl bg-gray-50 border border-gray-100 p-10 text-center text-gray-400">
       <p class="text-3xl mb-2">🎉</p>
