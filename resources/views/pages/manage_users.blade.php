@@ -1,11 +1,11 @@
 <x-layouts.admin title="Manage Users — SI-Pedia" section="users">
-<main class="mx-auto max-w-[1200px] px-8 py-8">
-  <div class="flex items-center justify-between">
+<main class="mx-auto max-w-[1200px] px-4 sm:px-8 py-8">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
       <h1 class="page-title">Manage Users</h1>
       <p class="mt-1 text-sm text-gray-500">Kelola seluruh akun pengguna di sistem.</p>
     </div>
-    <div class="flex gap-3">
+    <div class="flex flex-wrap gap-2 sm:gap-3">
       <a href="{{ route('admin.account-reports.index') }}"
          class="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-100 transition">
         🚩 Laporan
@@ -27,8 +27,12 @@
     @endif
   @endforeach
 
-  <div class="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-    <table class="w-full text-left text-sm">
+  {{-- overflow-x-auto on its own inner wrapper (not the rounded-corner
+       container) so the table scrolls horizontally on narrow screens
+       instead of being silently clipped by the outer overflow-hidden. --}}
+  <div class="mt-6 rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+    <table class="w-full min-w-[640px] text-left text-sm">
       <thead>
         <tr class="bg-tablehead border-b border-gray-100 text-xs font-bold uppercase tracking-wide text-gray-500">
           <th class="px-5 py-3.5">Pengguna</th>
@@ -86,6 +90,7 @@
         @endforelse
       </tbody>
     </table>
+    </div>
   </div>
   <div class="mt-5">{{ $users->links() }}</div>
 </main>
