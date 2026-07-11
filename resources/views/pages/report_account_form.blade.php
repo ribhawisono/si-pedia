@@ -1,11 +1,11 @@
 <x-layouts.app title="Laporkan Akun — SI-Pedia">
-<main class="mx-auto max-w-[600px] px-8 py-12">
+<main class="mx-auto max-w-[600px] px-4 sm:px-8 py-8 sm:py-12">
 
   <div class="mb-8">
     <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition">
       ← Kembali
     </a>
-    <h1 class="mt-4 text-3xl font-extrabold text-gray-900">Laporkan Akun</h1>
+    <h1 class="mt-4 text-2xl sm:text-3xl font-extrabold text-gray-900">Laporkan Akun</h1>
     <p class="mt-2 text-gray-500 text-sm">Laporkan akun yang melanggar ketentuan penggunaan SI-Pedia.</p>
   </div>
 
@@ -14,11 +14,11 @@
     <div class="h-12 w-12 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center font-bold text-white text-lg flex-shrink-0">
       {{ strtoupper(substr($user->name, 0, 1)) }}
     </div>
-    <div>
-      <p class="font-bold text-gray-900">{{ $user->name }}</p>
-      <p class="text-sm text-gray-500">{{ $user->email }} · {{ ucfirst($user->role) }}</p>
+    <div class="min-w-0">
+      <p class="font-bold text-gray-900 truncate">{{ $user->name }}</p>
+      <p class="text-sm text-gray-500 truncate">{{ $user->email }} · {{ ucfirst($user->role) }}</p>
     </div>
-    <span class="ml-auto rounded-full bg-red-100 dark:bg-red-900/30 px-3 py-1 text-xs font-bold text-red-600 dark:text-red-300">
+    <span class="ml-auto rounded-full bg-red-100 dark:bg-red-900/30 px-3 py-1 text-xs font-bold text-red-600 dark:text-red-300 whitespace-nowrap">
       Akan Dilaporkan
     </span>
   </div>
@@ -30,7 +30,7 @@
   @endif
 
   <form action="{{ route('users.report.store', $user) }}" method="POST"
-        class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm space-y-6">
+        class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 shadow-sm space-y-6">
     @csrf
 
     <div>

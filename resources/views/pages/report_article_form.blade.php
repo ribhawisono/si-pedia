@@ -1,11 +1,11 @@
 <x-layouts.app title="Laporkan Artikel — SI-Pedia">
-<main class="mx-auto max-w-[600px] px-8 py-12">
+<main class="mx-auto max-w-[600px] px-4 sm:px-8 py-8 sm:py-12">
 
   <div class="mb-8">
     <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition">
       ← Kembali
     </a>
-    <h1 class="mt-4 text-3xl font-extrabold text-gray-900">Laporkan Artikel</h1>
+    <h1 class="mt-4 text-2xl sm:text-3xl font-extrabold text-gray-900">Laporkan Artikel</h1>
     <p class="mt-2 text-gray-500 text-sm">Laporkan artikel yang melanggar ketentuan penggunaan SI-Pedia.</p>
   </div>
 
@@ -20,7 +20,7 @@
     @endif
     <div class="min-w-0">
       <p class="font-bold text-gray-900 truncate">{{ $article->title }}</p>
-      <p class="text-sm text-gray-500">Oleh {{ $article->writer }}</p>
+      <p class="text-sm text-gray-500 truncate">Oleh {{ $article->writer }}</p>
     </div>
     <span class="ml-auto rounded-full bg-red-100 dark:bg-red-900/30 px-3 py-1 text-xs font-bold text-red-600 dark:text-red-300 whitespace-nowrap">
       Akan Dilaporkan
@@ -34,7 +34,7 @@
   @endif
 
   <form action="{{ route('articles.report.store', $article) }}" method="POST"
-        class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm space-y-6">
+        class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 shadow-sm space-y-6">
     @csrf
 
     <div>
