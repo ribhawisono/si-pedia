@@ -1,5 +1,5 @@
 <x-layouts.admin title="Detail Dosen — SI-Pedia" section="dosen">
-<main class="mx-auto max-w-[1100px] px-8 py-8">
+<main class="mx-auto max-w-[1100px] px-4 sm:px-8 py-8">
   <div class="flex items-center gap-3 mb-1">
     <a href="{{ route('admin.dosen.index') }}" class="text-gray-400 hover:text-gray-700 transition text-2xl">←</a>
     <h1 class="page-title">Detail Dosen</h1>
@@ -8,24 +8,24 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-[1.8fr_1fr] gap-6">
     {{-- Kiri: Data dosen --}}
-    <div class="rounded-2xl border border-gray-200 bg-white p-7 shadow-sm space-y-5">
+    <div class="rounded-2xl border border-gray-200 bg-white p-4 sm:p-7 shadow-sm space-y-5">
       <h2 class="text-lg font-bold text-gray-800 border-b border-gray-100 pb-3">Data Dosen</h2>
 
       <div class="flex items-center gap-4">
         @if($lecturer->photo)
-          <img src="{{ $lecturer->photo ? (str_starts_with($lecturer->photo, "http") ? $lecturer->photo : Storage::url($lecturer->photo)) : null }}" class="h-16 w-16 rounded-full object-cover shadow">
+          <img src="{{ $lecturer->photo ? (str_starts_with($lecturer->photo, "http") || str_starts_with($lecturer->photo, "/") ? $lecturer->photo : Storage::url($lecturer->photo)) : null }}" class="h-16 w-16 rounded-full object-cover shadow flex-shrink-0">
         @else
-          <div class="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold text-gray-500">
-            {{ strtoupper(substr($lecturer->user->name ?? 'D', 0, 1)) }}
+          <div class="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold text-gray-500 flex-shrink-0">
+            {{ strtoupper(substr($lecturer->user->name ?? $lecturer->full_name ?? 'D', 0, 1)) }}
           </div>
         @endif
-        <div>
-          <p class="font-bold text-gray-900 text-lg">{{ $lecturer->user->name ?? '—' }}</p>
-          <p class="text-sm text-gray-400">{{ $lecturer->user->email ?? '—' }}</p>
+        <div class="min-w-0">
+          <p class="font-bold text-gray-900 text-lg truncate">{{ $lecturer->user->name ?? $lecturer->full_name ?? '—' }}</p>
+          <p class="text-sm text-gray-400 truncate">{{ $lecturer->user->email ?? '—' }}</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-bold text-gray-400 mb-1">NIDN</label>
           <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-mono text-gray-700">
@@ -110,7 +110,7 @@
           </div>
           <div>
             <p class="text-xs font-bold text-gray-400 mb-1">Akun Terhubung</p>
-            <p class="text-gray-800">{{ $lecturer->user->email ?? '—' }}</p>
+            <p class="text-gray-800 truncate">{{ $lecturer->user->email ?? '—' }}</p>
           </div>
         </div>
       </div>
