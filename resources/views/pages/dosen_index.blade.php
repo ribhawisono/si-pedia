@@ -1,12 +1,12 @@
 <x-layouts.admin title="Data Dosen — SI-Pedia" section="dosen">
-<main class="mx-auto max-w-[1200px] px-8 py-8">
-  <div class="flex items-center justify-between">
+<main class="mx-auto max-w-[1200px] px-4 sm:px-8 py-8">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
       <h1 class="page-title">Data Dosen</h1>
       <p class="mt-1 text-sm text-gray-500">Kelola data dosen yang terdaftar di sistem.</p>
     </div>
     <a href="{{ route('admin.dosen.create') }}"
-       class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white shadow hover:bg-brand-700 transition">
+       class="self-start inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white shadow hover:bg-brand-700 transition">
       + Tambah Dosen
     </a>
   </div>
@@ -27,7 +27,12 @@
     </div>
   @endif
 
+  {{-- overflow-x-auto: this grid uses fixed pixel column widths that don't
+       fit narrow screens — scroll horizontally within the card instead of
+       breaking the whole page layout. --}}
   <div class="mt-5 overflow-hidden rounded-2xl border border-gray-200 shadow-sm bg-white">
+    <div class="overflow-x-auto">
+    <div class="min-w-[720px]">
     <div class="grid grid-cols-[50px_70px_150px_1fr_1fr_180px] gap-3 border-b border-gray-100 bg-tablehead px-5 py-3 text-xs font-bold text-gray-600 uppercase tracking-wide">
       <div>No</div>
       <div>Foto</div>
@@ -44,19 +49,19 @@
       </div>
       <div>
         @if($lecturer->photo)
-          <img src="{{ $lecturer->photo ? (str_starts_with($lecturer->photo, "http") ? $lecturer->photo : Storage::url($lecturer->photo)) : null }}" class="h-10 w-10 rounded-full object-cover shadow-sm">
+          <img src="{{ $lecturer->photo ? (str_starts_with($lecturer->photo, "http") || str_starts_with($lecturer->photo, "/") ? $lecturer->photo : Storage::url($lecturer->photo)) : null }}" class="h-10 w-10 rounded-full object-cover shadow-sm">
         @else
           <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500 font-bold">
-            {{ strtoupper(substr($lecturer->user->name ?? 'D', 0, 1)) }}
+            {{ strtoupper(substr($lecturer->user->name ?? $lecturer->full_name ?? 'D', 0, 1)) }}
           </div>
         @endif
       </div>
       <div class="text-sm font-mono text-gray-700">{{ $lecturer->nidn ?? '-' }}</div>
-      <div>
-        <p class="text-sm font-bold text-gray-900">{{ $lecturer->user->name ?? '—' }}</p>
-        <p class="text-xs text-gray-400">{{ $lecturer->user->email ?? '—' }}</p>
+      <div class="min-w-0">
+        <p class="text-sm font-bold text-gray-900 truncate">{{ $lecturer->user->name ?? $lecturer->full_name ?? '—' }}</p>
+        <p class="text-xs text-gray-400 truncate">{{ $lecturer->user->email ?? '—' }}</p>
       </div>
-      <div class="text-sm text-gray-600">{{ $lecturer->address ?? '-' }}</div>
+      <div class="text-sm text-gray-600 truncate">{{ $lecturer->address ?? '-' }}</div>
       <div class="flex items-center gap-2">
         <a href="{{ route('admin.dosen.edit', $lecturer) }}"
            class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-100 transition">
@@ -77,9 +82,11 @@
       Belum ada data dosen. <a href="{{ route('admin.dosen.create') }}" class="text-brand-600 font-semibold">Tambah sekarang →</a>
     </div>
     @endforelse
+    </div>
+    </div>
   </div>
 
-  <div class="mt-5 flex items-center justify-between text-sm text-gray-500">
+  <div class="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-gray-500">
     <span>Menampilkan {{ $lecturers->firstItem() ?? 0 }}–{{ $lecturers->lastItem() ?? 0 }} dari {{ $lecturers->total() }} dosen</span>
     {{ $lecturers->links() }}
   </div>
