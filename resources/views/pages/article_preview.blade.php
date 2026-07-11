@@ -1,9 +1,9 @@
 <x-layouts.app :title="'Preview: ' . $article->title" footer="none">
-<div class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-yellow-400 px-6 py-2 text-sm font-bold text-yellow-900 shadow" role="alert">
-  <span>👁 MODE PREVIEW — Artikel ini belum dipublikasikan</span>
-  <a href="javascript:history.back()" class="rounded-lg border border-yellow-700 px-4 py-1 hover:bg-yellow-500 transition">← Kembali</a>
+<div class="fixed top-0 left-0 right-0 z-50 flex flex-wrap items-center justify-between gap-2 bg-yellow-400 px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold text-yellow-900 shadow" role="alert">
+  <span>👁 MODE PREVIEW — belum dipublikasikan</span>
+  <a href="javascript:history.back()" class="rounded-lg border border-yellow-700 px-3 sm:px-4 py-1 hover:bg-yellow-500 transition whitespace-nowrap">← Kembali</a>
 </div>
-<div class="pt-12">
+<div class="pt-14 sm:pt-12">
   <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6">
 
     {{-- Admin review actions: only shown while this article is actually
@@ -11,7 +11,7 @@
          full content here — not blind from the short excerpt on the
          pending list page. --}}
     @if($article->status === 'pending' && auth()->user()->role === 'admin')
-    <div class="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
+    <div class="mb-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 sm:p-5">
       <p class="mb-3 text-sm font-bold text-yellow-800">Artikel ini menunggu persetujuan — tinjau isinya di bawah, lalu putuskan:</p>
       <div class="flex flex-col sm:flex-row gap-3">
         <form action="{{ route('admin.articles.approve', $article) }}" method="POST" class="sm:w-40">
