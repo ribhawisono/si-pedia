@@ -9,8 +9,24 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    /** Admin: list all comments for moderation */
-    public function index(Request $request)
+    /** PUBLIC: list approved comments for one specific article. Bound to
+     *  GET /articles/{article:slug}/comments (no auth required). This used
+     *  to incorrectly route to the admin moderation method below (which had
+     *  no role check at all) — any visitor could browse to that URL and see
+     *  the full admin comment-moderation dashboard for the whole site. */
+    public function index(Article $article)
+    {
+        $comments = $article->comments()
+            ->where('status', 'approved')
+            ->with('user:id,name,avatar')
+            ->latest()
+            ->paginate(20);
+
+        return view('pages.article_comments', compact('article', 'comments'));
+    }
+
+    /** Admin: list all comments for moderation (auth+admin middleware) */
+    public function adminIndex(Request $request)
     {
         $comments = Comment::with(['article:id,title,slug', 'user:id,name'])
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
