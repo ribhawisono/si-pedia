@@ -1,13 +1,13 @@
 <x-layouts.admin title="Artikel Pending — SI-Pedia" section="pending">
-<main class="mx-auto max-w-[1200px] px-8 py-10">
+<main class="mx-auto max-w-[1200px] px-4 sm:px-8 py-10">
 
-  <div class="flex items-center justify-between">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
       <h1 class="page-title">Pending Artikel</h1>
       <p class="mt-2 text-gray-500">Artikel yang menunggu persetujuan dan permintaan hapus dari pengguna.</p>
     </div>
     <a href="{{ route('admin.articles.index') }}"
-       class="rounded-xl bg-gray-100 px-5 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-200 transition">
+       class="self-start rounded-xl bg-gray-100 px-5 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-200 transition">
       ← Kembali ke Semua Artikel
     </a>
   </div>
@@ -31,15 +31,17 @@
     </p>
 
     @forelse($pending as $article)
+    {{-- flex-wrap: action column drops to its own row on narrow screens
+         instead of squeezing the title/description into a sliver. --}}
     <a href="{{ route('admin.articles.preview', $article) }}"
-       class="mb-4 flex items-start gap-5 rounded-2xl bg-white border border-yellow-200 shadow-sm px-6 py-5 hover:border-yellow-400 hover:shadow-md transition">
+       class="mb-4 flex flex-wrap items-start gap-4 rounded-2xl bg-white border border-yellow-200 shadow-sm px-4 sm:px-6 py-5 hover:border-yellow-400 hover:shadow-md transition">
       @if($article->image)
         <img src="{{ $article->image_url }}" class="h-20 w-24 rounded-lg object-cover flex-shrink-0">
       @else
         <div class="h-20 w-24 rounded-lg bg-gray-100 flex items-center justify-center text-2xl flex-shrink-0">📄</div>
       @endif
 
-      <div class="flex-1 min-w-0">
+      <div class="flex-1 min-w-[160px]">
         <h3 class="text-lg font-extrabold text-gray-900 truncate">{{ $article->title }}</h3>
         <p class="mt-1 text-sm text-gray-500">
           {{ $article->category->name ?? '-' }} ·
@@ -52,11 +54,11 @@
         </p>
       </div>
 
-      <div class="flex-shrink-0 flex flex-col items-center gap-2">
-        <span class="flex items-center gap-1.5 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white">
+      <div class="w-full sm:w-auto flex sm:flex-col items-center gap-2 border-t border-gray-100 pt-3 sm:border-t-0 sm:pt-0">
+        <span class="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white">
           👁 Review Isi
         </span>
-        <span class="text-[11px] text-gray-400">Approve / Tolak di sini</span>
+        <span class="hidden sm:block text-[11px] text-gray-400">Approve / Tolak di sini</span>
       </div>
     </a>
     @empty
@@ -79,14 +81,14 @@
     </div>
 
     @forelse($pendingDelete as $article)
-    <div class="mb-4 rounded-2xl bg-white border border-red-200 shadow-sm px-6 py-5 flex items-center gap-5">
+    <div class="mb-4 flex flex-wrap items-start gap-4 rounded-2xl bg-white border border-red-200 shadow-sm px-4 sm:px-6 py-5">
       @if($article->image)
         <img src="{{ $article->image_url }}" class="h-20 w-24 rounded-lg object-cover flex-shrink-0">
       @else
         <div class="h-20 w-24 rounded-lg bg-gray-100 flex items-center justify-center text-2xl flex-shrink-0">📄</div>
       @endif
 
-      <div class="flex-1 min-w-0">
+      <div class="flex-1 min-w-[160px]">
         <h3 class="text-lg font-extrabold text-gray-900 truncate">{{ $article->title }}</h3>
         <p class="mt-1 text-sm text-gray-500">
           {{ $article->category->name ?? '-' }} ·
@@ -99,8 +101,8 @@
         </p>
       </div>
 
-      <div class="flex-shrink-0 flex flex-col gap-2">
-        <form action="{{ route('admin.articles.approveDelete', $article) }}" method="POST"
+      <div class="w-full sm:w-auto flex gap-2 border-t border-gray-100 pt-3 sm:border-t-0 sm:pt-0 sm:flex-col">
+        <form action="{{ route('admin.articles.approveDelete', $article) }}" method="POST" class="flex-1 sm:flex-initial"
               onsubmit="return confirm('Hapus artikel ini secara permanen?')">
           @csrf @method('DELETE')
           <button type="submit"
@@ -108,7 +110,7 @@
             🗑 Hapus Sekarang
           </button>
         </form>
-        <form action="{{ route('admin.articles.rejectDelete', $article) }}" method="POST">
+        <form action="{{ route('admin.articles.rejectDelete', $article) }}" method="POST" class="flex-1 sm:flex-initial">
           @csrf @method('PATCH')
           <button type="submit"
                   class="w-full rounded-xl bg-gray-100 px-5 py-2 text-sm font-bold text-gray-600 hover:bg-gray-200 transition">
