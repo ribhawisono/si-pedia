@@ -1,21 +1,21 @@
 <x-layouts.app title="Review — SI-Pedia" active="Review" footer="full">
-<main class="mx-auto max-w-[1440px] px-10 py-8">
-  <div class="flex items-center gap-8">
-    <a href="{{ route('home') }}" class="flex items-center gap-2 text-lg text-gray-800 hover:text-brand-600 transition">← Back</a>
+<main class="mx-auto max-w-[1440px] px-4 sm:px-10 py-8">
+  <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+    <a href="{{ route('home') }}" class="flex items-center gap-2 text-base sm:text-lg text-gray-800 hover:text-brand-600 transition">← Back</a>
     <div class="flex-1">
       <form action="{{ route('review.index') }}" method="GET">
         <div class="flex h-12 items-center rounded-full bg-gray-100 px-6">
           <span class="text-gray-500">🔍</span>
-          <input type="text" name="q" value="{{ request('q') }}" placeholder="Search reviews..." class="ml-2 flex-1 bg-transparent border-none focus:ring-0 text-gray-800">
+          <input type="text" name="q" value="{{ request('q') }}" placeholder="Search reviews..." class="ml-2 flex-1 min-w-0 bg-transparent border-none focus:ring-0 text-gray-800">
         </div>
       </form>
     </div>
   </div>
 
-  <div class="mt-6 flex gap-4">
-    <a href="{{ route('review.index') }}" class="rounded-full {{ !request('type') ? 'bg-brand-300/40 text-brand-700 ring-1 ring-brand-300' : 'text-gray-500 ring-1 ring-gray-300' }} px-6 py-1.5 text-sm font-medium transition">All</a>
-    <a href="{{ route('review.index', ['type' => 'article']) }}" class="rounded-full {{ request('type') === 'article' ? 'bg-brand-300/40 text-brand-700 ring-1 ring-brand-300' : 'text-gray-500 ring-1 ring-gray-300' }} px-6 py-1.5 text-sm font-medium transition">Articles</a>
-    <a href="{{ route('review.index', ['type' => 'project']) }}" class="rounded-full {{ request('type') === 'project' ? 'bg-brand-300/40 text-brand-700 ring-1 ring-brand-300' : 'text-gray-500 ring-1 ring-gray-300' }} px-6 py-1.5 text-sm font-medium transition">Projects</a>
+  <div class="mt-6 flex flex-wrap gap-2 sm:gap-4">
+    <a href="{{ route('review.index') }}" class="rounded-full {{ !request('type') ? 'bg-brand-300/40 text-brand-700 ring-1 ring-brand-300' : 'text-gray-500 ring-1 ring-gray-300' }} px-5 sm:px-6 py-1.5 text-sm font-medium transition">All</a>
+    <a href="{{ route('review.index', ['type' => 'article']) }}" class="rounded-full {{ request('type') === 'article' ? 'bg-brand-300/40 text-brand-700 ring-1 ring-brand-300' : 'text-gray-500 ring-1 ring-gray-300' }} px-5 sm:px-6 py-1.5 text-sm font-medium transition">Articles</a>
+    <a href="{{ route('review.index', ['type' => 'project']) }}" class="rounded-full {{ request('type') === 'project' ? 'bg-brand-300/40 text-brand-700 ring-1 ring-brand-300' : 'text-gray-500 ring-1 ring-gray-300' }} px-5 sm:px-6 py-1.5 text-sm font-medium transition">Projects</a>
   </div>
 
   <div class="mt-7 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
