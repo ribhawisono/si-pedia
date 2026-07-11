@@ -1,33 +1,70 @@
 <x-layouts.app title="Buat Halaman — SI-Pedia">
-<main class="mx-auto max-w-[1380px] px-10 py-10">
+<main class="mx-auto max-w-[1000px] px-4 sm:px-8 lg:px-10 py-6 sm:py-10">
   <h1 class="page-title">Buat Halaman Baru</h1>
-  <p class="mt-1 text-xl text-gray-700">Tambahkan halaman baru untuk website</p>
-  <div class="mt-7 rounded-3xl border border-gray-200 p-9 shadow-sm">
-    <label class="mb-2 block form-label">Nama Halaman</label>
-    <div class="rounded-full border border-gray-300 px-6 py-4 text-lg font-bold text-gray-400">Contoh: Sejarah Prodi</div>
-    <label class="mb-2 mt-6 block form-label">Judul Halaman</label>
-    <div class="rounded-full border border-gray-300 px-6 py-4 text-lg font-bold text-gray-400">Contoh: Sejarah Program Studi Sistem Informasi</div>
-    <label class="mb-2 mt-6 block form-label">Banner / Gambar Sampul</label>
-    <div class="grid h-72 w-[460px] place-items-center rounded-2xl border-2 border-gray-200 text-center">
-      <div><p class="text-sm font-semibold text-gray-700">Upload Foto/Gambar</p><p class="text-xs text-gray-400">atau drag and drop</p><p class="text-xs text-gray-400">Format: JGP, PNG (Maks. 2MB)</p></div>
-    </div>
-    <label class="mb-2 mt-6 block text-xl font-bold">Konten Halaman</label>
-    <div class="rounded-2xl border border-gray-200">
-      <div class="flex items-center gap-1 border-b border-gray-200 px-4 py-3">
-        <span class="px-2 text-xl text-gray-700"><b>B</b></span><span class="px-2 text-xl text-gray-700"><i>I</i></span><span class="px-2 text-xl text-gray-700"><u>U</u></span><span class="px-2 text-xl text-gray-700">❝</span><span class="mx-2 h-6 w-px bg-gray-200"></span>
-        <span class="px-2 text-xl text-gray-700">☰</span><span class="px-2 text-xl text-gray-700">▤</span><span class="px-2 text-xl text-gray-700">≡</span><span class="mx-2 h-6 w-px bg-gray-200"></span>
-        <span class="px-2 text-xl text-gray-700">🔗</span><span class="px-2 text-xl text-gray-700">🖼</span><span class="px-2 text-xl text-gray-700">▦</span><span class="mx-2 h-6 w-px bg-gray-200"></span><span class="px-2 text-xl text-gray-700">↶</span><span class="px-2 text-xl text-gray-700">↷</span>
-      </div>
-      <div class="min-h-[420px] p-6 text-lg text-gray-400">Tulis konten halaman di sini....</div>
-      <div class="border-t border-gray-100 px-6 py-3 text-gray-400">0 words</div>
-    </div>
-    <h3 class="mt-7 text-2xl font-bold">Status</h3>
-    <label class="mt-4 flex items-center gap-3"><span class="h-6 w-6 rounded-full border-2 border-gray-300"></span><div><p class="text-xl">Draft</p><p class="text-gray-400">Simpan sebagai draft</p></div></label>
-    <label class="mt-4 flex items-center gap-3"><span class="grid h-6 w-6 place-items-center rounded-full border-2 border-blue-700"><span class="h-3 w-3 rounded-full bg-blue-700"></span></span><div><p class="text-xl">Publish</p><p class="text-gray-400">Terbitkan artikel</p></div></label>
-    <div class="mt-6 flex justify-end gap-4">
-      <button class="rounded-xl border border-gray-300 px-8 py-3 font-bold">Batal</button>
-      <button class="rounded-xl bg-brand-600 px-8 py-3 font-bold text-white">Simpan Halaman</button>
-    </div>
+  <p class="mt-1 text-sm sm:text-base text-gray-700">Tambahkan halaman baru untuk website.</p>
+
+  @if(session('success'))
+  <div class="mt-5 rounded-xl bg-green-50 border border-green-200 px-5 py-3 text-sm font-semibold text-green-700">
+    ✅ {{ session('success') }}
   </div>
+  @endif
+
+  @if($errors->any())
+  <div class="mt-5 rounded-xl bg-red-50 border border-red-200 px-5 py-3 text-sm text-red-700">
+    <ul class="list-disc pl-5">
+      @foreach($errors->all() as $err)<li>{{ $err }}</li>@endforeach
+    </ul>
+  </div>
+  @endif
+
+  <form action="{{ route('admin.pages.store') }}" method="POST" data-validate
+        class="mt-6 sm:mt-7 rounded-2xl sm:rounded-3xl border border-gray-200 p-5 sm:p-9 shadow-sm space-y-6">
+    @csrf
+
+    <div>
+      <label for="page-name" class="mb-2 block form-label">Nama Halaman (slug) <span class="text-red-500">*</span></label>
+      <input id="page-name" type="text" name="name" required maxlength="255" value="{{ old('name') }}"
+             placeholder="Contoh: sejarah-prodi"
+             class="w-full rounded-xl border border-gray-300 px-4 sm:px-6 py-3 text-sm sm:text-base font-semibold text-gray-800 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition">
+      <p class="mt-1 text-xs text-gray-400">Identifier unik untuk halaman (huruf kecil, tanpa spasi).</p>
+      @error('name')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+    </div>
+
+    <div>
+      <label for="page-title" class="mb-2 block form-label">Judul Halaman <span class="text-red-500">*</span></label>
+      <input id="page-title" type="text" name="title" required maxlength="255" value="{{ old('title') }}"
+             placeholder="Contoh: Sejarah Program Studi Sistem Informasi"
+             class="w-full rounded-xl border border-gray-300 px-4 sm:px-6 py-3 text-sm sm:text-base font-semibold text-gray-800 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition">
+      @error('title')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+    </div>
+
+    <div>
+      <label for="page-content" class="mb-2 block form-label">Konten Halaman <span class="text-red-500">*</span></label>
+      <textarea id="page-content" name="content" required rows="10"
+                placeholder="Tulis konten halaman di sini..."
+                class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-gray-800 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 outline-none transition resize-y">{{ old('content') }}</textarea>
+      @error('content')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+    </div>
+
+    <div>
+      <label class="mb-3 block text-base sm:text-lg font-bold text-gray-900">Status</label>
+      <div class="space-y-2">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="radio" name="status" value="draft" @checked(old('status', 'draft') === 'draft') class="h-5 w-5 text-brand-600 focus:ring-brand-600">
+          <div><p class="text-sm font-semibold text-gray-800">Draft</p><p class="text-xs text-gray-400">Simpan sebagai draft, belum tampil publik</p></div>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="radio" name="status" value="active" @checked(old('status') === 'active') class="h-5 w-5 text-brand-600 focus:ring-brand-600">
+          <div><p class="text-sm font-semibold text-gray-800">Publish</p><p class="text-xs text-gray-400">Terbitkan halaman ke publik</p></div>
+        </label>
+      </div>
+      @error('status')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+    </div>
+
+    <div class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-2">
+      <a href="{{ route('admin.panel') }}" class="rounded-xl border border-gray-300 px-8 py-3 text-center font-bold text-gray-700 hover:bg-gray-50 transition">Batal</a>
+      <button type="submit" class="rounded-xl bg-brand-600 px-8 py-3 font-bold text-white hover:bg-brand-700 transition">Simpan Halaman</button>
+    </div>
+  </form>
 </main>
 </x-layouts.app>
