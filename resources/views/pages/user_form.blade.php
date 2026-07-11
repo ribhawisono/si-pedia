@@ -1,5 +1,5 @@
 <x-layouts.admin title="Form User — SI-Pedia" section="users">
-<main class="mx-auto max-w-[680px] px-8 py-10">
+<main class="mx-auto max-w-[680px] px-4 sm:px-8 py-6 sm:py-10">
   <div class="flex items-center gap-3 mb-6">
     <a href="{{ route('admin.users.index') }}" class="text-gray-400 hover:text-gray-700 transition text-xl">←</a>
     <div>
@@ -17,7 +17,7 @@
   @endif
 
   <form action="{{ $mode === 'create' ? route('admin.users.store') : route('admin.users.update', $user) }}"
-        method="POST" class="space-y-5 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+        method="POST" class="space-y-5 rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 shadow-sm">
     @csrf
     @if($mode === 'edit') @method('PUT') @endif
 
