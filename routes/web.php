@@ -183,7 +183,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/dosen/{lecturer}', [DosenController::class, 'destroy'])->name('dosen.destroy');
 
     // Comments moderation
-    Route::get('/comments', [\App\Http\Controllers\CommentController::class, 'index'])->name('comments.index');
+    Route::get('/comments', [\App\Http\Controllers\CommentController::class, 'adminIndex'])->name('comments.index');
     Route::patch('/comments/{comment}/approve', [\App\Http\Controllers\CommentController::class, 'approve'])->name('comments.approve');
     Route::patch('/comments/{comment}/reject', [\App\Http\Controllers\CommentController::class, 'reject'])->name('comments.reject');
     Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
