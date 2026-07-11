@@ -1,17 +1,17 @@
 <x-layouts.app title="FAQ — SI-Pedia" active="FAQ" footer="full">
 
-<section class="bg-ink-900 py-16">
-  <div class="mx-auto max-w-[1100px] px-8 text-center">
+<section class="bg-ink-900 py-12 sm:py-16">
+  <div class="mx-auto max-w-[1100px] px-4 sm:px-8 text-center">
     <span class="inline-block rounded-full bg-brand-600/15 px-4 py-1.5 text-sm font-semibold text-brand-400 mb-4">PUSAT BANTUAN</span>
     <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Frequently Asked Questions</h1>
-    <p class="mt-4 text-lg text-white/60 max-w-2xl mx-auto">
+    <p class="mt-4 text-base sm:text-lg text-white/60 max-w-2xl mx-auto">
       Temukan jawaban atas pertanyaan yang sering ditanyakan seputar SI-Pedia.
     </p>
   </div>
 </section>
 
-<section class="bg-white py-16">
-  <div class="mx-auto max-w-[820px] px-8">
+<section class="bg-white py-12 sm:py-16">
+  <div class="mx-auto max-w-[820px] px-4 sm:px-8">
 
     @php
     $faqs = [
@@ -60,8 +60,8 @@
         'icon' => '🛡️',
         'items' => [
           ['q' => 'Bagaimana cara melaporkan konten atau akun yang melanggar?',
-           'a' => 'Untuk melaporkan akun: buka profil pengguna dan klik tombol "Laporkan Akun". Untuk melaporkan artikel: gunakan fitur komentar atau hubungi admin langsung. Setiap laporan akan ditinjau oleh admin.'],
-          ['q' => 'Apa yang terjadi setelah saya melaporkan sebuah akun?',
+           'a' => 'Untuk melaporkan akun: buka profil pengguna dan klik tombol "Laporkan Akun". Untuk melaporkan artikel: buka artikel yang dimaksud dan klik tombol "Laporkan". Setiap laporan akan ditinjau oleh admin.'],
+          ['q' => 'Apa yang terjadi setelah saya melaporkan sebuah akun atau artikel?',
            'a' => 'Laporanmu akan masuk ke panel admin dengan status "Pending". Admin akan meninjau laporan dan mengambil tindakan yang diperlukan, lalu status laporan akan diperbarui menjadi "Reviewed" atau "Dismissed".'],
           ['q' => 'Apakah data saya aman di SI-Pedia?',
            'a' => 'Kami menjaga keamanan data pengguna dengan enkripsi password dan tidak membagikan data pribadi kepada pihak ketiga. Hanya admin yang dapat melihat informasi akun pengguna di sistem.'],
@@ -79,14 +79,14 @@
       <div class="space-y-3">
         @foreach($section['items'] as $index => $faq)
         <details class="group rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-          <summary class="flex cursor-pointer items-center justify-between px-6 py-4 font-bold text-gray-900 hover:bg-gray-50 transition-colors list-none">
+          <summary class="flex cursor-pointer items-center justify-between gap-3 px-4 sm:px-6 py-4 font-bold text-gray-900 hover:bg-gray-50 transition-colors list-none">
             <span>{{ $faq['q'] }}</span>
             <svg class="h-5 w-5 flex-shrink-0 text-gray-400 transition-transform group-open:rotate-180"
                  fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
             </svg>
           </summary>
-          <div class="border-t border-gray-100 px-6 py-4 text-sm leading-relaxed text-gray-600">
+          <div class="border-t border-gray-100 px-4 sm:px-6 py-4 text-sm leading-relaxed text-gray-600 text-justify">
             {{ $faq['a'] }}
           </div>
         </details>
@@ -96,10 +96,10 @@
     @endforeach
 
     {{-- CTA --}}
-    <div class="mt-8 rounded-2xl bg-ink-900 p-8 text-center">
+    <div class="mt-8 rounded-2xl bg-ink-900 p-6 sm:p-8 text-center">
       <p class="text-lg font-bold text-white">Masih punya pertanyaan lain?</p>
       <p class="mt-2 text-sm text-white/60">Hubungi admin atau kunjungi halaman About untuk informasi lebih lanjut.</p>
-      <div class="mt-5 flex justify-center gap-4">
+      <div class="mt-5 flex flex-wrap justify-center gap-3 sm:gap-4">
         <a href="{{ route('about') }}" class="rounded-lg border border-white/20 px-6 py-2.5 text-sm font-semibold text-white hover:bg-white/10 transition">
           Tentang Kami
         </a>
