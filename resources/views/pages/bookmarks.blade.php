@@ -17,7 +17,10 @@
     @endif
 
     @forelse($bookmarks as $article)
-    <article class="mb-5 flex gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-md transition-all group">
+    {{-- flex-wrap: on narrow screens the action buttons (fixed-width,
+         flex-shrink-0) drop to their own full-width row instead of
+         squeezing the title/description column down to nothing. --}}
+    <article class="mb-5 flex flex-wrap gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-md transition-all group">
       @if($article->image_url)
       <img src="{{ $article->image_url }}" alt="{{ $article->title }}"
            class="h-24 w-32 flex-shrink-0 rounded-xl object-cover sm:h-28 sm:w-36" loading="lazy">
@@ -28,7 +31,7 @@
         </svg>
       </div>
       @endif
-      <div class="flex-1 min-w-0">
+      <div class="flex-1 min-w-[160px]">
         <div class="flex flex-wrap items-center gap-2 mb-2">
           <span class="rounded-md bg-brand-600/10 px-2.5 py-0.5 text-xs font-semibold text-brand-700">{{ $article->category->name ?? 'Umum' }}</span>
           <time class="text-xs text-gray-400" datetime="{{ $article->created_at->toISOString() }}">{{ $article->created_at->translatedFormat('j M Y') }}</time>
@@ -46,9 +49,9 @@
           @endforeach
         </div>
       </div>
-      <div class="flex-shrink-0 flex items-start gap-2">
+      <div class="w-full sm:w-auto flex items-center gap-2 border-t border-gray-100 pt-3 sm:border-t-0 sm:pt-0">
         <a href="{{ route('articles.show', $article->slug) }}"
-           class="rounded-xl bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 transition">
+           class="flex-1 sm:flex-initial text-center rounded-xl bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 transition">
           Baca →
         </a>
         <form action="{{ route('bookmarks.toggle', $article) }}" method="POST">
