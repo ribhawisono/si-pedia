@@ -27,9 +27,9 @@
         <div>
             <h4 class="mb-3 text-base font-bold">Contact</h4>
             <ul class="space-y-2 text-sm text-white/80">
-                <li class="flex gap-3"><span>📍</span>Jl. Nangka Raya No 58C (TB. Simatupang), Tanjung Barat,<br>Jagakarsa, Jakarta Selatan, 12530.</li>
-                <li class="flex gap-3"><span>📞</span><a href="tel:+622178187018" class="hover:text-white transition">(021) 7818718</a> / <a href="tel:+622178835283" class="hover:text-white transition">78835283</a></li>
-                <li class="flex gap-3"><span>✉</span>kampusb@unindra.ac.id</li>
+                <li class="flex gap-3"><span>📍</span>Jl. Raya Tengah No. 80, Gedong,<br>Pasar Rebo, Jakarta Timur.</li>
+                <li class="flex gap-3"><span>📞</span><a href="tel:+622178835283" class="hover:text-white transition">(021) 78835283</a></li>
+                <li class="flex gap-3"><span>✉</span>kampus@unindra.ac.id</li>
             </ul>
         </div>
     </div>
