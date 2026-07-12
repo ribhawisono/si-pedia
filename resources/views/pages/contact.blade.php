@@ -15,20 +15,19 @@
     <div class="rounded-2xl border border-gray-200 p-6 shadow-sm">
       <div class="grid h-11 w-11 place-items-center rounded-full bg-brand-600/10 text-lg">📍</div>
       <h2 class="mt-4 font-bold text-gray-900">Alamat</h2>
-      <p class="mt-1 text-sm leading-relaxed text-gray-600">Jl. Nangka Raya No 58C (TB. Simatupang), Tanjung Barat,<br>Jagakarsa, Jakarta Selatan, 12530.</p>
+      <p class="mt-1 text-sm leading-relaxed text-gray-600">Jl. Raya Tengah No. 80, Gedong,<br>Pasar Rebo, Jakarta Timur.</p>
     </div>
     <div class="rounded-2xl border border-gray-200 p-6 shadow-sm">
       <div class="grid h-11 w-11 place-items-center rounded-full bg-brand-600/10 text-lg">📞</div>
       <h2 class="mt-4 font-bold text-gray-900">Telepon</h2>
       <p class="mt-1 text-sm leading-relaxed text-gray-600">
-        <a href="tel:+622178187018" class="hover:text-brand-700">(021) 7818718</a> /
-        <a href="tel:+622178835283" class="hover:text-brand-700">78835283</a>
+        <a href="tel:+622178835283" class="hover:text-brand-700">(021) 78835283</a>
       </p>
     </div>
     <div class="rounded-2xl border border-gray-200 p-6 shadow-sm sm:col-span-2">
       <div class="grid h-11 w-11 place-items-center rounded-full bg-brand-600/10 text-lg">✉</div>
       <h2 class="mt-4 font-bold text-gray-900">Email</h2>
-      <p class="mt-1 text-sm leading-relaxed text-gray-600">university@unindra.ac.id</p>
+      <p class="mt-1 text-sm leading-relaxed text-gray-600">kampus@unindra.ac.id</p>
     </div>
   </div>
 
