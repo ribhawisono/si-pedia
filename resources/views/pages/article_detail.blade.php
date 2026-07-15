@@ -10,7 +10,7 @@
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex flex-col lg:flex-row gap-8">
 
-      {{-- ─── Main article column ────────────────────────────────── --}}
+      {{-- ─── Main article column ────────────────────────── --}}
       <article class="flex-1 min-w-0" aria-labelledby="article-title">
 
         {{-- Back breadcrumb --}}
@@ -206,6 +206,9 @@
                     <time datetime="{{ $comment->created_at->toISOString() }}" class="text-xs text-gray-400">
                       {{ $comment->created_at->diffForHumans() }}
                     </time>
+                    @if($comment->status === 'pending')
+                    <span class="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-bold text-yellow-700">⏳ Menunggu moderasi (hanya kamu yang lihat)</span>
+                    @endif
                   </div>
                   <p class="text-sm text-gray-700 text-justify">{{ $comment->content }}</p>
                 </div>
@@ -253,7 +256,7 @@
         </section>
       </article>
 
-      {{-- ─── Sidebar ──────────────────────────── --}}
+      {{-- ─── Sidebar ──────────────────────── --}}
       <aside class="lg:w-72 flex-shrink-0 space-y-5" aria-label="Sidebar artikel">
 
         {{-- Related Articles --}}
