@@ -84,6 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [ArticleController::class, 'store'])->name('store');
         Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit')->withTrashed();
         Route::put('/{article}', [ArticleController::class, 'update'])->name('update')->withTrashed();
+        Route::delete('/{article}', [ArticleController::class, 'destroySelf'])->name('destroy');
         Route::patch('/{article}/request-delete', [ArticleController::class, 'requestDelete'])->name('requestDelete');
         Route::get('/{article}/preview', [ArticleController::class, 'preview'])->name('preview')->withTrashed();
         Route::get('/{article}/revisions', [ArticleController::class, 'revisions'])->name('revisions')->withTrashed();
@@ -123,6 +124,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/articles/{article}/takedown', [ArticleController::class, 'takedownForm'])->name('articles.takedownForm');
     Route::post('/articles/{article}/takedown', [ArticleController::class, 'takedown'])->name('articles.takedown');
+
+    // Pending edit (usulan perubahan artikel yang sudah live)
+    Route::patch('/articles/{article}/approve-edit', [ArticleController::class, 'approveEdit'])->name('articles.approveEdit');
+    Route::patch('/articles/{article}/reject-edit', [ArticleController::class, 'rejectEdit'])->name('articles.rejectEdit');
 
     Route::patch('/reviews/{review}/accept', [ReviewController::class, 'accept'])->name('reviews.accept');
     Route::patch('/reviews/{review}/decline', [ReviewController::class, 'decline'])->name('reviews.decline');
