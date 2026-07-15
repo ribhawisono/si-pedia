@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\Article;
+use App\Models\BannedWord;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
@@ -39,26 +40,35 @@ class CommentController extends Controller
             'rejected' => Comment::where('status', 'rejected')->count(),
         ];
 
-        return view('pages.admin_comments', compact('comments', 'counts'));
+        $bannedWords = BannedWord::orderBy('word')->get();
+
+        return view('pages.admin_comments', compact('comments', 'counts', 'bannedWords'));
     }
 
-    /** Submit comment. Admin comments are auto-approved (skip moderation)
-     *  and show up on the article immediately; everyone else's comment
-     *  goes to pending for admin review as before. */
+    /**
+     * Submit comment. Comments post immediately (status 'approved') like a
+     * normal comment box — EXCEPT when the content matches an entry in the
+     * banned-word list (managed by admin, see banned words CRUD below), in
+     * which case it's held as 'pending' for manual review instead of going
+     * straight onto the article. Admin's own comments always auto-approve
+     * regardless (skip the filter entirely).
+     */
     public function store(StoreCommentRequest $request, Article $article)
     {
         $data    = $request->validated();
         $isAdmin = $request->user()->role === 'admin';
 
+        $flagged = !$isAdmin && BannedWord::containsBannedWord($data['content']);
+
         $article->comments()->create([
             'user_id' => $request->user()->id,
             'content' => $data['content'],
-            'status'  => $isAdmin ? 'approved' : 'pending',
+            'status'  => $isAdmin ? 'approved' : ($flagged ? 'pending' : 'approved'),
         ]);
 
-        return back()->with('success', $isAdmin
-            ? 'Komentar ditambahkan.'
-            : 'Komentar dikirim dan menunggu moderasi admin.'
+        return back()->with('success', $flagged
+            ? 'Komentar terkirim, namun mengandung kata yang perlu ditinjau admin sebelum tampil.'
+            : 'Komentar ditambahkan.'
         );
     }
 
@@ -99,5 +109,27 @@ class CommentController extends Controller
         };
 
         return back()->with('success', 'Bulk action selesai.');
+    }
+
+    /** Admin: tambah kata terlarang baru ke daftar filter */
+    public function storeBannedWord(Request $request)
+    {
+        $data = $request->validate([
+            'word' => 'required|string|max:100|unique:banned_words,word',
+        ]);
+
+        BannedWord::create([
+            'word'       => mb_strtolower(trim($data['word'])),
+            'created_by' => auth()->id(),
+        ]);
+
+        return back()->with('success', 'Kata terlarang ditambahkan.');
+    }
+
+    /** Admin: hapus kata terlarang dari daftar filter */
+    public function destroyBannedWord(BannedWord $bannedWord)
+    {
+        $bannedWord->delete();
+        return back()->with('success', 'Kata terlarang dihapus.');
     }
 }
