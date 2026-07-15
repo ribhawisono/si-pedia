@@ -91,6 +91,8 @@
         </a>
         @endif
         <div class="flex flex-wrap gap-1.5">
+          <a href="{{ route('admin.articles.preview', $article) }}" target="_blank"
+             class="flex h-8 w-[86px] items-center justify-center rounded-md bg-blue-500 text-[11px] font-bold text-white hover:bg-blue-600">👁 Preview</a>
           @if($article->user_id === auth()->id())
           <a href="{{ route('admin.articles.edit', $article) }}"
              class="flex h-8 w-[86px] items-center justify-center rounded-md bg-edit text-xs font-bold text-black">Edit</a>
@@ -155,6 +157,8 @@
         </a>
         @endif
         <div class="flex flex-wrap gap-1.5">
+          <a href="{{ route('admin.articles.preview', $article) }}" target="_blank"
+             class="flex h-9 flex-1 items-center justify-center rounded-md bg-blue-500 text-xs font-bold text-white hover:bg-blue-600">👁 Preview</a>
           @if($article->user_id === auth()->id())
           <a href="{{ route('admin.articles.edit', $article) }}"
              class="flex h-9 flex-1 items-center justify-center rounded-md bg-edit text-xs font-bold text-black">Edit</a>
