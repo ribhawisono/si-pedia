@@ -2,8 +2,8 @@
 {{-- Bukan `fixed` lagi: sebelumnya banner ini fixed top-0 z-50 sehingga
      menimpa/menutupi navbar (<x-navbar> di layout ada di atas juga).
      Sekarang mengalir normal, otomatis muncul di bawah navbar. --}}
-<div class="flex flex-wrap items-center justify-between gap-2 bg-yellow-400 px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold text-yellow-900 shadow" role="alert">
-  <span>👁 MODE PREVIEW — belum dipublikasikan</span>
+<div id="preview-mode-banner" class="flex flex-wrap items-center justify-between gap-2 bg-yellow-400 px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold text-yellow-900 shadow" role="alert">
+  <span id="preview-mode-label">👁 MODE PREVIEW — belum dipublikasikan</span>
   @php
     // Tombol Kembali: preview sering dibuka di tab baru (target="_blank" dari
     // list artikel), tab baru itu tidak punya history sehingga
@@ -60,10 +60,10 @@
             @endforeach
           @endif
         </div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">{{ $article->title }}</h1>
+        <h1 id="preview-title" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">{{ $article->title }}</h1>
         <p class="mb-6 text-sm text-gray-500">Oleh {{ $article->user->name ?? $article->writer }}</p>
         {{-- Content is sanitized HTML from the Quill editor (see ArticleService::sanitizeHtml) --}}
-        <div class="prose prose-lg max-w-none text-gray-700 text-justify">{!! $article->content !!}</div>
+        <div id="preview-content" class="prose prose-lg max-w-none text-gray-700 text-justify">{!! $article->content !!}</div>
 
         @if($article->meta_title || $article->meta_description)
         <div class="mt-8 rounded-xl bg-gray-50 border border-gray-200 p-4 text-xs space-y-2">
@@ -83,4 +83,34 @@
     </article>
   </div>
 </div>
+
+@if($article->id)
+<script>
+// Preview "hidup": kalau ada draft form yang BELUM disimpan (ditulis oleh
+// halaman edit_article.blade.php ke localStorage sesaat sebelum tab preview
+// ini dibuka), tampilkan draft itu alih-alih konten tersimpan/live di atas.
+// Kalau tidak ada draft (belum pernah diedit sejak terakhir disimpan, atau
+// sudah dibersihkan setelah submit berhasil), preview tetap menampilkan
+// versi tersimpan/live seperti biasa — tidak ada yang berubah untuk kasus
+// itu.
+(function () {
+    var key = 'sipedia_preview_draft_{{ $article->id }}';
+    var raw;
+    try { raw = localStorage.getItem(key); } catch (e) { return; }
+    if (!raw) return;
+
+    var draft;
+    try { draft = JSON.parse(raw); } catch (e) { return; }
+    if (!draft || (!draft.title && !draft.content)) return;
+
+    if (draft.title) document.getElementById('preview-title').textContent = draft.title;
+    if (draft.content) document.getElementById('preview-content').innerHTML = draft.content;
+
+    var label = document.getElementById('preview-mode-label');
+    if (label) label.textContent = '✏️ PREVIEW PERUBAHAN BELUM DISIMPAN — ini bukan versi yang tayang';
+    var banner = document.getElementById('preview-mode-banner');
+    if (banner) { banner.classList.remove('bg-yellow-400', 'text-yellow-900'); banner.classList.add('bg-blue-500', 'text-white'); }
+})();
+</script>
+@endif
 </x-layouts.app>
