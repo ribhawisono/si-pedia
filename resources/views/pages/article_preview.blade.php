@@ -4,7 +4,17 @@
      Sekarang mengalir normal, otomatis muncul di bawah navbar. --}}
 <div class="flex flex-wrap items-center justify-between gap-2 bg-yellow-400 px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold text-yellow-900 shadow" role="alert">
   <span>👁 MODE PREVIEW — belum dipublikasikan</span>
-  <a href="javascript:history.back()" class="rounded-lg border border-yellow-700 px-3 sm:px-4 py-1 hover:bg-yellow-500 transition whitespace-nowrap">← Kembali</a>
+  @php
+    // Tombol Kembali: preview sering dibuka di tab baru (target="_blank" dari
+    // list artikel), tab baru itu tidak punya history sehingga
+    // history.back() diam saja / tidak ke mana-mana. Sekarang href selalu
+    // punya tujuan pasti (list admin atau Artikel Saya), dan JS hanya
+    // mengganti ke history.back() kalau memang ada history untuk di-back.
+    $fallbackBack = auth()->user()->role === 'admin' ? route('admin.articles.index') : route('articles.my');
+  @endphp
+  <a href="{{ $fallbackBack }}"
+     onclick="if(window.history.length > 1){ event.preventDefault(); window.history.back(); }"
+     class="rounded-lg border border-yellow-700 px-3 sm:px-4 py-1 hover:bg-yellow-500 transition whitespace-nowrap">← Kembali</a>
 </div>
 <div>
   <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6">
