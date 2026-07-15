@@ -1,9 +1,12 @@
 <x-layouts.app :title="'Preview: ' . $article->title" footer="none">
-<div class="fixed top-0 left-0 right-0 z-50 flex flex-wrap items-center justify-between gap-2 bg-yellow-400 px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold text-yellow-900 shadow" role="alert">
+{{-- Bukan `fixed` lagi: sebelumnya banner ini fixed top-0 z-50 sehingga
+     menimpa/menutupi navbar (<x-navbar> di layout ada di atas juga).
+     Sekarang mengalir normal, otomatis muncul di bawah navbar. --}}
+<div class="flex flex-wrap items-center justify-between gap-2 bg-yellow-400 px-4 sm:px-6 py-2 text-xs sm:text-sm font-bold text-yellow-900 shadow" role="alert">
   <span>👁 MODE PREVIEW — belum dipublikasikan</span>
   <a href="javascript:history.back()" class="rounded-lg border border-yellow-700 px-3 sm:px-4 py-1 hover:bg-yellow-500 transition whitespace-nowrap">← Kembali</a>
 </div>
-<div class="pt-14 sm:pt-12">
+<div>
   <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6">
 
     {{-- Admin review actions: only shown while this article is actually
