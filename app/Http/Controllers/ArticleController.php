@@ -272,9 +272,13 @@ class ArticleController extends Controller
 
     public function revisions(Article $article)
     {
-        $user = auth()->user();
-        if ($user->role !== 'admin' && $article->user_id !== $user->id) abort(403);
+        $user    = auth()->user();
+        $isAdmin = $user->role === 'admin';
+        if (!$isAdmin && $article->user_id !== $user->id) abort(403);
         $revisions = $article->revisions()->with('user:id,name')->get();
-        return view('pages.article_revisions', compact('article', 'revisions'));
+        // isAdmin dikirim ke view supaya bisa pilih layout: admin panel untuk
+        // admin, layout publik biasa untuk penulis (user) -> sebelumnya view
+        // ini SELALU pakai <x-layouts.admin>, jadi sidebar admin bocor ke user.
+        return view('pages.article_revisions', compact('article', 'revisions', 'isAdmin'));
     }
 }
