@@ -85,6 +85,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit')->withTrashed();
         Route::put('/{article}', [ArticleController::class, 'update'])->name('update')->withTrashed();
         Route::patch('/{article}/request-delete', [ArticleController::class, 'requestDelete'])->name('requestDelete');
+        Route::get('/{article}/preview', [ArticleController::class, 'preview'])->name('preview')->withTrashed();
+        Route::get('/{article}/revisions', [ArticleController::class, 'revisions'])->name('revisions')->withTrashed();
     });
 
     Route::post('/articles/{article}/bookmark', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
@@ -158,7 +160,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/comments/bulk', [\App\Http\Controllers\CommentController::class, 'bulk'])->name('comments.bulk');
 
     Route::get('/articles/{article}/preview', [\App\Http\Controllers\ArticleController::class, 'preview'])->name('articles.preview');
-    Route::get('/articles/{article}/revisions', [\App\Http\Controllers\ArticleController::class, 'revisions'])->name('articles.revisions');
+    Route::get('/articles/{article}/revisions', [\App\Http\Controllers\ArticleController::class, 'revisions'])->name('articles.revisions')->withTrashed();
 
     Route::get('/account-reports', [AccountReportController::class, 'index'])->name('account-reports.index');
     Route::patch('/account-reports/{report}', [AccountReportController::class, 'update'])->name('account-reports.update');
