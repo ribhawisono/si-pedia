@@ -19,6 +19,45 @@
   </div>
 </div>
 
+{{-- Panel: Kata Terlarang (filter komentar). Komentar yang mengandung salah
+     satu kata di daftar ini otomatis ditahan sebagai 'pending' saat dikirim
+     (lihat CommentController::store() + BannedWord::containsBannedWord()),
+     bukannya langsung tampil di artikel seperti komentar normal lainnya. --}}
+<div class="mb-6 rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+  <button type="button" id="banned-words-toggle"
+          class="flex w-full items-center justify-between px-5 py-3.5 text-left focus:outline-none"
+          aria-expanded="false" aria-controls="banned-words-panel">
+    <span class="text-sm font-bold text-gray-800">🚫 Kata Terlarang (Filter Komentar)</span>
+    <span class="flex items-center gap-2">
+      <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-600">{{ $bannedWords->count() }}</span>
+      <svg id="banned-words-chevron" class="h-4 w-4 text-gray-400 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+    </span>
+  </button>
+  <div id="banned-words-panel" class="hidden border-t border-gray-100 p-5">
+    <p class="mb-3 text-xs text-gray-500">Komentar (bukan dari admin) yang mengandung salah satu kata ini otomatis masuk status <strong>Pending</strong> untuk ditinjau dulu, bukan langsung tampil.</p>
+    <form action="{{ route('admin.comments.bannedWords.store') }}" method="POST" class="mb-4 flex gap-2">
+      @csrf
+      <input type="text" name="word" required maxlength="100" placeholder="Tambah kata terlarang baru..."
+             class="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-600 focus:outline-none focus:ring-0">
+      <button type="submit" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-bold text-white hover:bg-brand-700 transition">+ Tambah</button>
+    </form>
+    @error('word')<p class="mb-3 text-xs text-red-500">{{ $message }}</p>@enderror
+    <div class="flex flex-wrap gap-2">
+      @forelse($bannedWords as $bw)
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-red-50 border border-red-100 pl-3 pr-1.5 py-1 text-xs font-semibold text-red-700">
+        {{ $bw->word }}
+        <form action="{{ route('admin.comments.bannedWords.destroy', $bw) }}" method="POST" onsubmit="return confirm('Hapus kata ini dari daftar filter?')">
+          @csrf @method('DELETE')
+          <button type="submit" class="grid h-4 w-4 place-items-center rounded-full hover:bg-red-200 transition" aria-label="Hapus {{ $bw->word }}">×</button>
+        </form>
+      </span>
+      @empty
+      <p class="text-xs text-gray-400">Belum ada kata terlarang. Semua komentar (non-admin) langsung tayang.</p>
+      @endforelse
+    </div>
+  </div>
+</div>
+
 {{-- Stats --}}
 <div class="mb-6 grid grid-cols-3 gap-2 sm:gap-4">
   <a href="{{ route('admin.comments.index') }}" class="rounded-xl border bg-white p-3 sm:p-4 text-center shadow-sm hover:shadow-md transition {{ !request('status') ? 'border-brand-300 ring-1 ring-brand-300' : 'border-gray-200' }}">
@@ -149,6 +188,19 @@
         update();
     });
     checkboxes.forEach(c => c.addEventListener('change', update));
+})();
+
+// Banned words panel toggle
+(function(){
+    const btn = document.getElementById('banned-words-toggle');
+    const panel = document.getElementById('banned-words-panel');
+    const chevron = document.getElementById('banned-words-chevron');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        const open = panel.classList.toggle('hidden');
+        btn.setAttribute('aria-expanded', String(!open));
+        chevron.classList.toggle('rotate-180');
+    });
 })();
 </script>
 
