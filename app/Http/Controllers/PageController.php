@@ -93,7 +93,17 @@ class PageController extends Controller
             'category:id,name',
             'tags:id,name,slug',
             'user:id,name,role,avatar',
-            'comments' => fn ($q) => $q->where('status', 'approved')->with('user:id,name,avatar')->latest(),
+            // Publik hanya lihat komentar approved. Kalau user sedang login,
+            // komentar miliknya sendiri yang masih 'pending' (misal kena
+            // filter kata terlarang) tetap ikut dimuat + ditandai di blade,
+            // supaya dia lihat komentarnya terkirim & sedang ditinjau -
+            // bukan menghilang begitu saja.
+            'comments' => fn ($q) => $q->where(fn ($qq) =>
+                    $qq->where('status', 'approved')
+                       ->when(auth()->check(), fn ($qq2) => $qq2->orWhere(fn ($qq3) =>
+                           $qq3->where('status', 'pending')->where('user_id', auth()->id())
+                       ))
+                )->with('user:id,name,avatar')->latest(),
         ]);
 
         // Record reading history
