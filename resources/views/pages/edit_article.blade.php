@@ -150,9 +150,9 @@
       {{-- Thumbnail --}}
       <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
         <label class="mb-3 block text-sm font-bold text-gray-700">Thumbnail Artikel</label>
-        <div class="flex flex-wrap items-start gap-4">
+        <div class="flex flex-wrap items-start gap-4" id="thumbnail-preview-wrap">
           @if($article->image_url)
-          <img src="{{ $article->image_url }}" alt="Thumbnail saat ini" data-preview
+          <img id="thumbnail-current-img" src="{{ $article->image_url }}" alt="Thumbnail saat ini" data-preview
                class="h-28 w-40 rounded-xl object-cover shadow-sm border border-gray-200">
           @endif
           <label class="cursor-pointer">
@@ -163,7 +163,7 @@
                 <p class="text-[10px] text-gray-400">JPG, PNG, WEBP, max 10MB</p>
               </div>
             </div>
-            <input type="file" name="image" accept="image/*" class="sr-only" aria-label="Upload thumbnail artikel">
+            <input id="thumbnail-input" type="file" name="image" accept="image/*" class="sr-only" aria-label="Upload thumbnail artikel">
           </label>
         </div>
         @error('image') <p class="mt-2 text-xs text-red-500" role="alert">{{ $message }}</p> @enderror
@@ -387,12 +387,47 @@
     });
 })();
 
+// Thumbnail: sebelumnya memilih file baru TIDAK memperbarui gambar preview
+// di halaman (kotak "Thumbnail saat ini" statis dari DB), dan juga tidak
+// ikut ke preview "hidup" di tab lain karena file <input> tidak bisa
+// ditaruh langsung ke localStorage. Sekarang: begitu file dipilih, dibaca
+// jadi data URL (base64) untuk (1) menimpa/menambah <img> preview di
+// halaman ini sendiri, dan (2) disimpan agar ikut ditulis oleh handler
+// preview-link di bawah.
+let __thumbnailDataUrl = null;
+(function(){
+    const input = document.getElementById('thumbnail-input');
+    const wrap  = document.getElementById('thumbnail-preview-wrap');
+    if (!input || !wrap) return;
+
+    input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
+        if (!file) { __thumbnailDataUrl = null; return; }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            __thumbnailDataUrl = e.target.result;
+            let img = document.getElementById('thumbnail-current-img');
+            if (!img) {
+                img = document.createElement('img');
+                img.id = 'thumbnail-current-img';
+                img.alt = 'Thumbnail baru';
+                img.className = 'h-28 w-40 rounded-xl object-cover shadow-sm border border-gray-200';
+                wrap.insertBefore(img, wrap.firstChild);
+            }
+            img.src = __thumbnailDataUrl;
+        };
+        reader.readAsDataURL(file);
+    });
+})();
+
 // Preview "hidup": simpan draft form saat ini (belum disimpan ke DB) ke
 // localStorage tepat sebelum tab preview dibuka, supaya article_preview
 // bisa menampilkan hasil editan terbaru alih-alih menunggu Simpan/Submit.
-// Kalau form disubmit (benar-benar tersimpan), draft lokal ini dihapus
-// supaya preview berikutnya balik menampilkan versi tersimpan/live seperti
-// biasa, bukan draft basi.
+// Termasuk thumbnail baru (__thumbnailDataUrl di atas) kalau ada yang
+// dipilih. Kalau form disubmit (benar-benar tersimpan), draft lokal ini
+// dihapus supaya preview berikutnya balik menampilkan versi
+// tersimpan/live seperti biasa, bukan draft basi.
 (function(){
     const link = document.getElementById('preview-link');
     const form = document.getElementById('article-form');
@@ -403,8 +438,8 @@
         const title   = document.getElementById('article-title-input')?.value || '';
         const content = document.getElementById('content-textarea')?.value || '';
         try {
-            localStorage.setItem(key, JSON.stringify({ title, content, ts: Date.now() }));
-        } catch (e) { /* localStorage penuh/diblokir: preview jatuh ke versi tersimpan, tidak fatal */ }
+            localStorage.setItem(key, JSON.stringify({ title, content, image: __thumbnailDataUrl, ts: Date.now() }));
+        } catch (e) { /* localStorage penuh/diblokir (thumbnail besar dsb): preview jatuh ke versi tersimpan, tidak fatal */ }
     });
 
     form?.addEventListener('submit', () => {
