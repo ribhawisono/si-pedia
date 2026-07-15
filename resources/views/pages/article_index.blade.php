@@ -56,6 +56,7 @@
         'pending_delete' => 'Req. Delete',
         default          => 'Draft',
       };
+      $hasPendingEdit = isset($pendingEditArticleIds) && $article->status === 'active' && $pendingEditArticleIds->contains($article->id);
     @endphp
 
     {{-- ═══ Desktop row (lg+) ═══ --}}
@@ -79,6 +80,9 @@
       <div>
         <p class="text-sm font-bold">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('j F Y') }}</p>
         <span class="mt-1 inline-block rounded-md {{ $sc }} px-3 py-1 text-xs font-semibold text-white">{{ $sl }}</span>
+        @if($hasPendingEdit)
+        <a href="{{ route('admin.articles.revisions', $article) }}" class="mt-1 block w-fit rounded-md bg-blue-100 px-3 py-1 text-[11px] font-bold text-blue-700 hover:bg-blue-200">✏️ Ada Revisi</a>
+        @endif
       </div>
 
       {{-- Action grid: posisi TETAP 2x2 apapun kombinasi tombolnya —
@@ -153,6 +157,9 @@
           <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
             <span class="rounded-full bg-badge-cat px-2.5 py-0.5 text-[10px] font-semibold text-white">{{ $article->category->name ?? 'Uncategorized' }}</span>
             <span class="rounded-md {{ $sc }} px-2.5 py-0.5 text-[10px] font-semibold text-white">{{ $sl }}</span>
+            @if($hasPendingEdit)
+            <a href="{{ route('admin.articles.revisions', $article) }}" class="rounded-md bg-blue-100 px-2.5 py-0.5 text-[10px] font-bold text-blue-700">✏️ Ada Revisi</a>
+            @endif
           </div>
           <p class="mt-1 text-[11px] text-gray-400">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('j F Y') }} · {{ $article->writer }}</p>
         </div>
