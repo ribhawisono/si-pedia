@@ -10,6 +10,9 @@
   // perubahan", jadi prefill dari revisi pending kalau sudah ada satu
   // (lanjutkan draft usulan sebelumnya), bukan dari konten yang tayang.
   $isLiveEditFlow = !$isAdmin && $mode === 'edit' && $article->status === 'active' && !$article->trashed();
+  // localStorage key dipakai preview-link JS di bawah (harus sama persis
+  // dengan yang dibaca article_preview.blade.php).
+  $previewDraftKey = 'sipedia_preview_draft_' . ($article->id ?? '');
 @endphp
 @php
   $layoutName  = $isAdmin ? 'layouts.admin' : 'layouts.app';
@@ -41,7 +44,13 @@
          class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition">
         📜 Revisi
       </a>
+      {{-- Preview "hidup": sebelum navigasi, tulis draft form saat ini
+           (belum disimpan) ke localStorage. article_preview.blade.php baca
+           key yang sama dan menimpa tampilan JIKA ada; kalau tidak ada
+           (belum pernah diedit / sudah dibersihkan setelah save), preview
+           tetap menampilkan versi tersimpan/live seperti biasa. --}}
       <a href="{{ $isAdmin ? route('admin.articles.preview', $article) : route('articles.preview', $article) }}" target="_blank"
+         id="preview-link" data-preview-key="{{ $previewDraftKey }}"
          class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition">
         👁 Preview
       </a>
@@ -375,6 +384,31 @@
         const open = panel.classList.toggle('hidden');
         btn.setAttribute('aria-expanded', String(!open));
         chevron.classList.toggle('rotate-180');
+    });
+})();
+
+// Preview "hidup": simpan draft form saat ini (belum disimpan ke DB) ke
+// localStorage tepat sebelum tab preview dibuka, supaya article_preview
+// bisa menampilkan hasil editan terbaru alih-alih menunggu Simpan/Submit.
+// Kalau form disubmit (benar-benar tersimpan), draft lokal ini dihapus
+// supaya preview berikutnya balik menampilkan versi tersimpan/live seperti
+// biasa, bukan draft basi.
+(function(){
+    const link = document.getElementById('preview-link');
+    const form = document.getElementById('article-form');
+    if (!link) return;
+    const key = link.dataset.previewKey;
+
+    link.addEventListener('click', () => {
+        const title   = document.getElementById('article-title-input')?.value || '';
+        const content = document.getElementById('content-textarea')?.value || '';
+        try {
+            localStorage.setItem(key, JSON.stringify({ title, content, ts: Date.now() }));
+        } catch (e) { /* localStorage penuh/diblokir: preview jatuh ke versi tersimpan, tidak fatal */ }
+    });
+
+    form?.addEventListener('submit', () => {
+        try { localStorage.removeItem(key); } catch (e) {}
     });
 })();
 </script>
