@@ -30,10 +30,11 @@
     </div>
     @if($mode === 'edit' && isset($article->id))
     <div class="flex gap-2">
-      <a href="{{ route('admin.articles.revisions', $article) }}" class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition">
+      <a href="{{ $isAdmin ? route('admin.articles.revisions', $article) : route('articles.revisions', $article) }}"
+         class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition">
         📜 Revisi
       </a>
-      <a href="{{ $isAdmin ? route('admin.articles.preview', $article) : '#' }}" target="_blank"
+      <a href="{{ $isAdmin ? route('admin.articles.preview', $article) : route('articles.preview', $article) }}" target="_blank"
          class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition">
         👁 Preview
       </a>
@@ -56,7 +57,7 @@
 
   <div class="grid gap-6 lg:grid-cols-[1fr_300px]">
 
-    {{-- ── Main Content Column ─────────────────────────── --}}
+    {{-- ── Main Content Column ────────────────────── --}}
     <div class="space-y-5">
 
       {{-- Title --}}
@@ -153,7 +154,7 @@
       </div>
     </div>
 
-    {{-- ── Sidebar Column ──────────────────────── --}}
+    {{-- ── Sidebar Column ──────────────────── --}}
     <div class="space-y-5">
 
       {{-- Publish settings (admin) --}}

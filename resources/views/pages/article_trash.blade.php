@@ -41,9 +41,9 @@
       <div>
         @if($article->trashed_reason === 'takedown')
           <span class="rounded-md bg-purple-100 px-2.5 py-1 text-[11px] font-bold text-purple-700">Takedown</span>
-          <p class="mt-1 text-[10px] text-purple-500">Bisa diedit penulis</p>
+          <p class="mt-1 text-[10px] text-purple-500">Bisa diedit oleh {{ $article->user->name ?? $article->writer }}</p>
         @else
-          <span class="rounded-md bg-gray-100 px-2.5 py-1 text-[11px] font-bold text-gray-600">Hapus</span>
+          <span class="rounded-md bg-red-100 px-2.5 py-1 text-[11px] font-bold text-red-700">Hapus</span>
         @endif
       </div>
       <div class="text-sm font-bold">{{ $article->deleted_at->translatedFormat('j F Y, H:i') }}</div>
@@ -74,9 +74,9 @@
       <div class="mt-2 flex flex-wrap items-center gap-1.5">
         <span class="rounded-full bg-badge-cat px-2.5 py-0.5 text-[10px] font-semibold text-white">{{ $article->category->name ?? 'Uncategorized' }}</span>
         @if($article->trashed_reason === 'takedown')
-          <span class="rounded-md bg-purple-100 px-2.5 py-0.5 text-[10px] font-bold text-purple-700">Takedown — bisa diedit penulis</span>
+          <span class="rounded-md bg-purple-100 px-2.5 py-0.5 text-[10px] font-bold text-purple-700">Takedown — bisa diedit oleh {{ $article->user->name ?? $article->writer }}</span>
         @else
-          <span class="rounded-md bg-gray-100 px-2.5 py-0.5 text-[10px] font-bold text-gray-600">Hapus</span>
+          <span class="rounded-md bg-red-100 px-2.5 py-0.5 text-[10px] font-bold text-red-700">Hapus</span>
         @endif
       </div>
       <p class="mt-1.5 text-[11px] text-gray-400">{{ $article->writer }} · dihapus {{ $article->deleted_at->translatedFormat('j F Y, H:i') }}</p>
