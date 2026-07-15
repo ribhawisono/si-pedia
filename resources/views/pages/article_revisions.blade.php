@@ -2,6 +2,7 @@
   $isAdmin    = $isAdmin ?? (auth()->user()->role === 'admin');
   $layoutName = $isAdmin ? 'layouts.admin' : 'layouts.app';
   $backRoute  = $isAdmin ? route('admin.articles.edit', $article) : route('articles.edit', $article);
+  $pendingEdit = $pendingEdit ?? $revisions->firstWhere('status', 'pending_edit');
 @endphp
 <x-dynamic-component :component="$layoutName" title="Riwayat Revisi — SI-Pedia" section="articles">
 
@@ -17,6 +18,54 @@
   </div>
 </div>
 
+{{-- Panel review: HANYA muncul untuk admin, saat ada usulan perubahan
+     (pending_edit) menunggu keputusan. Penulis tetap melihat status "Menunggu
+     Review" di daftar di bawah, tapi tombol Setujui/Tolak hanya untuk admin. --}}
+@if($isAdmin && $pendingEdit)
+<div class="mb-6 rounded-2xl border border-blue-200 bg-blue-50 p-4 sm:p-5">
+  <p class="mb-1 text-sm font-bold text-blue-800">✏️ Ada usulan perubahan menunggu review</p>
+  <p class="mb-3 text-xs text-blue-600">Diusulkan oleh {{ $pendingEdit->user->name ?? 'penulis' }} · {{ $pendingEdit->created_at->translatedFormat('j M Y, H:i') }}. Artikel yang tayang belum berubah.</p>
+
+  <div class="mb-4 grid gap-3 sm:grid-cols-2">
+    <div class="rounded-lg border border-red-100 bg-white p-3">
+      <p class="mb-2 text-[10px] font-bold uppercase tracking-wide text-red-500">Sekarang Tayang</p>
+      @if($article->title !== $pendingEdit->title)
+      <p class="mb-1 text-xs font-semibold text-gray-700">{{ $article->title }}</p>
+      @endif
+      <p class="text-xs leading-relaxed text-gray-600 whitespace-pre-line">{{ Str::limit(strip_tags($article->content), 500) }}</p>
+    </div>
+    <div class="rounded-lg border border-green-100 bg-white p-3">
+      <p class="mb-2 text-[10px] font-bold uppercase tracking-wide text-green-600">Usulan Baru</p>
+      @if($article->title !== $pendingEdit->title)
+      <p class="mb-1 text-xs font-semibold text-gray-900">{{ $pendingEdit->title }}</p>
+      @endif
+      <p class="text-xs leading-relaxed text-gray-700 whitespace-pre-line">{{ Str::limit(strip_tags($pendingEdit->content), 500) }}</p>
+    </div>
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-3">
+    <form action="{{ route('admin.articles.approveEdit', $article) }}" method="POST" class="sm:w-48">
+      @csrf @method('PATCH')
+      <button type="submit" class="w-full rounded-xl bg-green-500 py-2.5 text-sm font-bold text-white hover:bg-green-600 transition">
+        ✅ Setujui &amp; Tayangkan
+      </button>
+    </form>
+    <form action="{{ route('admin.articles.rejectEdit', $article) }}" method="POST" class="flex-1 flex flex-col sm:flex-row gap-2">
+      @csrf @method('PATCH')
+      <input type="text" name="note" maxlength="1000" placeholder="Catatan penolakan (opsional)..."
+             class="flex-1 rounded-xl border border-blue-200 px-3 py-2 text-sm text-gray-700 focus:border-red-400 focus:ring-0">
+      <button type="submit" class="rounded-xl bg-red-100 px-5 py-2.5 text-sm font-bold text-red-600 hover:bg-red-200 transition whitespace-nowrap">
+        ❌ Tolak Usulan
+      </button>
+    </form>
+  </div>
+</div>
+@elseif(!$isAdmin && $pendingEdit)
+<div class="mb-6 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+  ⏳ Usulan perubahanmu sedang menunggu review admin. Artikel yang tayang masih versi lama.
+</div>
+@endif
+
 {{-- Catatan: halaman ini HANYA bisa diakses admin atau penulis artikel
      sendiri (lihat ArticleController::revisions()). Detail before/after di
      bawah TIDAK pernah dipanggil dari halaman publik (articles.show), jadi
@@ -28,6 +77,19 @@
     // Urutan array $revisions terbaru duluan (lihat Article::revisions()
     // yang pakai ->latest()), jadi "sebelumnya" ada di index setelahnya.
     $prev = $revisions[$i + 1] ?? null;
+    $badgeClass = match($rev->status) {
+      'active'       => 'bg-green-100 text-green-700',
+      'pending_edit' => 'bg-blue-100 text-blue-700',
+      'rejected'     => 'bg-red-100 text-red-600',
+      'draft'        => 'bg-gray-100 text-gray-600',
+      default        => 'bg-yellow-100 text-yellow-700',
+    };
+    $badgeLabel = match($rev->status) {
+      'active'       => 'Live',
+      'pending_edit' => 'Menunggu Review',
+      'rejected'     => 'Ditolak',
+      default        => ucfirst($rev->status),
+    };
   @endphp
   <div class="border-b border-gray-100 last:border-0">
     <button type="button" onclick="document.getElementById('rev-diff-{{ $rev->id }}').classList.toggle('hidden'); this.querySelector('.chev').classList.toggle('rotate-180')"
@@ -38,11 +100,7 @@
       <div class="flex-1 min-w-0">
         <div class="flex flex-wrap items-center gap-3 mb-1">
           <span class="text-sm font-bold text-gray-900">{{ $rev->title }}</span>
-          <span class="rounded-full px-2 py-0.5 text-[10px] font-bold
-            {{ $rev->status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
-               ($rev->status === 'draft' ? 'bg-gray-100 text-gray-600' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300') }}">
-            {{ ucfirst($rev->status) }}
-          </span>
+          <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $badgeClass }}">{{ $badgeLabel }}</span>
           @if($i === 0)
           <span class="rounded-full bg-brand-600 px-2 py-0.5 text-[10px] font-bold text-white">Terbaru</span>
           @endif
