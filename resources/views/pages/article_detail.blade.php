@@ -231,13 +231,13 @@
                 <div class="flex-1">
                   <label for="comment-input" class="sr-only">Tulis komentar kamu</label>
                   <textarea id="comment-input" name="content" rows="3" required maxlength="1000"
-                            placeholder="Tulis komentar kamu..."
+                            placeholder="Tulis komentar kamu (3–150 kata)..."
                             class="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-800 focus:border-brand-600 focus:outline-none focus:ring-1 focus:ring-brand-600 transition">{{ old('content') }}</textarea>
                   @error('content')
                   <p class="mt-1 text-xs text-red-500" role="alert">{{ $message }}</p>
                   @enderror
                   <div class="mt-2 flex items-center justify-between">
-                    <span class="text-xs text-gray-400" aria-live="polite" id="char-counter">0 / 1000</span>
+                    <span class="text-xs text-gray-400" aria-live="polite" id="char-counter">0 kata (min 3, maks 150)</span>
                     <button type="submit"
                             class="rounded-xl bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700 transition focus:outline-none focus:ring-2 focus:ring-brand-400">
                       Kirim
@@ -391,12 +391,21 @@
     });
 })();
 
-// Comment character counter
+// Comment word counter (bukan cuma karakter) — mengikuti batas server-side
+// di StoreCommentRequest: min 3, maks 150 kata. Warna merah saat di luar
+// rentang supaya user tahu sebelum submit, bukan setelah kena reject.
 (function() {
     const ta  = document.getElementById('comment-input');
     const cnt = document.getElementById('char-counter');
     if (!ta || !cnt) return;
-    ta.addEventListener('input', () => { cnt.textContent = ta.value.length + ' / 1000'; });
+    const update = () => {
+        const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
+        cnt.textContent = words + ' kata (min 3, maks 150)';
+        cnt.classList.toggle('text-red-500', words > 0 && (words < 3 || words > 150));
+        cnt.classList.toggle('text-gray-400', !(words > 0 && (words < 3 || words > 150)));
+    };
+    ta.addEventListener('input', update);
+    update();
 })();
 </script>
 </x-layouts.app>
