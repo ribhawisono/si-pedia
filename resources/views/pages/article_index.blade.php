@@ -81,50 +81,59 @@
         <span class="mt-1 inline-block rounded-md {{ $sc }} px-3 py-1 text-xs font-semibold text-white">{{ $sl }}</span>
       </div>
 
-      {{-- Actions: Takedown separate row on top; Edit/Hapus below. Fixed
-           w-[86px] buttons so widths line up regardless of combination. --}}
-      <div class="flex flex-col gap-1.5 min-w-0">
-        @if($article->status === 'active')
-        <a href="{{ route('admin.articles.takedownForm', $article) }}"
-           class="flex h-8 w-[86px] items-center justify-center rounded-md bg-purple-500 text-[11px] font-bold text-white hover:bg-purple-600">
-          ⬇ Takedown
-        </a>
-        @endif
-        <div class="flex flex-wrap gap-1.5">
-          <a href="{{ route('admin.articles.preview', $article) }}" target="_blank"
-             class="flex h-8 w-[86px] items-center justify-center rounded-md bg-blue-500 text-[11px] font-bold text-white hover:bg-blue-600">👁 Preview</a>
-          @if($article->user_id === auth()->id())
+      {{-- Action grid: posisi TETAP 2x2 apapun kombinasi tombolnya —
+           top-left=Edit/Acc/Batal, top-right=Takedown/Tolak,
+           bottom-left=Preview (selalu), bottom-right=Hapus (selalu). --}}
+      <div class="grid grid-cols-2 gap-1.5">
+        {{-- top-left --}}
+        @if($article->status === 'pending')
+          <form action="{{ route('admin.articles.approve', $article) }}" method="POST">
+            @csrf @method('PATCH')
+            <button class="flex h-8 w-full items-center justify-center rounded-md bg-green-500 text-[11px] font-bold text-white hover:bg-green-600">✅ Acc</button>
+          </form>
+        @elseif($article->status === 'pending_delete')
+          <form action="{{ route('admin.articles.rejectDelete', $article) }}" method="POST">
+            @csrf @method('PATCH')
+            <button class="flex h-8 w-full items-center justify-center rounded-md bg-gray-200 text-[11px] font-bold text-gray-700 hover:bg-gray-300">↩ Batal</button>
+          </form>
+        @elseif($article->user_id === auth()->id())
           <a href="{{ route('admin.articles.edit', $article) }}"
-             class="flex h-8 w-[86px] items-center justify-center rounded-md bg-edit text-xs font-bold text-black">Edit</a>
-          @endif
-          @if($article->status === 'pending')
-            <form action="{{ route('admin.articles.approve', $article) }}" method="POST">
-              @csrf @method('PATCH')
-              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-green-500 text-[11px] font-bold text-white hover:bg-green-600">✅ Acc</button>
-            </form>
-            <form action="{{ route('admin.articles.reject', $article) }}" method="POST">
-              @csrf @method('PATCH')
-              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-orange-400 text-[11px] font-bold text-white hover:bg-orange-500">❌ Tolak</button>
-            </form>
-          @endif
-          @if($article->status === 'pending_delete')
-            <form action="{{ route('admin.articles.approveDelete', $article) }}" method="POST"
-                  onsubmit="return confirm('Pindahkan artikel ini ke Trash?')">
-              @csrf @method('DELETE')
-              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-red-500 text-[11px] font-bold text-white hover:bg-red-600">🗑 Hapus</button>
-            </form>
-            <form action="{{ route('admin.articles.rejectDelete', $article) }}" method="POST">
-              @csrf @method('PATCH')
-              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-gray-200 text-[11px] font-bold text-gray-700 hover:bg-gray-300">↩ Batal</button>
-            </form>
-          @else
-            <form action="{{ route('admin.articles.destroy', $article) }}" method="POST"
-                  onsubmit="return confirm('Pindahkan artikel ini ke Trash? Bisa dipulihkan nanti.')">
-              @csrf @method('DELETE')
-              <button class="flex h-8 w-[86px] items-center justify-center rounded-md bg-danger text-xs font-bold text-white">Hapus</button>
-            </form>
-          @endif
-        </div>
+             class="flex h-8 w-full items-center justify-center rounded-md bg-edit text-xs font-bold text-black">Edit</a>
+        @else
+          <div></div>
+        @endif
+
+        {{-- top-right --}}
+        @if($article->status === 'pending')
+          <form action="{{ route('admin.articles.reject', $article) }}" method="POST">
+            @csrf @method('PATCH')
+            <button class="flex h-8 w-full items-center justify-center rounded-md bg-orange-400 text-[11px] font-bold text-white hover:bg-orange-500">❌ Tolak</button>
+          </form>
+        @elseif($article->status === 'active')
+          <a href="{{ route('admin.articles.takedownForm', $article) }}"
+             class="flex h-8 w-full items-center justify-center rounded-md bg-purple-500 text-[11px] font-bold text-white hover:bg-purple-600">⬇ Takedown</a>
+        @else
+          <div></div>
+        @endif
+
+        {{-- bottom-left: Preview, selalu --}}
+        <a href="{{ route('admin.articles.preview', $article) }}" target="_blank"
+           class="flex h-8 w-full items-center justify-center rounded-md bg-blue-500 text-[11px] font-bold text-white hover:bg-blue-600">👁 Preview</a>
+
+        {{-- bottom-right: Hapus, selalu --}}
+        @if($article->status === 'pending_delete')
+          <form action="{{ route('admin.articles.approveDelete', $article) }}" method="POST"
+                onsubmit="return confirm('Pindahkan artikel ini ke Trash?')">
+            @csrf @method('DELETE')
+            <button class="flex h-8 w-full items-center justify-center rounded-md bg-red-500 text-[11px] font-bold text-white hover:bg-red-600">🗑 Hapus</button>
+          </form>
+        @else
+          <form action="{{ route('admin.articles.destroy', $article) }}" method="POST"
+                onsubmit="return confirm('Pindahkan artikel ini ke Trash? Bisa dipulihkan nanti.')">
+            @csrf @method('DELETE')
+            <button class="flex h-8 w-full items-center justify-center rounded-md bg-danger text-xs font-bold text-white">Hapus</button>
+          </form>
+        @endif
       </div>
     </div>
 
@@ -149,48 +158,56 @@
         </div>
       </div>
 
-      <div class="mt-3 flex flex-col gap-1.5 border-t border-gray-100 pt-3">
-        @if($article->status === 'active')
-        <a href="{{ route('admin.articles.takedownForm', $article) }}"
-           class="flex h-9 w-full items-center justify-center rounded-md bg-purple-500 text-xs font-bold text-white hover:bg-purple-600">
-          ⬇ Takedown
-        </a>
-        @endif
-        <div class="flex flex-wrap gap-1.5">
-          <a href="{{ route('admin.articles.preview', $article) }}" target="_blank"
-             class="flex h-9 flex-1 items-center justify-center rounded-md bg-blue-500 text-xs font-bold text-white hover:bg-blue-600">👁 Preview</a>
-          @if($article->user_id === auth()->id())
+      <div class="mt-3 grid grid-cols-2 gap-1.5 border-t border-gray-100 pt-3">
+        {{-- top-left --}}
+        @if($article->status === 'pending')
+          <form action="{{ route('admin.articles.approve', $article) }}" method="POST">
+            @csrf @method('PATCH')
+            <button class="flex h-9 w-full items-center justify-center rounded-md bg-green-500 text-xs font-bold text-white hover:bg-green-600">✅ Acc</button>
+          </form>
+        @elseif($article->status === 'pending_delete')
+          <form action="{{ route('admin.articles.rejectDelete', $article) }}" method="POST">
+            @csrf @method('PATCH')
+            <button class="flex h-9 w-full items-center justify-center rounded-md bg-gray-200 text-xs font-bold text-gray-700 hover:bg-gray-300">↩ Batal</button>
+          </form>
+        @elseif($article->user_id === auth()->id())
           <a href="{{ route('admin.articles.edit', $article) }}"
-             class="flex h-9 flex-1 items-center justify-center rounded-md bg-edit text-xs font-bold text-black">Edit</a>
-          @endif
-          @if($article->status === 'pending')
-            <form action="{{ route('admin.articles.approve', $article) }}" method="POST" class="flex-1">
-              @csrf @method('PATCH')
-              <button class="flex h-9 w-full items-center justify-center rounded-md bg-green-500 text-xs font-bold text-white hover:bg-green-600">✅ Acc</button>
-            </form>
-            <form action="{{ route('admin.articles.reject', $article) }}" method="POST" class="flex-1">
-              @csrf @method('PATCH')
-              <button class="flex h-9 w-full items-center justify-center rounded-md bg-orange-400 text-xs font-bold text-white hover:bg-orange-500">❌ Tolak</button>
-            </form>
-          @endif
-          @if($article->status === 'pending_delete')
-            <form action="{{ route('admin.articles.approveDelete', $article) }}" method="POST" class="flex-1"
-                  onsubmit="return confirm('Pindahkan artikel ini ke Trash?')">
-              @csrf @method('DELETE')
-              <button class="flex h-9 w-full items-center justify-center rounded-md bg-red-500 text-xs font-bold text-white hover:bg-red-600">🗑 Hapus</button>
-            </form>
-            <form action="{{ route('admin.articles.rejectDelete', $article) }}" method="POST" class="flex-1">
-              @csrf @method('PATCH')
-              <button class="flex h-9 w-full items-center justify-center rounded-md bg-gray-200 text-xs font-bold text-gray-700 hover:bg-gray-300">↩ Batal</button>
-            </form>
-          @else
-            <form action="{{ route('admin.articles.destroy', $article) }}" method="POST" class="flex-1"
-                  onsubmit="return confirm('Pindahkan artikel ini ke Trash? Bisa dipulihkan nanti.')">
-              @csrf @method('DELETE')
-              <button class="flex h-9 w-full items-center justify-center rounded-md bg-danger text-xs font-bold text-white">Hapus</button>
-            </form>
-          @endif
-        </div>
+             class="flex h-9 w-full items-center justify-center rounded-md bg-edit text-xs font-bold text-black">Edit</a>
+        @else
+          <div></div>
+        @endif
+
+        {{-- top-right --}}
+        @if($article->status === 'pending')
+          <form action="{{ route('admin.articles.reject', $article) }}" method="POST">
+            @csrf @method('PATCH')
+            <button class="flex h-9 w-full items-center justify-center rounded-md bg-orange-400 text-xs font-bold text-white hover:bg-orange-500">❌ Tolak</button>
+          </form>
+        @elseif($article->status === 'active')
+          <a href="{{ route('admin.articles.takedownForm', $article) }}"
+             class="flex h-9 w-full items-center justify-center rounded-md bg-purple-500 text-xs font-bold text-white hover:bg-purple-600">⬇ Takedown</a>
+        @else
+          <div></div>
+        @endif
+
+        {{-- bottom-left: Preview, selalu --}}
+        <a href="{{ route('admin.articles.preview', $article) }}" target="_blank"
+           class="flex h-9 w-full items-center justify-center rounded-md bg-blue-500 text-xs font-bold text-white hover:bg-blue-600">👁 Preview</a>
+
+        {{-- bottom-right: Hapus, selalu --}}
+        @if($article->status === 'pending_delete')
+          <form action="{{ route('admin.articles.approveDelete', $article) }}" method="POST"
+                onsubmit="return confirm('Pindahkan artikel ini ke Trash?')">
+            @csrf @method('DELETE')
+            <button class="flex h-9 w-full items-center justify-center rounded-md bg-red-500 text-xs font-bold text-white hover:bg-red-600">🗑 Hapus</button>
+          </form>
+        @else
+          <form action="{{ route('admin.articles.destroy', $article) }}" method="POST"
+                onsubmit="return confirm('Pindahkan artikel ini ke Trash? Bisa dipulihkan nanti.')">
+            @csrf @method('DELETE')
+            <button class="flex h-9 w-full items-center justify-center rounded-md bg-danger text-xs font-bold text-white">Hapus</button>
+          </form>
+        @endif
       </div>
     </div>
     @empty
