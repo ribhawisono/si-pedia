@@ -26,8 +26,12 @@ class ArticleController extends Controller
 
         $pendingCount       = Article::where('status', 'pending')->count();
         $pendingDeleteCount = Article::where('status', 'pending_delete')->count();
+        // Artikel active yang punya usulan edit menunggu review admin
+        // (ArticleService::submitPendingEdit) - dipakai untuk badge di list.
+        $pendingEditArticleIds = \App\Models\ArticleRevision::where('status', 'pending_edit')
+            ->pluck('article_id')->unique();
 
-        return view('pages.article_index', compact('articles', 'pendingCount', 'pendingDeleteCount'));
+        return view('pages.article_index', compact('articles', 'pendingCount', 'pendingDeleteCount', 'pendingEditArticleIds'));
     }
 
     public function pendingIndex()
@@ -173,22 +177,34 @@ class ArticleController extends Controller
         // (trashed_reason=deleted) must NOT be editable at all.
         if ($article->trashed() && $article->trashed_reason !== 'takedown') abort(403);
 
-        // Fix: sebelumnya cek status 'active' ini tetap menghalangi artikel
-        // yang baru di-takedown (statusnya masih 'active', hanya trashed_reason
-        // yang berubah), sehingga penulis dapat pesan "Artikel aktif tidak
-        // dapat diedit" meski trashed_reason sudah 'takedown'. Skip cek status
-        // untuk kasus takedown karena memang sengaja dibuat bisa diedit.
-        if (!$isAdmin && $article->trashed_reason !== 'takedown' && in_array($article->status, ['active', 'pending_delete'])) {
-            return back()->with('error', 'Artikel aktif tidak dapat diedit.');
+        // Only 'pending_delete' still blocks editing for non-admin: a delete
+        // request is mid-flight, editing content mid-request doesn't make
+        // sense. 'active' is INTENTIONALLY allowed through now — editing a
+        // live article no longer touches the live row directly; see
+        // update() below, which stages it as a pending_edit revision instead
+        // pending admin approval, so nothing published changes until then.
+        if (!$isAdmin && $article->trashed_reason !== 'takedown' && $article->status === 'pending_delete') {
+            return back()->with('error', 'Artikel sedang dalam proses permintaan hapus, tidak bisa diedit.');
         }
 
         $article->load('tags:id,name');
+
+        // If this live article already has an unreviewed proposed edit,
+        // prefill the form with THAT proposal (not the live content) so the
+        // writer continues refining their pending submission instead of
+        // starting over from what's currently published.
+        $pendingEdit = null;
+        if (!$isAdmin && $article->id && $article->status === 'active') {
+            $pendingEdit = $article->revisions()->where('status', 'pending_edit')->first();
+        }
+
         return view('pages.edit_article', [
-            'article'    => $article,
-            'categories' => Category::all(),
-            'allTags'    => Tag::orderBy('name')->get(),
-            'mode'       => 'edit',
-            'isAdmin'    => $isAdmin,
+            'article'     => $article,
+            'categories'  => Category::all(),
+            'allTags'     => Tag::orderBy('name')->get(),
+            'mode'        => 'edit',
+            'isAdmin'     => $isAdmin,
+            'pendingEdit' => $pendingEdit,
         ]);
     }
 
@@ -198,6 +214,18 @@ class ArticleController extends Controller
         $isAdmin = $user->role === 'admin';
         if ($article->user_id !== $user->id) abort(403);
         if ($article->trashed() && $article->trashed_reason !== 'takedown') abort(403);
+
+        // Editing a LIVE (published) article as its non-admin writer: stage
+        // the change for admin review instead of applying it immediately.
+        // The published title/content stay untouched until approved via
+        // approveEdit() below.
+        if (!$isAdmin && $article->status === 'active' && !$article->trashed()) {
+            $this->articleService->submitPendingEdit($request, $article);
+            $this->logActivity('propose_edit', "Proposed edit: {$article->title}", $article);
+            return redirect()->route('articles.my')->with('success',
+                'Perubahan dikirim untuk ditinjau admin. Artikel yang sudah tayang belum berubah sampai disetujui.'
+            );
+        }
 
         $wasTakendown = $article->trashed_reason === 'takedown';
 
@@ -217,6 +245,59 @@ class ArticleController extends Controller
         return redirect()->route('articles.my')->with('success',
             $article->status === 'pending' ? 'Artikel disubmit ke admin.' : 'Draft disimpan.'
         );
+    }
+
+    /** Admin approves a pending_edit proposal: applies it to the live article. */
+    public function approveEdit(Article $article)
+    {
+        $rev = $article->revisions()->where('status', 'pending_edit')->latest()->firstOrFail();
+
+        $slug = $rev->title !== $article->title
+            ? $this->articleService->uniqueSlug($rev->title, $article->id)
+            : $article->slug;
+
+        $article->update(['title' => $rev->title, 'content' => $rev->content, 'slug' => $slug]);
+        $rev->update(['status' => 'active']); // merged: now a normal history entry
+
+        $this->logActivity('approve_edit', "Approved edit: {$article->title}", $article);
+        $this->articleService->clearCache();
+
+        return back()->with('success', "Perubahan pada \"{$article->title}\" disetujui dan sudah tayang.");
+    }
+
+    /** Admin rejects a pending_edit proposal: live article stays untouched. */
+    public function rejectEdit(Request $request, Article $article)
+    {
+        $data = $request->validate(['note' => 'nullable|string|max:1000']);
+        $rev  = $article->revisions()->where('status', 'pending_edit')->latest()->firstOrFail();
+        $rev->update([
+            'status'        => 'rejected',
+            'revision_note' => $data['note'] ?? $rev->revision_note,
+        ]);
+
+        $this->logActivity('reject_edit', "Rejected edit: {$article->title}", $article);
+
+        return back()->with('success', "Usulan perubahan pada \"{$article->title}\" ditolak. Artikel yang tayang tidak berubah.");
+    }
+
+    /**
+     * Self-service delete for a DRAFT article (draft covers: normal draft,
+     * rejected, or a takedown restored back to draft) — no admin approval
+     * needed since it was never live. Published (active) articles still go
+     * through requestDelete()/approveDelete() below, which DOES need admin
+     * sign-off.
+     */
+    public function destroySelf(Article $article)
+    {
+        if ($article->user_id !== auth()->id()) abort(403);
+        if ($article->trashed() || $article->status !== 'draft') abort(403);
+
+        $article->update(['trashed_reason' => 'deleted']);
+        $article->delete();
+        $this->logActivity('delete', "Self-deleted draft: {$article->title}", $article);
+        $this->articleService->clearCache();
+
+        return redirect()->route('articles.my')->with('success', "\"{$article->title}\" dihapus.");
     }
 
     public function destroy(Article $article)
@@ -243,7 +324,11 @@ class ArticleController extends Controller
             ->where('user_id', auth()->id())
             ->latest()
             ->paginate(10);
-        return view('pages.my_articles', compact('articles'));
+        // Artikel active milik user yang punya usulan edit menunggu approval.
+        $pendingEditArticleIds = \App\Models\ArticleRevision::where('status', 'pending_edit')
+            ->whereIn('article_id', $articles->pluck('id'))
+            ->pluck('article_id')->unique();
+        return view('pages.my_articles', compact('articles', 'pendingEditArticleIds'));
     }
 
     public function bulkAction(Request $request)
@@ -275,10 +360,11 @@ class ArticleController extends Controller
         $user    = auth()->user();
         $isAdmin = $user->role === 'admin';
         if (!$isAdmin && $article->user_id !== $user->id) abort(403);
-        $revisions = $article->revisions()->with('user:id,name')->get();
+        $revisions   = $article->revisions()->with('user:id,name')->get();
+        $pendingEdit = $revisions->firstWhere('status', 'pending_edit');
         // isAdmin dikirim ke view supaya bisa pilih layout: admin panel untuk
         // admin, layout publik biasa untuk penulis (user) -> sebelumnya view
         // ini SELALU pakai <x-layouts.admin>, jadi sidebar admin bocor ke user.
-        return view('pages.article_revisions', compact('article', 'revisions', 'isAdmin'));
+        return view('pages.article_revisions', compact('article', 'revisions', 'isAdmin', 'pendingEdit'));
     }
 }
