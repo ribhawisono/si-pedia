@@ -164,6 +164,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/bulk', [\App\Http\Controllers\CommentController::class, 'bulk'])->name('comments.bulk');
 
+    // Kata terlarang (filter komentar)
+    Route::post('/comments/banned-words', [\App\Http\Controllers\CommentController::class, 'storeBannedWord'])->name('comments.bannedWords.store');
+    Route::delete('/comments/banned-words/{bannedWord}', [\App\Http\Controllers\CommentController::class, 'destroyBannedWord'])->name('comments.bannedWords.destroy');
+
     Route::get('/articles/{article}/preview', [\App\Http\Controllers\ArticleController::class, 'preview'])->name('articles.preview');
     Route::get('/articles/{article}/revisions', [\App\Http\Controllers\ArticleController::class, 'revisions'])->name('articles.revisions')->withTrashed();
 
