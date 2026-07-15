@@ -15,7 +15,7 @@ class ArticleController extends Controller
 {
     public function __construct(private ArticleService $articleService) {}
 
-    // ─── Admin: list ───────────────────────────────────────
+    // ─── Admin: list ─────────────────────
     public function index(Request $request)
     {
         $adminId  = auth()->id();
@@ -51,7 +51,9 @@ class ArticleController extends Controller
     {
         $article = Article::onlyTrashed()->findOrFail($id);
         $article->restore();
-        $article->update(['status' => 'draft', 'trashed_reason' => null]);
+        // rejection_note dibersihkan juga: kalau tidak, catatan takedown/reject
+        // lama masih nyangkut dan tampil basi ke penulis setelah direstore.
+        $article->update(['status' => 'draft', 'trashed_reason' => null, 'rejection_note' => null]);
         $this->logActivity('restore', "Restored: {$article->title}", $article);
         $this->articleService->clearCache();
         return back()->with('success', "\"{$article->title}\" dipulihkan sebagai Draft.");
@@ -171,7 +173,12 @@ class ArticleController extends Controller
         // (trashed_reason=deleted) must NOT be editable at all.
         if ($article->trashed() && $article->trashed_reason !== 'takedown') abort(403);
 
-        if (!$isAdmin && in_array($article->status, ['active', 'pending_delete'])) {
+        // Fix: sebelumnya cek status 'active' ini tetap menghalangi artikel
+        // yang baru di-takedown (statusnya masih 'active', hanya trashed_reason
+        // yang berubah), sehingga penulis dapat pesan "Artikel aktif tidak
+        // dapat diedit" meski trashed_reason sudah 'takedown'. Skip cek status
+        // untuk kasus takedown karena memang sengaja dibuat bisa diedit.
+        if (!$isAdmin && $article->trashed_reason !== 'takedown' && in_array($article->status, ['active', 'pending_delete'])) {
             return back()->with('error', 'Artikel aktif tidak dapat diedit.');
         }
 
@@ -231,10 +238,6 @@ class ArticleController extends Controller
 
     public function myArticles()
     {
-        // Include trashed articles too: a normal 'deleted' one shows as a
-        // read-only "deleted by admin" placeholder (no edit, no content), a
-        // 'takedown' one shows fully editable so the writer can fix and
-        // resubmit it. See my_articles.blade.php for the branching.
         $articles = Article::withTrashed()
             ->with(['category:id,name', 'tags:id,name,slug'])
             ->where('user_id', auth()->id())

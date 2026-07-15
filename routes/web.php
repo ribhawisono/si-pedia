@@ -19,18 +19,13 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Foto dosen (Za'imatun Niswati & Dwi Marlina) di-serve dari file terpisah
-// agar base64 payloadnya tidak membengkakkan file routing utama ini.
 require __DIR__.'/lecturer_photos.php';
 
-// ─── Search ─────────────────────────────────────────────────────────────────────────────────
- Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/search/suggest', [SearchController::class, 'suggest'])->name('search.suggest')->middleware('throttle:30,1');
 
-// ─── Tags ────────────────────────────────────────────────────────────────────────
 Route::get('/tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show');
 
-// ─── Favicon (logo topi wisuda SI-Pedia, di-serve statis agar tampil instan) ────
 Route::get('/favicon.ico', function () {
     $ico = base64_decode('AAABAAEAEBAAAAAAIABZAgAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAAQAAAAEAgGAAAAH/P/YQAAAiBJREFUeJyNkk9Ik3Ecxj+/d53eQxMvklgzMv/Qu4zWxZGKVjKlY4SSWXkwIzrUG4KxkLJ2MrwYRDE8ZCJYKPSPLh6GCboE10LrZhq7bu8szdr27TTdnGUP/A7fP8/D8334KQA9z2gHTIQywMa/IQJflChzNR5+o/Q8ox3BvwNpWyEl0qQB5nbTivISno8M8Gr8CUcqK7ZbUaJUL7rdSOh2Q9LvYMUJ8Q+OSiKRlDRSqZS8GHsnhyo9krmr243fpItCh1se9Ptlbe2n/A3r67/EPzgq+w5UpwVS5Be4pNvbJ9GolUOYC83LXGg+px+NWtLt7ZP8AldK24xWNo6zrBXMLh/Vdc1U1zVjdvmwrJWsAHy9Jk2eWrJOmJ4JydDwuDhKarbeKo6SGhkaHpeZYEgKHW4REWm9cGPTQSwWZ2k5gqY0lFI5kScSSSzrO1+XIsRi8Y2+lrmklOLUyeMEp8bo7GjBZtOw2TQ6O1qYC77k7JkmNC2Lki0AEJgMUt/QirvKRWBihMDECO4qF/UNrQQmgynOdmUW76dmuXL5HKWl+2m7dJNjLicAH2bDNHpqcRplPHr8DIDzF02mZ0Io3W4kyPj/e4v20OO9RnFxEb2+hwDcvnWVxcVv3L0/wNJyJCsapduNWeDoVmuHneXcu3MdAG9PPx/Dn3PsA2Gl73Y2ouQ1kBv9DlBCm7YaD79F1GlgAUj9By8JhJXQ9iP+6ekfuuMod8b6I/8AAAAASUVORK5CYII=');
     return response($ico, 200)
@@ -38,7 +33,6 @@ Route::get('/favicon.ico', function () {
         ->header('Cache-Control', 'public, max-age=604800');
 })->name('favicon');
 
-// ─── Publik ───────────────────────────────────────────────────────────────────────
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/catalog', [PageController::class, 'catalog'])->name('catalog');
@@ -50,19 +44,15 @@ Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
 Route::get('/review/create', [ReviewController::class, 'create'])->name('review.create')->middleware('auth', 'verified');
 Route::post('/review', [ReviewController::class, 'store'])->name('review.store')->middleware('auth', 'verified', 'throttle:3,1');
 
-// ─── Public Dosen ─────────────────────────────────────────────────────────────
 Route::get('/dosen', [DosenPublicController::class, 'index'])->name('dosen.public.index');
 Route::get('/dosen/{lecturer}', [DosenPublicController::class, 'show'])->name('dosen.public.show');
 
-// ─── Public User Profile ─────────────────────────────────────────────────────────────────────
 Route::get('/u/{user}', [UserPublicController::class, 'show'])->name('users.public.show');
 
-// ─── Comments ───────────────────────────────────────────────────────────────────────────────────
 Route::get('/articles/{article:slug}/comments', [CommentController::class, 'index'])->name('comments.index');
 Route::post('/articles/{article}/comments', [CommentController::class, 'store'])
     ->middleware('auth', 'throttle:10,1')->name('comments.store');
 
-// ─── Auth (guest) ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
@@ -75,7 +65,6 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// ─── Email Verification (OTP) ─────────────────────────────────────────────────────────────
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', [AuthController::class, 'showOtp'])->name('verification.notice');
     Route::get('/email/verify/otp', [AuthController::class, 'showOtp'])->name('verification.otp');
@@ -84,49 +73,36 @@ Route::middleware('auth')->group(function () {
     Route::post('/email/verification-notification', [AuthController::class, 'resendOtp'])->name('verification.send');
 });
 
-// ─── User terautentikasi ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Profil
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Artikel milik sendiri
     Route::prefix('articles')->name('articles.')->group(function () {
         Route::get('/my', [ArticleController::class, 'myArticles'])->name('my');
         Route::get('/create', [ArticleController::class, 'create'])->name('create');
         Route::post('/', [ArticleController::class, 'store'])->name('store');
-        // withTrashed(): a takedown'd article (trashed_reason=takedown) must
-        // still be reachable here so its writer can fix and resubmit it.
-        // ArticleController::edit()/update() still block a normal 'deleted'
-        // one from being edited even though the route itself allows binding it.
         Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit')->withTrashed();
         Route::put('/{article}', [ArticleController::class, 'update'])->name('update')->withTrashed();
         Route::patch('/{article}/request-delete', [ArticleController::class, 'requestDelete'])->name('requestDelete');
     });
 
-    // Bookmarks
     Route::post('/articles/{article}/bookmark', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
     Route::get('/profile/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
 
-    // Report akun
     Route::get('/users/{user}/report', [AccountReportController::class, 'create'])->name('users.report');
     Route::post('/users/{user}/report', [AccountReportController::class, 'store'])->name('users.report.store');
 
-    // Report artikel
     Route::get('/articles/{article}/report', [ArticleReportController::class, 'create'])->name('articles.report');
     Route::post('/articles/{article}/report', [ArticleReportController::class, 'store'])->name('articles.report.store');
 });
 
-// ─── Article detail (wildcard slug — harus SETELAH /articles/my, /articles/create) ────
 Route::get('/articles/{article:slug}', [PageController::class, 'showArticle'])->name('articles.show');
 
-// ─── Admin ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [PageController::class, 'adminPanel'])->name('panel');
     Route::get('/report', [PageController::class, 'reportPosts'])->name('report');
 
-    // Artikel
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::get('/articles/pending', [ArticleController::class, 'pendingIndex'])->name('articles.pending');
     Route::get('/articles/trash', [ArticleController::class, 'trash'])->name('articles.trash');
@@ -134,8 +110,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/articles/{id}/force-delete', [ArticleController::class, 'forceDelete'])->where('id', '[0-9]+')->name('articles.forceDelete');
     Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
     Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
-    Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
-    Route::put('/articles/{article}', [ArticleController::class, 'update'])->name('articles.update');
+    Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit')->withTrashed();
+    Route::put('/articles/{article}', [ArticleController::class, 'update'])->name('articles.update')->withTrashed();
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->name('articles.destroy');
     Route::patch('/articles/bulk', [ArticleController::class, 'bulkAction'])->name('articles.bulk');
     Route::patch('/articles/{article}/approve', [ArticleController::class, 'approve'])->name('articles.approve');
@@ -143,27 +119,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/articles/{article}/approve-delete', [ArticleController::class, 'approveDelete'])->name('articles.approveDelete');
     Route::patch('/articles/{article}/reject-delete', [ArticleController::class, 'rejectDelete'])->name('articles.rejectDelete');
 
-    // Takedown (separate from Edit/Hapus): pulls a live article down but
-    // keeps it editable by its writer via "Artikel Saya".
     Route::get('/articles/{article}/takedown', [ArticleController::class, 'takedownForm'])->name('articles.takedownForm');
     Route::post('/articles/{article}/takedown', [ArticleController::class, 'takedown'])->name('articles.takedown');
 
-    // Review
     Route::patch('/reviews/{review}/accept', [ReviewController::class, 'accept'])->name('reviews.accept');
     Route::patch('/reviews/{review}/decline', [ReviewController::class, 'decline'])->name('reviews.decline');
 
-    // Homepage & Pages
     Route::get('/homepage/edit', [HomepageController::class, 'edit'])->name('homepage.edit');
     Route::put('/homepage', [HomepageController::class, 'update'])->name('homepage.update');
     Route::get('/pages/create', [HomepageController::class, 'createPage'])->name('pages.create');
     Route::post('/pages', [HomepageController::class, 'storePage'])->name('pages.store');
 
-    // Category
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-    // Users — CRUD lengkap
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
@@ -172,7 +142,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
 
-    // Dosen
     Route::get('/dosen', [DosenController::class, 'index'])->name('dosen.index');
     Route::get('/dosen/create', [DosenController::class, 'create'])->name('dosen.create');
     Route::post('/dosen', [DosenController::class, 'store'])->name('dosen.store');
@@ -182,22 +151,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/dosen/{lecturer}/approve', [DosenController::class, 'approve'])->name('dosen.approve');
     Route::delete('/dosen/{lecturer}', [DosenController::class, 'destroy'])->name('dosen.destroy');
 
-    // Comments moderation
     Route::get('/comments', [\App\Http\Controllers\CommentController::class, 'adminIndex'])->name('comments.index');
     Route::patch('/comments/{comment}/approve', [\App\Http\Controllers\CommentController::class, 'approve'])->name('comments.approve');
     Route::patch('/comments/{comment}/reject', [\App\Http\Controllers\CommentController::class, 'reject'])->name('comments.reject');
     Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/bulk', [\App\Http\Controllers\CommentController::class, 'bulk'])->name('comments.bulk');
 
-    // Article preview
     Route::get('/articles/{article}/preview', [\App\Http\Controllers\ArticleController::class, 'preview'])->name('articles.preview');
     Route::get('/articles/{article}/revisions', [\App\Http\Controllers\ArticleController::class, 'revisions'])->name('articles.revisions');
 
-    // Report Akun
     Route::get('/account-reports', [AccountReportController::class, 'index'])->name('account-reports.index');
     Route::patch('/account-reports/{report}', [AccountReportController::class, 'update'])->name('account-reports.update');
 
-    // Report Artikel
     Route::get('/article-reports', [ArticleReportController::class, 'index'])->name('article-reports.index');
     Route::patch('/article-reports/{report}', [ArticleReportController::class, 'update'])->name('article-reports.update');
 });
