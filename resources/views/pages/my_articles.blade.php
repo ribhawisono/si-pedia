@@ -63,7 +63,7 @@
             <h2 class="text-lg font-extrabold text-gray-900 truncate">{{ $article->title }}</h2>
             <p class="mt-1 text-sm text-gray-500">{{ $article->category->name ?? 'Tanpa Kategori' }}</p>
           </div>
-          <div class="w-full sm:w-auto flex items-center gap-2">
+          <div class="w-full sm:w-auto flex flex-wrap items-center gap-2">
             <span class="rounded-full bg-purple-500 px-4 py-1 text-xs font-bold text-white flex-shrink-0">Takedown</span>
             <a href="{{ route('articles.edit', $article) }}"
                class="flex-1 sm:flex-initial text-center rounded-lg bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-100 transition">
@@ -73,6 +73,16 @@
                class="flex-1 sm:flex-initial text-center rounded-lg border border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-50 transition">
               📜 Revisi
             </a>
+            {{-- Takedown/reject sudah pasti belum pernah live lagi (statusnya
+                 balik ke draft di belakang layar) -> boleh dihapus langsung
+                 tanpa approval admin, sama seperti draft biasa. --}}
+            <form action="{{ route('articles.destroy', $article) }}" method="POST" class="flex-1 sm:flex-initial"
+                  onsubmit="return confirm('Hapus artikel ini? Tindakan ini langsung memindahkan ke Trash tanpa perlu persetujuan admin.')">
+              @csrf @method('DELETE')
+              <button type="submit" class="w-full text-center rounded-lg bg-red-50 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-100 transition">
+                🗑 Hapus
+              </button>
+            </form>
           </div>
         </div>
         @if($article->rejection_note)
@@ -106,6 +116,8 @@
             <p class="mt-1 text-xs text-red-500 font-semibold">⏳ Permintaan hapus sedang menunggu keputusan admin.</p>
           @elseif($article->status === 'pending')
             <p class="mt-1 text-xs text-yellow-600 font-semibold">⏳ Artikel sedang menunggu persetujuan admin untuk dipublikasikan.</p>
+          @elseif($article->status === 'active' && $pendingEditArticleIds->contains($article->id))
+            <p class="mt-1 text-xs text-blue-600 font-semibold">⏳ Ada usulan perubahan menunggu persetujuan admin. Artikel yang tayang masih versi lama.</p>
           @endif
         </div>
 
@@ -128,6 +140,9 @@
             };
           @endphp
           <span class="rounded-full {{ $badgeClass }} px-4 py-1 text-xs font-bold text-white">{{ $badgeLabel }}</span>
+          @if($article->status === 'active' && $pendingEditArticleIds->contains($article->id))
+          <span class="rounded-full bg-blue-100 px-3 py-1 text-[11px] font-bold text-blue-700">✏️ Revisi Menunggu Review</span>
+          @endif
 
           @if($article->status === 'active')
             <a href="{{ route('articles.show', $article->slug) }}"
@@ -136,12 +151,14 @@
             </a>
           @endif
 
-          @if(in_array($article->status, ['draft', 'pending']))
-            <a href="{{ route('articles.edit', $article) }}"
-               class="rounded-lg bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-100 transition">
-              ✏️ Edit
-            </a>
-          @endif
+          {{-- Edit: sebelumnya diblokir total untuk artikel Active. Sekarang
+               dibuka — mengedit artikel live TIDAK langsung mengubah yang
+               tayang, melainkan jadi usulan yang perlu di-approve admin dulu
+               (lihat ArticleController::update()/submitPendingEdit). --}}
+          <a href="{{ route('articles.edit', $article) }}"
+             class="rounded-lg bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-100 transition">
+            ✏️ Edit
+          </a>
 
           {{-- Revisi: sebelumnya cuma bisa diakses lewat halaman Edit, jadi
                untuk artikel yang sudah Active (edit-nya diblokir) penulis
@@ -152,13 +169,27 @@
             📜 Revisi
           </a>
 
-          @if(!in_array($article->status, ['pending_delete']))
+          @if($article->status === 'active')
+            {{-- Sudah live: hapus tetap lewat approval admin. --}}
+            @if($article->status !== 'pending_delete')
             <form action="{{ route('articles.requestDelete', $article) }}" method="POST"
                   onsubmit="return confirm('Kirim permintaan hapus artikel ini ke admin?')">
               @csrf @method('PATCH')
               <button type="submit"
                       class="rounded-lg bg-red-50 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-100 transition">
                 🗑 Request Hapus
+              </button>
+            </form>
+            @endif
+          @elseif($article->status === 'draft')
+            {{-- Draft (termasuk hasil reject) belum pernah tayang -> hapus
+                 langsung tanpa approval admin. --}}
+            <form action="{{ route('articles.destroy', $article) }}" method="POST"
+                  onsubmit="return confirm('Hapus artikel draft ini? Tidak perlu persetujuan admin.')">
+              @csrf @method('DELETE')
+              <button type="submit"
+                      class="rounded-lg bg-red-50 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-100 transition">
+                🗑 Hapus
               </button>
             </form>
           @endif
