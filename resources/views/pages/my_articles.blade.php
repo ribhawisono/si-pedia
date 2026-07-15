@@ -69,6 +69,10 @@
                class="flex-1 sm:flex-initial text-center rounded-lg bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-100 transition">
               ✏️ Edit &amp; Perbaiki
             </a>
+            <a href="{{ route('articles.revisions', $article) }}"
+               class="flex-1 sm:flex-initial text-center rounded-lg border border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-50 transition">
+              📜 Revisi
+            </a>
           </div>
         </div>
         @if($article->rejection_note)
@@ -138,6 +142,15 @@
               ✏️ Edit
             </a>
           @endif
+
+          {{-- Revisi: sebelumnya cuma bisa diakses lewat halaman Edit, jadi
+               untuk artikel yang sudah Active (edit-nya diblokir) penulis
+               tidak pernah punya jalan ke riwayat revisi. Sekarang selalu
+               ada di sini, apapun statusnya. --}}
+          <a href="{{ route('articles.revisions', $article) }}"
+             class="rounded-lg border border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-50 transition">
+            📜 Revisi
+          </a>
 
           @if(!in_array($article->status, ['pending_delete']))
             <form action="{{ route('articles.requestDelete', $article) }}" method="POST"
