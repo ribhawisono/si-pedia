@@ -118,6 +118,13 @@
           <a href="{{ route('articles.my') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none">
             <span aria-hidden="true">📄</span> Artikel Saya
           </a>
+          {{-- Bookmark Saya: route & controller (BookmarkController::index)
+               sudah ada sejak awal tapi TIDAK PERNAH ditautkan di navbar,
+               jadi artikel yang di-bookmark dari penulis lain sebelumnya
+               tidak punya jalan untuk diakses lagi. --}}
+          <a href="{{ route('bookmarks.index') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none">
+            <span aria-hidden="true">📑</span> Bookmark Saya
+          </a>
           <div class="my-1 border-t border-gray-100 dark:border-gray-700" role="separator"></div>
           <a href="{{ route('profile.show') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none">
             <span aria-hidden="true">👤</span> Profil Saya
@@ -201,6 +208,7 @@
           </a>
           <a href="{{ route('articles.create') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-brand-300 hover:bg-white/10 transition">✏️ Tulis Artikel</a>
           <a href="{{ route('articles.my') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-white/75 hover:bg-white/10 transition">📄 Artikel Saya</a>
+          <a href="{{ route('bookmarks.index') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-white/75 hover:bg-white/10 transition">📑 Bookmark Saya</a>
           @if(auth()->user()->role === 'admin')
           <a href="{{ route('admin.panel') }}" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-white/75 hover:bg-white/10 transition">🛠 Admin Panel</a>
           @endif
