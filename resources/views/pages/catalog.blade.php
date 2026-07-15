@@ -1,7 +1,7 @@
 <x-layouts.app title="Katalog Artikel — SI-Pedia" active="Catalog" footer="full"
                meta_description="Jelajahi semua artikel Program Studi Sistem Informasi Universitas Indraprasta PGRI.">
 
-{{-- ─── Filter & Sort Header ─────────────────────────────────────────────────── --}}
+{{-- ─── Filter & Sort Header ─────────────────────────────────────────────────────────── --}}
 <div class="bg-ink-900 py-10">
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
     <h1 class="text-3xl font-extrabold text-white mb-1">Katalog Artikel</h1>
@@ -46,7 +46,7 @@
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex flex-col lg:flex-row gap-8">
 
-      {{-- ─── Sidebar Filters ─────────────────── --}}
+      {{-- ─── Sidebar Filters ────────────────── --}}
       <aside class="lg:w-64 flex-shrink-0" aria-label="Filter artikel">
         {{-- Category filter --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm mb-4">
@@ -69,12 +69,16 @@
           </div>
         </div>
 
-        {{-- Tags filter --}}
-        @if($tags->isNotEmpty())
+        {{-- Tags filter: hanya tag dengan artikel aktif (articles_count > 0)
+             yang ditampilkan. $tags dari controller sudah top-20 by count
+             desc, tapi kalau total tag ber-artikel < 20, sisanya bisa 0 -
+             tag semacam itu tidak berguna di sini jadi disaring. --}}
+        @php $visibleTags = $tags->where('articles_count', '>', 0); @endphp
+        @if($visibleTags->isNotEmpty())
         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <h2 class="mb-3 text-sm font-extrabold uppercase tracking-wide text-gray-500">Tag Populer</h2>
           <div class="flex flex-wrap gap-2">
-            @foreach($tags as $tag)
+            @foreach($visibleTags as $tag)
             <a href="{{ route('catalog', array_merge(request()->except('tag','page'), ['tag' => $tag->slug, 'sort' => $sort])) }}"
                class="rounded-full border px-3 py-1 text-xs font-semibold transition
                       {{ request('tag') === $tag->slug ? 'border-brand-600 bg-brand-600/10 text-brand-700' : 'border-gray-200 text-gray-600 hover:border-brand-300 hover:text-brand-700' }}">
@@ -87,7 +91,7 @@
         @endif
       </aside>
 
-      {{-- ─── Articles Grid ─────────────────── --}}
+      {{-- ─── Articles Grid ───────────────── --}}
       <div class="flex-1 min-w-0">
         {{-- Active filters & results info --}}
         <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
