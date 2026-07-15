@@ -1,10 +1,15 @@
 @php
-  $isAdmin    = $isAdmin ?? (auth()->user()->role === 'admin');
+  $isAdmin     = $isAdmin ?? (auth()->user()->role === 'admin');
+  $pendingEdit = $pendingEdit ?? null;
   $backRoute   = $isAdmin ? route('admin.articles.index') : route('articles.my');
   $storeRoute  = $isAdmin
     ? ($mode === 'create' ? route('admin.articles.store') : route('admin.articles.update', $article))
     : ($mode === 'create' ? route('articles.store')       : route('articles.update', $article));
   $autosaveKey = 'article_draft_' . ($article->id ?? 'new');
+  // Artikel live (active) yang diedit non-admin: form ini jadi "usulan
+  // perubahan", jadi prefill dari revisi pending kalau sudah ada satu
+  // (lanjutkan draft usulan sebelumnya), bukan dari konten yang tayang.
+  $isLiveEditFlow = !$isAdmin && $mode === 'edit' && $article->status === 'active' && !$article->trashed();
 @endphp
 @php
   $layoutName  = $isAdmin ? 'layouts.admin' : 'layouts.app';
@@ -24,7 +29,9 @@
         <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
       </a>
       <div>
-        <h1 class="text-xl font-extrabold text-gray-900">{{ $mode === 'create' ? 'Tulis Artikel Baru' : 'Edit Artikel' }}</h1>
+        <h1 class="text-xl font-extrabold text-gray-900">
+          {{ $mode === 'create' ? 'Tulis Artikel Baru' : ($isLiveEditFlow ? 'Usulkan Perubahan' : 'Edit Artikel') }}
+        </h1>
         <p id="autosave-indicator" class="mt-0.5 hidden text-xs font-semibold text-green-600"></p>
       </div>
     </div>
@@ -41,6 +48,16 @@
     </div>
     @endif
   </div>
+
+  @if($isLiveEditFlow)
+  <div class="mb-5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+    @if($pendingEdit)
+      ⏳ Kamu sedang melanjutkan usulan perubahan yang <strong>belum disetujui admin</strong>. Artikel yang tayang masih versi lama sampai disetujui.
+    @else
+      ℹ️ Artikel ini sudah tayang. Perubahan yang kamu simpan di sini <strong>tidak langsung tayang</strong> — akan dikirim sebagai usulan dan menunggu persetujuan admin dulu.
+    @endif
+  </div>
+  @endif
 
   @if($errors->any())
     <div class="mb-5 rounded-xl bg-red-50 border border-red-200 px-4 py-3" role="alert">
@@ -66,7 +83,7 @@
           Judul Artikel <span class="text-red-500" aria-hidden="true">*</span>
         </label>
         <input id="article-title-input" type="text" name="title"
-               value="{{ old('title', $article->title) }}" required
+               value="{{ old('title', $pendingEdit->title ?? $article->title) }}" required
                placeholder="Masukkan judul artikel..."
                class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-base font-semibold text-gray-900 focus:border-brand-600 focus:outline-none focus:ring-0 transition"
                aria-required="true">
@@ -86,6 +103,9 @@
               <option value="{{ $cat->id }}" @selected(old('category_id', $article->category_id) == $cat->id)>{{ $cat->name }}</option>
             @endforeach
           </select>
+          @if($isLiveEditFlow)
+          <p class="mt-1.5 text-[11px] text-gray-400">Kategori & tag tidak termasuk dalam usulan perubahan — hanya judul & isi.</p>
+          @endif
         </div>
         @if($isAdmin)
         <div>
@@ -150,7 +170,7 @@
         </div>
         <div id="content-editor" style="height: 420px;"></div>
         {{-- Hidden field actually submitted; kept in sync with the Quill editor by JS below --}}
-        <textarea id="content-textarea" name="content" required class="hidden">{{ old('content', $article->content) }}</textarea>
+        <textarea id="content-textarea" name="content" required class="hidden">{{ old('content', $pendingEdit->content ?? $article->content) }}</textarea>
       </div>
     </div>
 
@@ -187,8 +207,26 @@
           </div>
         </div>
       </div>
+      @elseif($isLiveEditFlow)
+      {{-- Artikel live yang diedit non-admin: satu tombol saja, semantiknya
+           "kirim usulan", bukan draft/submit biasa (article status tidak
+           berubah sampai admin approve/reject). --}}
+      <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
+          <h2 class="text-sm font-bold text-gray-800">Usulan Perubahan</h2>
+        </div>
+        <div class="p-4 space-y-3">
+          <div class="rounded-lg bg-blue-50 border border-blue-100 p-3 text-xs text-blue-700">
+            Artikel akan tetap tampil seperti sekarang untuk pembaca sampai admin menyetujui perubahan ini.
+          </div>
+          <button type="submit"
+                  class="w-full rounded-xl bg-brand-600 py-2.5 text-sm font-bold text-white hover:bg-brand-700 transition focus:outline-none focus:ring-2 focus:ring-brand-400">
+            📤 Kirim Usulan ke Admin
+          </button>
+        </div>
+      </div>
       @else
-      {{-- Non-admin publish panel --}}
+      {{-- Non-admin publish panel (draft/pending/takedown flow) --}}
       <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
         <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
           <h2 class="text-sm font-bold text-gray-800">Publikasi</h2>
