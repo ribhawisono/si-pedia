@@ -47,9 +47,11 @@
     @endif
 
     <article class="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+      <div id="preview-image-wrap">
       @if($article->image_url)
-      <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="w-full h-64 sm:h-80 object-cover">
+      <img id="preview-image" src="{{ $article->image_url }}" alt="{{ $article->title }}" class="w-full h-64 sm:h-80 object-cover">
       @endif
+      </div>
       <div class="p-6 sm:p-10">
         <div class="flex flex-wrap gap-3 mb-4 text-sm">
           <span class="rounded-full bg-brand-600/10 px-3 py-1 font-semibold text-brand-700">{{ $article->category->name ?? 'Umum' }}</span>
@@ -89,10 +91,14 @@
 // Preview "hidup": kalau ada draft form yang BELUM disimpan (ditulis oleh
 // halaman edit_article.blade.php ke localStorage sesaat sebelum tab preview
 // ini dibuka), tampilkan draft itu alih-alih konten tersimpan/live di atas.
-// Kalau tidak ada draft (belum pernah diedit sejak terakhir disimpan, atau
-// sudah dibersihkan setelah submit berhasil), preview tetap menampilkan
-// versi tersimpan/live seperti biasa — tidak ada yang berubah untuk kasus
-// itu.
+// Termasuk thumbnail: kalau draft.image ada (base64 dari file yang baru
+// dipilih tapi belum diupload/disimpan), timpa/insert <img> hero-nya juga
+// -- sebelumnya HANYA judul & isi yang ikut, jadi ganti thumbnail tidak
+// pernah kelihatan di preview sampai benar-benar disimpan.
+// Kalau tidak ada draft sama sekali (belum pernah diedit sejak terakhir
+// disimpan, atau sudah dibersihkan setelah submit berhasil), preview tetap
+// menampilkan versi tersimpan/live seperti biasa — tidak ada yang berubah
+// untuk kasus itu.
 (function () {
     var key = 'sipedia_preview_draft_{{ $article->id }}';
     var raw;
@@ -101,10 +107,22 @@
 
     var draft;
     try { draft = JSON.parse(raw); } catch (e) { return; }
-    if (!draft || (!draft.title && !draft.content)) return;
+    if (!draft || (!draft.title && !draft.content && !draft.image)) return;
 
     if (draft.title) document.getElementById('preview-title').textContent = draft.title;
     if (draft.content) document.getElementById('preview-content').innerHTML = draft.content;
+
+    if (draft.image) {
+        var wrap = document.getElementById('preview-image-wrap');
+        var img = document.getElementById('preview-image');
+        if (!img && wrap) {
+            img = document.createElement('img');
+            img.id = 'preview-image';
+            img.className = 'w-full h-64 sm:h-80 object-cover';
+            wrap.appendChild(img);
+        }
+        if (img) img.src = draft.image;
+    }
 
     var label = document.getElementById('preview-mode-label');
     if (label) label.textContent = '✏️ PREVIEW PERUBAHAN BELUM DISIMPAN — ini bukan versi yang tayang';
