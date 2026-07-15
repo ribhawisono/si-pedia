@@ -60,6 +60,43 @@ class ArticleService
         return $article;
     }
 
+    /**
+     * Stage a proposed edit for an already-PUBLISHED (active) article by its
+     * (non-admin) writer, WITHOUT touching the live article row. The live
+     * title/content stay exactly as published; the proposal sits in
+     * article_revisions with status='pending_edit' until an admin approves
+     * (ArticleController::approveEdit) or rejects (rejectEdit) it.
+     * Only title+content are staged (scope: "edit isinya"); category/tags/
+     * image on a live article are left untouched by this flow.
+     */
+    public function submitPendingEdit(UpdateArticleRequest $request, Article $article): ArticleRevision
+    {
+        $title   = $request->validated()['title'];
+        $content = $this->sanitizeHtml($request->validated()['content'] ?? '');
+
+        // Only one pending proposal at a time: re-editing replaces the
+        // previous unreviewed proposal instead of stacking duplicates.
+        $existing = $article->revisions()->where('status', 'pending_edit')->first();
+        if ($existing) {
+            $existing->update([
+                'title'         => $title,
+                'content'       => $content,
+                'revision_note' => $request->input('revision_note', 'Usulan perubahan'),
+                'created_at'    => now(),
+            ]);
+            return $existing;
+        }
+
+        return ArticleRevision::create([
+            'article_id'    => $article->id,
+            'user_id'       => auth()->id(),
+            'title'         => $title,
+            'content'       => $content,
+            'status'        => 'pending_edit',
+            'revision_note' => $request->input('revision_note', 'Usulan perubahan'),
+        ]);
+    }
+
     /** Sync comma-separated tags */
     public function syncTags(Article $article, ?string $tagsInput): void
     {
