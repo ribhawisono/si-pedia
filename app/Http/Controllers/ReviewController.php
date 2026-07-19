@@ -12,6 +12,14 @@ class ReviewController extends Controller
     {
         $query = Review::query();
 
+        // Publik cuma boleh lihat testimoni yang sudah disetujui admin.
+        // Sebelumnya tidak ada filter status sama sekali, jadi review
+        // 'pending'/'declined' ikut tampil ke semua pengunjung. Admin tetap
+        // lihat semua status di halaman yang sama supaya bisa moderasi.
+        if (!auth()->check() || auth()->user()->role !== 'admin') {
+            $query->where('status', 'accepted');
+        }
+
         if ($request->filled('q')) {
             $query->where(function ($q) use ($request) {
                 $q->where('title', 'like', "%{$request->q}%")
