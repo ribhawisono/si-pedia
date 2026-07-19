@@ -118,9 +118,12 @@
           ['Tambah Artikel',   route('admin.articles.create'),          '✏️', null],
           ['Pending Artikel',  route('admin.articles.pending'),         '⏳', $stats['pending']],
           ['Moderasi Komentar',route('admin.comments.index'),           '💬', \App\Models\Comment::where('status','pending')->count()],
+          ['Review',           route('review.index'),                  '⭐', \App\Models\Review::where('status','pending')->count()],
           ['Report Akun',      route('admin.account-reports.index'),    '🚩', \App\Models\AccountReport::where('status','pending')->count()],
           ['Manage Users',     route('admin.users.index'),              '👥', null],
           ['Tambah Dosen',     route('admin.dosen.create'),             '🎓', null],
+          ['Edit Homepage',    route('admin.homepage.edit'),            '🏠', null],
+          ['Buat Halaman',     route('admin.pages.create'),             '📃', null],
           ['Laporan Artikel',  route('admin.report'),                   '📊', null],
         ] as [$label, $url, $icon, $badge])
         <a href="{{ $url }}" class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition group">
