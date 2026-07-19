@@ -10,6 +10,19 @@
         </div>
       </form>
     </div>
+    {{-- Tulis Review: sebelumnya route review.create ada tapi tidak pernah
+         ditautkan dari mana pun, jadi user tidak tahu cara kirim testimoni. --}}
+    @auth
+    <a href="{{ route('review.create') }}"
+       class="flex-shrink-0 rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700 transition text-center">
+      + Tulis Review
+    </a>
+    @else
+    <a href="{{ route('login') }}"
+       class="flex-shrink-0 rounded-full border border-brand-600 px-6 py-3 text-sm font-semibold text-brand-600 hover:bg-brand-50 transition text-center">
+      Login untuk Menulis Review
+    </a>
+    @endauth
   </div>
 
   <div class="mt-6 flex flex-wrap gap-2 sm:gap-4">
