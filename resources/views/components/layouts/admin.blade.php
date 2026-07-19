@@ -24,11 +24,13 @@ $pendingArticles      = \App\Models\Article::whereIn('status',['pending','pendin
 $pendingAccountReports = \App\Models\AccountReport::where('status','pending')->count();
 $pendingArticleReports = \App\Models\ArticleReport::where('status','pending')->count();
 $pendingComments       = \App\Models\Comment::where('status','pending')->count();
-$totalBadge = $pendingArticles + $pendingAccountReports + $pendingArticleReports + $pendingComments;
+$pendingReviews        = \App\Models\Review::where('status','pending')->count();
+$totalBadge = $pendingArticles + $pendingAccountReports + $pendingArticleReports + $pendingComments + $pendingReviews;
 
 $notifItems = [
     ['label' => 'Artikel pending',    'icon' => '📄', 'count' => $pendingArticles,       'route' => 'admin.articles.pending'],
     ['label' => 'Komentar pending',   'icon' => '💬', 'count' => $pendingComments,       'route' => 'admin.comments.index'],
+    ['label' => 'Review pending',     'icon' => '⭐', 'count' => $pendingReviews,        'route' => 'review.index'],
     ['label' => 'Report artikel',     'icon' => '🚩', 'count' => $pendingArticleReports, 'route' => 'admin.article-reports.index'],
     ['label' => 'Report akun',        'icon' => '👤', 'count' => $pendingAccountReports, 'route' => 'admin.account-reports.index'],
 ];
@@ -38,6 +40,12 @@ $nav = [
     'articles'       => ['label'=>'Artikel',         'icon'=>'📄', 'route'=>'admin.articles.index',  'badge'=>$pendingArticles],
     'pending'        => ['label'=>'Pending',         'icon'=>'⏳', 'route'=>'admin.articles.pending','badge'=>$pendingArticles, 'sub'=>true],
     'comments'       => ['label'=>'Komentar',        'icon'=>'💬', 'route'=>'admin.comments.index',  'badge'=>$pendingComments],
+    // Review tidak punya halaman admin terpisah — tombol Accept/Decline
+    // ada langsung di halaman publik /review (khusus muncul saat login
+    // admin). Sebelumnya menu ini sama sekali tidak ada di sidebar, jadi
+    // admin tidak tahu ada review yang menunggu kecuali sengaja buka
+    // /review sendiri.
+    'review'         => ['label'=>'Review',          'icon'=>'⭐', 'route'=>'review.index',          'badge'=>$pendingReviews],
     'categories'     => ['label'=>'Kategori',        'icon'=>'📂', 'route'=>'admin.categories.index'],
     'users'          => ['label'=>'Users',           'icon'=>'👥', 'route'=>'admin.users.index'],
     'dosen'          => ['label'=>'Dosen',           'icon'=>'🎓', 'route'=>'admin.dosen.index'],
@@ -49,7 +57,7 @@ $nav = [
 
 <div class="flex min-h-screen">
 
-    {{-- ── SIDEBAR ───────────────────── --}}
+    {{-- ── SIDEBAR ─────────────── --}}
     <aside id="admin-sidebar"
            class="flex w-64 flex-shrink-0 flex-col bg-ink-900 transition-all duration-300 lg:sticky lg:top-0 lg:h-screen fixed inset-y-0 left-0 z-50 -translate-x-full lg:translate-x-0"
            aria-label="Navigasi admin">
@@ -72,7 +80,7 @@ $nav = [
         <nav class="flex-1 overflow-y-auto py-4 px-3" aria-label="Menu admin">
             {{-- Konten --}}
             <p class="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-white/30">Konten</p>
-            @foreach(['dashboard','articles','pending','comments','categories'] as $key)
+            @foreach(['dashboard','articles','pending','comments','review','categories'] as $key)
             @php $item = $nav[$key]; @endphp
             <a href="{{ route($item['route']) }}"
                class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors mb-0.5
@@ -144,7 +152,7 @@ $nav = [
     {{-- Sidebar overlay (mobile) --}}
     <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-black/50 lg:hidden" aria-hidden="true"></div>
 
-    {{-- ── MAIN AREA ───────────────────── --}}
+    {{-- ── MAIN AREA ─────────────── --}}
     <div class="flex min-w-0 flex-1 flex-col">
 
         {{-- Top bar --}}
