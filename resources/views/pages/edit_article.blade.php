@@ -259,7 +259,7 @@
       </div>
       @endif
 
-      {{-- SEO Panel (Phase 6) --}}
+      {{-- SEO panel --}}
       <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
         <button type="button" id="seo-toggle"
                 class="flex w-full items-center justify-between border-b border-gray-100 bg-gray-50 px-4 py-3 text-left focus:outline-none"

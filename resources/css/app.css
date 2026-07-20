@@ -285,7 +285,7 @@ html.dark ::-webkit-scrollbar-thumb { background: #374151; }
 }
 .skeleton-article .skeleton { border-radius: 0; }
 
-/* ─ Phase 8 — Responsive images ───── */
+/* Responsive images */
 /* Wrapped in @layer base so Tailwind's h-*/w-* utilities (which live in the
    utilities layer) can still win the cascade. Left un-layered, this plain
    `img` rule always beat layered utilities regardless of source order,

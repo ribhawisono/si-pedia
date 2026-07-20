@@ -377,7 +377,7 @@ function initAutoFocusError() {
     }
 }
 
-// ─── Autosave (Phase 6) ─────────────────────────────────────
+// Autosave
 function initAutosave() {
     const form = document.querySelector('form[data-autosave]');
     if (!form) return;
@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => msg.remove(), 5000);
 });
 
-// ─── Slug Preview (Phase 6) ─────────────────────────────
+// Slug preview
 function initSlugPreview() {
     const titleInput = document.getElementById('article-title-input');
     const slugPreview = document.getElementById('slug-preview');
@@ -525,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ─── Phase 8: Image blur placeholder ─────────────────────────────
+// Image blur placeholder
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('img[loading=lazy]').forEach(img => {
         if (img.complete) return;
@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ─── Phase 7: Keyboard shortcut for dark mode (Ctrl+Shift+D) ─────────────
+// Dark mode shortcut (Ctrl+Shift+D)
 document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
         e.preventDefault();
