@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.')->group(function () {
 
-    // ── Health check ──────────────────────────────────────────
+    // Health check
     Route::get('/', fn () => response()->json([
         'name'    => 'SI-Pedia API',
         'version' => 'v1',
@@ -32,7 +32,7 @@ Route::prefix('v1')->name('api.')->group(function () {
         'docs'    => url('/api/v1/docs'),
     ]))->name('health');
 
-    // ── Authentication ────────────────────────────────────────
+    // Authentication
     Route::prefix('auth')->name('auth.')->group(function () {
         Route::post('login',    [AuthController::class, 'login'])->middleware('throttle:10,1')->name('login');
         Route::post('register', [AuthController::class, 'register'])->middleware('throttle:5,1')->name('register');
@@ -43,7 +43,7 @@ Route::prefix('v1')->name('api.')->group(function () {
         });
     });
 
-    // ── Articles (public) ─────────────────────────────────────
+    // Articles (public)
     Route::prefix('articles')->name('articles.')->group(function () {
         Route::get('/',          [ArticleController::class, 'index'])->middleware('throttle:60,1')->name('index');
         Route::get('{article:slug}', [ArticleController::class, 'show'])->name('show');
@@ -58,33 +58,33 @@ Route::prefix('v1')->name('api.')->group(function () {
             ->middleware('auth.api')->name('bookmark');
     });
 
-    // ── Categories ────────────────────────────────────────────
+    // Categories
     Route::get('categories', [CategoryController::class, 'index'])->middleware('throttle:60,1')->name('categories.index');
 
-    // ── Tags ──────────────────────────────────────────────────
+    // Tags
     Route::prefix('tags')->name('tags.')->group(function () {
         Route::get('/',              [TagController::class, 'index'])->middleware('throttle:60,1')->name('index');
         Route::get('{tag:slug}/articles', [TagController::class, 'articles'])->name('articles');
     });
 
-    // ── Lecturers ─────────────────────────────────────────────
+    // Lecturers
     Route::get('lecturers', [LecturerController::class, 'index'])->middleware('throttle:60,1')->name('lecturers.index');
 
-    // ── Search ────────────────────────────────────────────────
+    // Search
     Route::get('search', SearchController::class)->middleware('throttle:30,1')->name('search');
 
-    // ── Analytics (public) ────────────────────────────────────
+    // Analytics (public)
     Route::prefix('analytics')->name('analytics.')->group(function () {
         Route::get('popular', [AnalyticsController::class, 'popular'])->middleware('throttle:30,1')->name('popular');
         Route::get('monthly', [AnalyticsController::class, 'monthly'])->middleware('throttle:30,1')->name('monthly');
     });
 
-    // ── Bookmarks (authenticated) ─────────────────────────────
+    // Bookmarks (authenticated)
     Route::middleware('auth.api')->group(function () {
         Route::get('bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
     });
 
-    // ── API Documentation ─────────────────────────────────────
+    // API Documentation
     Route::get('docs', fn () => response()->json([
         'endpoints' => [
             'GET  /api/v1/'                           => 'Health check',

@@ -247,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ═══════════════════════════════════════════════
-// PHASE 4 — FORMS: validation, preview, counters, autosave
 // ═══════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -497,8 +496,6 @@ function initSEOCounter() {
 }
 
 // ════════════════════════════════════════════════
-// PHASE 7 — DARK MODE, TOOLTIPS, ANIMATIONS
-// PHASE 8 — MEDIA: lazy images, blur, fallback
 // ════════════════════════════════════════════════
 
 // ─── Dark Mode ─────────────────────────────────────────────────────────────────

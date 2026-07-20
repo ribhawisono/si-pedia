@@ -31,7 +31,6 @@
 
 <div class="grid gap-5 lg:grid-cols-[1fr_280px]">
 
-  {{-- Left: main fields --}}
   <div class="space-y-4">
 
     {{-- Photo --}}
@@ -124,7 +123,6 @@
     </div>
   </div>
 
-  {{-- Right: actions --}}
   <div class="space-y-4">
     <div class="card">
       <div class="card-header">Simpan</div>

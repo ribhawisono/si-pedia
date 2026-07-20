@@ -15,7 +15,7 @@ class ArticleController extends Controller
 {
     public function __construct(private ArticleService $articleService) {}
 
-    // ─── Admin: list ─────────────────────
+    // Admin: list
     public function index(Request $request)
     {
         $adminId  = auth()->id();

@@ -1,16 +1,11 @@
 <x-layouts.app title="SI-Pedia — Ensiklopedia Sistem Informasi" active="Homepage" footer="full">
 
-{{-- ============================================ --}}
-{{-- HERO SECTION                                 --}}
-{{-- ============================================ --}}
 <section class="relative overflow-hidden bg-ink-900">
-    {{-- Decorative elements --}}
     <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-brand-600/10 blur-3xl -translate-y-1/2 translate-x-1/3"></div>
     <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-brand-600/5 blur-3xl translate-y-1/2 -translate-x-1/3"></div>
 
     <div class="relative mx-auto max-w-[1440px] px-4 sm:px-8 py-16 sm:py-20 lg:py-28">
         <div class="grid items-center gap-12 lg:grid-cols-2">
-            {{-- Left: Text --}}
             <div>
                 <span class="inline-flex items-center gap-2 rounded-full bg-brand-600/15 px-4 py-1.5 text-sm font-semibold text-brand-400 mb-6">
                     <span class="h-1.5 w-1.5 rounded-full bg-brand-400"></span>
@@ -36,7 +31,6 @@
                 </div>
             </div>
 
-            {{-- Right: Stats --}}
             <div class="hidden lg:block">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-6 text-center">
@@ -61,9 +55,6 @@
     </div>
 </section>
 
-{{-- ============================================ --}}
-{{-- MOBILE STATS                                 --}}
-{{-- ============================================ --}}
 <section class="bg-ink-900 lg:hidden">
     <div class="mx-auto max-w-[1440px] px-4 sm:px-8 pb-12">
         <div class="grid grid-cols-2 gap-4">
@@ -87,13 +78,9 @@
     </div>
 </section>
 
-{{-- ============================================ --}}
-{{-- ARTIKEL TERBARU                              --}}
-{{-- ============================================ --}}
 <section class="bg-white dark:bg-gray-950 py-14 sm:py-20">
     <div class="mx-auto max-w-[1440px] px-4 sm:px-8">
 
-        {{-- Section Header --}}
         <div class="mb-10 sm:mb-12 flex items-end justify-between">
             <div>
                 <span class="inline-block rounded-full bg-brand-600/10 px-4 py-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 tracking-wide mb-3">BERITA & ARTIKEL</span>
@@ -105,11 +92,9 @@
             </a>
         </div>
 
-        {{-- Articles Grid --}}
         <div class="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
             @forelse($articles as $article)
             <a href="{{ route('articles.show', $article->slug ?? $article->id) }}" class="group block overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                {{-- Image --}}
                 <div class="relative h-48 overflow-hidden bg-gray-100 dark:bg-gray-800">
                     @if($article->image)
                         <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
@@ -121,7 +106,6 @@
                         </div>
                     @endif
 
-                    {{-- Category Badge --}}
                     <div class="absolute top-3 left-3">
                         <span class="rounded-md bg-brand-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
                             {{ $article->category->name ?? 'Umum' }}
@@ -129,7 +113,6 @@
                     </div>
                 </div>
 
-                {{-- Content --}}
                 <div class="p-5">
                     <h3 class="text-lg font-bold leading-snug text-gray-900 dark:text-white line-clamp-2 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors">
                         {{ $article->title }}
@@ -154,7 +137,6 @@
             @endforelse
         </div>
 
-        {{-- Mobile "Lihat Semua" --}}
         <div class="mt-8 text-center sm:hidden">
             <a href="{{ route('catalog') }}" class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700 transition">
                 Lihat Semua Artikel
@@ -164,9 +146,6 @@
     </div>
 </section>
 
-{{-- ============================================ --}}
-{{-- KATEGORI                                     --}}
-{{-- ============================================ --}}
 <section class="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-12 sm:py-16">
     <div class="mx-auto max-w-[1440px] px-4 sm:px-8">
         <div class="mb-8 sm:mb-10 text-center">
@@ -202,9 +181,6 @@
     </div>
 </section>
 
-{{-- ============================================ --}}
-{{-- CTA SECTION                                  --}}
-{{-- ============================================ --}}
 <section class="bg-white dark:bg-gray-950 py-12 sm:py-16">
     <div class="mx-auto max-w-[1440px] px-4 sm:px-8">
         <div class="rounded-2xl bg-gradient-to-br from-[#336cbc] to-[#1e4f8f] p-8 sm:p-14 text-center relative overflow-hidden">

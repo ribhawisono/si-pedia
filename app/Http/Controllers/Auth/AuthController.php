@@ -60,7 +60,7 @@ class AuthController extends Controller
         return redirect()->route('verification.otp')->with('status', 'Kode verifikasi telah dikirim ke email kamu.');
     }
 
-    // ─── OTP Verification ──────────────────────────────────────────────────────
+    // OTP Verification
 
     private function sendOtp(User $user): void
     {
@@ -143,7 +143,7 @@ class AuthController extends Controller
         return back()->with('status', 'Kode verifikasi baru telah dikirim ke ' . $user->email);
     }
 
-    // ─── Reset Password ───────────────────────────────────────────────────────
+    // Reset Password
 
     public function sendResetLink(Request $request)
     {

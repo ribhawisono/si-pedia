@@ -1,7 +1,7 @@
 {
     "name": "pwl/ensiklopedia",
     "type": "project",
-    "description": "PWL Ensiklopedia - Laravel 13 + Tailwind",
+    "description": "SI-Pedia - Ensiklopedia digital Prodi Sistem Informasi",
     "keywords": [
         "laravel",
         "ensiklopedia"

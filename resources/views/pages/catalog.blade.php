@@ -1,7 +1,6 @@
 <x-layouts.app title="Katalog Artikel — SI-Pedia" active="Catalog" footer="full"
                meta_description="Jelajahi semua artikel Program Studi Sistem Informasi Universitas Indraprasta PGRI.">
 
-{{-- ─── Filter & Sort Header ─────────────────────────────────────────────────────────── --}}
 <div class="bg-ink-900 py-10">
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
     <h1 class="text-3xl font-extrabold text-white mb-1">Katalog Artikel</h1>
@@ -46,7 +45,6 @@
   <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex flex-col lg:flex-row gap-8">
 
-      {{-- ─── Sidebar Filters ────────────────── --}}
       <aside class="lg:w-64 flex-shrink-0" aria-label="Filter artikel">
         {{-- Category filter --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm mb-4">
@@ -91,7 +89,6 @@
         @endif
       </aside>
 
-      {{-- ─── Articles Grid ───────────────── --}}
       <div class="flex-1 min-w-0">
         {{-- Active filters & results info --}}
         <div class="mb-5 flex flex-wrap items-center justify-between gap-3">

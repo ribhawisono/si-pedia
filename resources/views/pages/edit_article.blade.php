@@ -83,8 +83,7 @@
 
   <div class="grid gap-6 lg:grid-cols-[1fr_300px]">
 
-    {{-- ── Main Content Column ────────────────────── --}}
-    <div class="space-y-5">
+        <div class="space-y-5">
 
       {{-- Title --}}
       <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -183,8 +182,7 @@
       </div>
     </div>
 
-    {{-- ── Sidebar Column ──────────────────── --}}
-    <div class="space-y-5">
+        <div class="space-y-5">
 
       {{-- Publish settings (admin) --}}
       @if($isAdmin)

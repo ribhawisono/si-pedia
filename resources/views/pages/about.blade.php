@@ -3,9 +3,6 @@
 
 <div class="bg-white dark:bg-gray-950">
 
-    {{-- ============================================ --}}
-    {{-- HERO: Profil Prodi                          --}}
-    {{-- ============================================ --}}
     <section class="max-w-5xl mx-auto px-6 pt-16 pb-12">
         <div class="mb-4">
             <span class="inline-block rounded-full bg-brand-600/10 px-4 py-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400 tracking-wide">
@@ -25,9 +22,6 @@
         </div>
     </section>
 
-    {{-- ============================================ --}}
-    {{-- SEJARAH                                      --}}
-    {{-- ============================================ --}}
     <section class="bg-gray-50 border-t border-gray-100">
         <div class="max-w-5xl mx-auto px-6 py-16">
             <div class="flex items-center gap-3 mb-6">
@@ -72,9 +66,6 @@
         </div>
     </section>
 
-    {{-- ============================================ --}}
-    {{-- PIMPINAN PROGRAM STUDI (jabatan struktural)   --}}
-    {{-- ============================================ --}}
     <section class="max-w-5xl mx-auto px-6 py-16">
         <div class="flex items-center gap-3 mb-8">
             <div class="w-1.5 h-8 rounded-full bg-brand-600"></div>
@@ -83,7 +74,6 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-            {{-- Card 1 --}}
             <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#336cbc] to-[#1e4f8f] p-8 sm:p-10 flex flex-col items-center justify-center min-h-[280px] shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5"></div>
                 <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-white/5"></div>
@@ -96,7 +86,6 @@
                 <p class="mt-2 text-sm text-white/70 font-medium">Ketua Program Studi</p>
             </div>
 
-            {{-- Card 2 --}}
             <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#336cbc] to-[#1e4f8f] p-8 sm:p-10 flex flex-col items-center justify-center min-h-[280px] shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5"></div>
                 <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-white/5"></div>
@@ -112,13 +101,9 @@
         </div>
     </section>
 
-    {{-- ============================================ --}}
-    {{-- VISI & MISI                                  --}}
-    {{-- ============================================ --}}
     <section class="bg-gray-50 border-t border-gray-100">
         <div class="max-w-5xl mx-auto px-6 py-16">
 
-            {{-- VISI --}}
             <div class="mb-12">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-1.5 h-8 rounded-full bg-brand-600"></div>
@@ -129,7 +114,6 @@
                 </p>
             </div>
 
-            {{-- MISI --}}
             <div>
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-1.5 h-8 rounded-full bg-brand-600"></div>

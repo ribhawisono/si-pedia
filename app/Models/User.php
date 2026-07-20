@@ -27,7 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    // ─── Accessors ──────────────────────────────────────────────────────────
+    // Accessors
 
     public function getAvatarUrlAttribute(): string
     {
@@ -38,7 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=336cbc&color=fff&size=128';
     }
 
-    // ─── Relationships ──────────────────────────────────────────────────────
+    // Relationships
 
     public function lecturer()        { return $this->hasOne(Lecturer::class); }
     public function articles()        { return $this->hasMany(Article::class); }
@@ -50,7 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Article::class, 'bookmarks')->withTimestamps()->latest('bookmarks.created_at');
     }
 
-    // ─── Helpers ────────────────────────────────────────────
+    // Helpers
 
     public function isDosen(): bool { return $this->role === 'dosen'; }
     public function isAdmin(): bool { return $this->role === 'admin'; }
