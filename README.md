@@ -71,27 +71,24 @@ Panduan instalasi lengkap (termasuk Windows, macOS, dan deploy ke server): lihat
 
 ```
 app/
-├── Http/
-│   ├── Controllers/    ← 11 controller (Article, Auth, Category, Comment, Dosen, Homepage, Page, Profile, Review, User)
-│   └── Middleware/     ← AdminMiddleware
-└── Models/             ← 8 model + HasSlug trait
+├── Http/Controllers/   Web + API controllers
+├── Http/Middleware/    Admin, email verified, security headers, API token
+├── Models/             Article, User, Lecturer, Comment, dll + HasSlug
+├── Policies/           Otorisasi resource
+└── Services/           ArticleService, SearchService
 
 database/
-├── migrations/         ← 13 file migrasi
-└── seeders/            ← DatabaseSeeder (user, kategori, artikel, dosen, review)
+├── migrations/
+└── seeders/
 
 resources/
-├── css/app.css         ← Tailwind v4 + design tokens
-├── js/app.js           ← Axios setup
-└── views/
-    ├── auth/           ← 5 halaman autentikasi
-    ├── components/     ← 6 komponen reusable
-    ├── errors/         ← 3 halaman error (403, 404, 500)
-    ├── layouts/        ← Layout utama
-    └── pages/          ← 17 halaman (publik + admin)
+├── css/app.css
+├── js/app.js
+└── views/              auth, components, errors, pages
 
 routes/
-└── web.php             ← Semua routing
+├── web.php
+└── api.php
 ```
 
 ## Routing

@@ -1,6 +1,6 @@
 # SI-Pedia — Dokumentasi Teknis Lengkap
 
-> Dokumentasi ini mencakup seluruh aspek project SI-Pedia: arsitektur, database, routing, controller, model, view, middleware, frontend, dan deployment. Ditujukan untuk developer yang akan melanjutkan maintain atau mengembangkan project ini.
+> Catatan teknis internal SI-Pedia: arsitektur, schema, routing, controller, view, middleware, frontend, deployment.
 
 ---
 
@@ -951,11 +951,11 @@ Untuk deployment di subdirectory `/sipedia/`:
 
 3. **Soft delete** — Article menggunakan soft delete. Data tidak hilang permanen, bisa di-restore.
 
-4. **Comment auto-approved** — Komentar langsung status 'approved' saat dibuat (tidak perlu moderasi).
+4. **Moderasi komentar** — Komentar bisa auto-approved atau pending jika kena filter kata terlarang.
 
 5. **Scheduled publishing** — Artikel dengan `scheduled_at` di masa depan tidak muncul di publik sampai waktunya tiba.
 
-6. **No custom service providers** — Laravel 11+ defaults, tidak ada `app/Providers/` directory.
+6. **Service providers** — Laravel 11+ bootstrap; cek `bootstrap/app.php` dan `app/Providers/`.
 
 7. **Vite base path** — Diset untuk subdirectory `/sipedia/`. Sesuaikan jika deploy di root.
 
@@ -981,5 +981,4 @@ PHPUnit tersedia dengan konfigurasi default Laravel. Test files di `tests/` dire
 
 ---
 
-> Dokumentasi ini dibuat berdasarkan analisis langsung terhadap source code SI-Pedia.
-> Terakhir diperbarui: Juni 2026
+> Terakhir diperbarui: Juli 2026

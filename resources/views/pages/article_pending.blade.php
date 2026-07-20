@@ -18,7 +18,6 @@
     </div>
   @endif
 
-  {{-- ===== SECTION 1: PENDING APPROVAL ===== --}}
   <div class="mt-10">
     <div class="flex items-center gap-3 mb-5">
       <h2 class="text-base font-bold text-gray-900">Menunggu Persetujuan</h2>
@@ -71,7 +70,6 @@
     <div class="mt-4">{{ $pending->links() }}</div>
   </div>
 
-  {{-- ===== SECTION 2: REQUEST HAPUS ===== --}}
   <div class="mt-12">
     <div class="flex items-center gap-3 mb-5">
       <h2 class="text-base font-bold text-gray-900">Permintaan Hapus</h2>

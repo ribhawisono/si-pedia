@@ -1,7 +1,6 @@
 # SI-Pedia — Tutorial Instalasi
 
-> Panduan lengkap untuk menginstall dan menjalankan SI-Pedia dari nol.
-> Ditulis agar siapapun bisa mengikuti tanpa pengalaman development sebelumnya.
+> Panduan install dan menjalankan SI-Pedia dari nol.
 
 ---
 

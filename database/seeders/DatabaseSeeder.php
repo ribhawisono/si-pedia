@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // ── Bersihkan data lama (urutan FK-safe) ─────────────────────────────
+        // Bersihkan data lama (urutan FK-safe)
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         DB::table('lecturers')->truncate();
         DB::table('articles')->truncate();
@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         DB::table('categories')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-        // ── Admin ─────────────────────────────────────────────────────────────
+        // Admin
         $admin = User::create([
             'name'              => 'Admin SI-Pedia',
             'username'          => 'admin',
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // ── User biasa (mahasiswa) ─────────────────────────────────────────────
+        // User biasa (mahasiswa)
         User::create([
             'name'              => 'Ucup Pratama',
             'username'          => 'ucup',
@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // ── Dosen (User + Lecturer record) ────────────────────────────────────
+        // Dosen (User + Lecturer record)
         $dosens = [
             [
                 'name'    => 'Dr. Budi Santoso, M.Kom',
@@ -102,11 +102,11 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // ── Kategori ──────────────────────────────────────────────────────────
+        // Kategori
         $cats = collect(['Berita', 'Event', 'Akademik', 'Lomba'])
             ->mapWithKeys(fn ($n) => [$n => Category::create(['name' => $n])->id]);
 
-        // ── Artikel dengan gambar dari Picsum (stable, permanent URLs) ────────
+        // Artikel dengan gambar dari Picsum (stable, permanent URLs)
         $articles = [
             [
                 'title'   => 'Penerimaan Mahasiswa Baru (PMB) Universitas Indraprasta PGRI 2026/2027 Resmi Dibuka!',
@@ -198,7 +198,7 @@ Keberhasilan ini merupakan bukti nyata komitmen Prodi SI Unindra dalam menghasil
             ]);
         }
 
-        // ── Reviews ───────────────────────────────────────────────────────────
+        // Reviews
         $reviewData = [
             ['title' => 'Platform yang Sangat Informatif!', 'desc' => 'SI-Pedia sangat membantu saya dalam mencari informasi seputar program studi. Artikelnya lengkap dan mudah dipahami.'],
             ['title' => 'Referensi Akademik Terbaik', 'desc' => 'Sebagai mahasiswa baru, SI-Pedia menjadi referensi utama saya untuk memahami dunia Sistem Informasi. Terima kasih!'],

@@ -6,10 +6,7 @@
 /* Dukungan dark mode berbasis class */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/*
-| DESIGN TOKENS — SI-Pedia
-| Diekstrak langsung (sampling pixel) dari screenshot Figma.
-*/
+/* Design tokens SI-Pedia */
 @theme {
     --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
     --font-heading: 'Poppins', ui-sans-serif, system-ui, sans-serif;
@@ -45,10 +42,6 @@
     --color-profilebg:#f5e6f0;        /* bg halaman profil */
     --color-userbadge:#e3c8f6;        /* badge "User" */
 }
-
-/* ═════════════════════════════════════════════════════
-   PHASE 1 — LOADING, SKELETON, ACCESSIBILITY, RESPONSIVE
-═════════════════════════════════════════════════════ */
 
 /* Skeleton loading animation */
 @keyframes skeleton-shimmer {
@@ -133,10 +126,6 @@ img.loaded  { opacity: 1; }
 /* Back to top button */
 #back-to-top { opacity: 0; transition: opacity 0.3s; }
 #back-to-top:not(.hidden) { opacity: 1; }
-
-/* ═════════════════════════════════════════════════════
-   PHASE 7 — DARK MODE, ANIMATIONS, TOOLTIPS, TRANSITIONS
-═════════════════════════════════════════════════════ */
 
 /* ─ Smooth color transitions (scoped, not global — a blanket `body *`
    transition caused Chrome paint/compositing glitches: stale blank tiles
@@ -296,7 +285,7 @@ html.dark ::-webkit-scrollbar-thumb { background: #374151; }
 }
 .skeleton-article .skeleton { border-radius: 0; }
 
-/* ─ Phase 8 — Responsive images ───── */
+/* Responsive images */
 /* Wrapped in @layer base so Tailwind's h-*/w-* utilities (which live in the
    utilities layer) can still win the cascade. Left un-layered, this plain
    `img` rule always beat layered utilities regardless of source order,
@@ -329,7 +318,6 @@ html.dark #admin-sidebar { border-right: 1px solid #252836; }
 }
 
 /* ═════════════════════════════════════════════════════
-   PHASE 14 — DESIGN SYSTEM TOKENS
    Consistent typography, spacing, components
 ═════════════════════════════════════════════════════ */
 

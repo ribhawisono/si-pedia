@@ -21,7 +21,7 @@ class Article extends Model
         'meta_title', 'meta_description', 'meta_keywords', 'canonical_url',
     ];
 
-    // ─── Accessors ──────────────────────────────────────────────────────────
+    // Accessors
 
     /** Handle external URL or local storage path */
     public function getImageUrlAttribute(): ?string
@@ -38,14 +38,14 @@ class Article extends Model
         return max(1, (int) ceil($wordCount / 200));
     }
 
-    // ─── Scopes ─────────────────────────────────────────────────────────────
+    // Scopes
 
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', 'active');
     }
 
-    // ─── Relationships ──────────────────────────────────────────────────────
+    // Relationships
 
     public function category(): BelongsTo    { return $this->belongsTo(Category::class); }
     public function comments(): HasMany      { return $this->hasMany(Comment::class)->latest(); }
@@ -55,7 +55,7 @@ class Article extends Model
     public function readingHistories(): HasMany { return $this->hasMany(ReadingHistory::class); }
     public function revisions(): HasMany      { return $this->hasMany(\App\Models\ArticleRevision::class)->latest(); }
 
-    // ─── Helpers ────────────────────────────────────────────────────────────
+    // Helpers
 
     public function isPending(): bool       { return $this->status === 'pending'; }
     public function isPendingDelete(): bool { return $this->status === 'pending_delete'; }
