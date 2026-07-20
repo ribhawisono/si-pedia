@@ -21,7 +21,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.api'        => \App\Http\Middleware\ApiTokenMiddleware::class,
             'auth.api.optional' => \App\Http\Middleware\ApiTokenOptional::class,
             'verified.email'  => \App\Http\Middleware\VerifiedEmailMiddleware::class,
-            'is.owner'        => \App\Http\Middleware\IsOwnerMiddleware::class,
         ]);
 
     })
